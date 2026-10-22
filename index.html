@@ -42,6 +42,22 @@ section{padding:70px 0}.section-head{display:flex;align-items:end;justify-conten
 .ribbon{flex-wrap:wrap;column-gap:26px;row-gap:11px;padding:19px 24px}.ribbon span{white-space:nowrap}@media(max-width:640px){.ribbon{column-gap:16px;row-gap:10px;padding:17px 18px}}
 .footer-links{flex-wrap:wrap}
 .nav-links{flex-wrap:wrap;gap:20px}@media(max-width:640px){nav{flex-wrap:wrap;padding:12px 0}.nav-links{width:100%;justify-content:flex-start;gap:16px}.nav-links>a.account-link{display:inline-flex}}
+
+/* Seasonal colour stays inside the event, with the site's lavender foundation. */
+.live-event{border:1px solid var(--line);border-radius:12px;padding:18px!important;margin-bottom:16px;background:#c5a4f405}
+.event-phase{display:inline-flex;align-items:center;gap:7px;font-size:9px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--purple);margin-bottom:14px}
+.event-phase::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.live-event[data-season="halloween"]{--event-accent:#edbd91;background:radial-gradient(ellipse at 100% 0,#c47d3820,transparent 65%),linear-gradient(135deg,#2a1e35,#201a2a);border-color:#d3a17c38;box-shadow:inset 0 1px 0 #ffffff06}
+.live-event[data-season="halloween"] .event-phase{color:var(--event-accent)}
+.live-event[data-season="halloween"] .event-badge{filter:drop-shadow(0 3px 8px #ca864030)}
+.live-event[data-season="halloween"] progress{accent-color:var(--event-accent)}
+.live-event[data-season="halloween"] progress::-webkit-progress-bar{background:#ffffff10;border-radius:20px}
+.live-event[data-season="halloween"] progress::-webkit-progress-value{background:linear-gradient(90deg,#b397d9,#edbd91);border-radius:20px}
+.live-event[data-season="halloween"] progress::-moz-progress-bar{background:linear-gradient(90deg,#b397d9,#edbd91);border-radius:20px}
+.live-event progress{border:0;border-radius:20px;overflow:hidden;background:#ffffff10}
+.live-event .event-title strong{line-height:1.4}
+.live-event .live-milestones{padding-left:18px;line-height:1.6}
+
 </style>
 </head>
 <body>
@@ -207,6 +223,8 @@ function renderEvents() {
   if (!latestStats.events.length) { eventsNode.append(node('p','No events are active or scheduled right now. Check back for the next announcement.')); return; }
   latestStats.events.forEach(event => {
     const box = node('div'); box.className = 'live-event';
+    if(/halloween/i.test(event.name || ''))box.dataset.season='halloween';
+    const phase=node('span',event.phase==='upcoming'?'Upcoming':event.phase==='earning'?'Live event':'Event shop');phase.className='event-phase';box.append(phase);
     const heading = node('div'); heading.className = 'event-title';
     if(event.badge) {
       const badge = node('img'); badge.src = event.badge; badge.alt = ''; badge.className = 'event-badge';
