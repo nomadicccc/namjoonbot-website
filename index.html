@@ -18,11 +18,13 @@ section{padding:70px 0}.section-head{display:flex;align-items:end;justify-conten
 @media(max-width:850px){.hero-grid{gap:15px}.float-one{left:-10px}.float-two{right:-10px}.community-grid{gap:25px;padding:30px}.hero-grid{padding:70px 0}h1{letter-spacing:-2px}.nav-links{gap:17px}.ribbon{gap:18px}}
 @media(max-width:640px){.wrap{width:calc(100% - 36px)}nav{min-height:72px;gap:10px}.brand{font-size:17px;gap:8px}.logo{width:30px;height:30px;font-size:18px}.nav-links>a:not(.btn){display:none}.nav-links .btn{font-size:12px;padding:8px 11px}.hero-grid{grid-template-columns:1fr;padding:54px 0 30px;gap:10px}h1{font-size:52px}.lead{font-size:15px}.art{min-height:350px;max-width:360px;width:100%;margin:auto}.photocard{width:190px;height:270px}.card-art{height:190px}.orbit{width:290px;height:290px}.float{font-size:11px;padding:10px 13px}.float strong{font-size:12px}.float-one{left:0}.float-two{right:0}.ribbon{gap:15px;font-size:9px;letter-spacing:.5px;flex-wrap:wrap}.ribbon span:before{margin-right:7px}section{padding:47px 0}.section-head{align-items:start}.section-head>.small-label{display:none}h2{font-size:28px}.news-grid,.community-grid{grid-template-columns:1fr}.panel-body,.side-panel{padding:24px}.community-grid{padding:25px;gap:28px}.community h2{font-size:31px}.invite-card{padding:23px}.footer-row{flex-direction:column;gap:12px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}}
+
+.live-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}.live-panel{padding:28px}.live-panel h3{margin:15px 0}.live-panel select{background:#14111b;color:var(--ink);border:1px solid #ffffff35;border-radius:7px;padding:10px;font:inherit;max-width:100%;margin:12px 0;width:100%}.live-status{color:var(--muted);font-size:12px;margin-top:10px}.live-event{padding:18px 0;border-bottom:1px solid var(--line)}.live-event p{margin:8px 0}.live-event progress{width:100%;height:16px;accent-color:var(--purple)}.live-board{width:100%;border-collapse:collapse;font-size:14px}.live-board th,.live-board td{padding:10px 5px;text-align:left;border-bottom:1px solid var(--line)}.live-board td:last-child,.live-board th:last-child{text-align:right}.live-board caption{text-align:left;font-size:12px;color:var(--muted);padding-bottom:10px}.live-board td{overflow-wrap:anywhere}.live-milestones{font-size:12px;color:var(--muted);padding-left:18px}.live-milestones li{padding:4px 0}@media(max-width:640px){.live-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<header><nav class="wrap" aria-label="Main navigation"><a class="brand" href="./" aria-label="NamjoonBot home"><span class="logo" aria-hidden="true">✳</span>NamjoonBot</a><div class="nav-links"><a href="#updates">Updates</a><a href="#community">Community</a><a class="btn primary" data-bot href="https://discord.com/oauth2/authorize?client_id=1540789930329120908&amp;permissions=274878286848&amp;integration_type=0&amp;scope=bot+applications.commands">Add to Discord ↗</a></div></nav></header>
+<header><nav class="wrap" aria-label="Main navigation"><a class="brand" href="./" aria-label="NamjoonBot home"><span class="logo" aria-hidden="true">✳</span>NamjoonBot</a><div class="nav-links"><a href="#updates">Updates</a><a href="#live">Live stats</a><a href="#community">Community</a><a class="btn primary" data-bot href="https://discord.com/oauth2/authorize?client_id=1540789930329120908&amp;permissions=274878286848&amp;integration_type=0&amp;scope=bot+applications.commands">Add to Discord ↗</a></div></nav></header>
 <main id="main">
 <div class="hero"><div class="wrap hero-grid"><div><div class="eyebrow">Your little corner of the fandom</div><h1>A little more<br><span>bora.</span> A lot<br>more fun.</h1><p class="lead">Collect your favourites. Trade with friends. Make your profile your own. Keep up with the latest NamjoonBot updates, events, and community news.</p><div class="actions"><a class="btn primary" data-bot href="https://discord.com/oauth2/authorize?client_id=1540789930329120908&amp;permissions=274878286848&amp;integration_type=0&amp;scope=bot+applications.commands">Add to your server ↗</a><a class="btn" href="#updates">See what’s new ↓</a></div><p class="hero-note">Your collection lives on Discord. The news lives here.</p></div>
 <div class="art" role="img" aria-label="Decorative purple NamjoonBot collectible card"><div class="orbit"></div><div class="photocard"><div class="card-art"><span class="monogram">NJ</span></div><div class="card-caption">NAMJOONBOT · BORA CLUB</div></div><div class="float float-one"><strong><span class="spark">✦</span>One more for the collection.</strong><small>There’s always a new favourite.</small></div><div class="float float-two"><strong>Make it yours. ✧</strong><small>Customise your profile, your way.</small></div></div></div></div>
@@ -32,6 +34,13 @@ section{padding:70px 0}.section-head{display:flex;align-items:end;justify-conten
 <!-- UPDATE POST: edit the date, title and text below when posting news. -->
 <article class="panel"><div class="feature-visual" aria-hidden="true"><span>A new home.<br>Same bora energy.</span><span class="star">✳</span></div><div class="panel-body"><div class="meta"><span class="tag">Website news</span><time datetime="2026-10-22">22 October 2026</time></div><h3>Welcome to our little corner of the internet.</h3><p>The NamjoonBot hub is here. Drop by for bot announcements, event news, and a look at what’s coming next. For questions, conversations, and everything in between, come find us in the support server.</p><a class="text-link" data-server href="https://discord.gg/Ec2n3S7j8S">Find your people on Discord ↗</a></div></article>
 <aside class="panel side-panel"><div class="side-icon" aria-hidden="true">✧</div><div class="eyebrow" style="margin-bottom:15px">Stay in the loop</div><h3>Good things belong<br>on the noticeboard.</h3><p>This is where future news will land:</p><ul><li>New features and bot improvements</li><li>Seasonal events and community challenges</li><li>Photocard news and collection updates</li></ul><div class="meta">Want to chat about the bot? Join us below.</div></aside>
+</div></section>
+<section id="live" class="wrap">
+<div class="section-head"><div><div class="eyebrow" style="margin-bottom:12px">From the bot</div><h2>The community, in motion.</h2><p>Player rankings, events, and the goals we’re working towards together.</p></div></div>
+<p id="live-status" class="live-status" role="status">Live statistics are being connected. You can check /leaderboard and the event shop in Discord in the meantime.</p>
+<div class="live-grid" style="margin-top:22px">
+<article class="panel live-panel"><div class="eyebrow">Community rankings</div><h3>Meet the collectors.</h3><label for="board-category" class="small-label">Leaderboard category</label><select id="board-category" disabled><option value="coins">Total coins earned</option><option value="packs">Packs opened</option><option value="unique">Unique cards collected</option><option value="mythicals">Mythicals pulled</option><option value="streak">Longest daily streak</option><option value="gifted">Cards gifted</option><option value="traded">Cards traded</option></select><div id="live-board"><p>Rankings will appear here once the live feed is connected.</p></div></article>
+<article class="panel live-panel"><div class="eyebrow">Events &amp; challenges</div><h3>A little effort. A shared reward.</h3><div id="live-events"><p>Event status and community challenge progress will appear here once connected.</p></div></article>
 </div></section>
 <section id="community" class="community wrap"><div class="community-grid"><div><div class="eyebrow">The community</div><h2>There’s a place<br>for you here.</h2><p>Need a hand with the bot? Have an idea you’d love to see? Or just want to hang out with other collectors? Come say hello in the support server.</p><a class="text-link" data-server href="https://discord.gg/Ec2n3S7j8S">Come join us ↗</a></div><div class="invite-card"><div class="small-label">You’re invited</div><div class="invite-top"><div class="server-icon" aria-hidden="true">N</div><div><h3>NamjoonBot</h3><p>Support server & community</p></div></div><div class="server-details"><span>Bot support</span><span>News & updates</span></div><a class="btn" data-server href="https://discord.gg/Ec2n3S7j8S">Join the support server ↗</a><div id="discord-widget"></div></div></div></section>
 <section class="wrap"><div class="faq"><h2>A few quick answers.</h2><details><summary>How do I add NamjoonBot to my server?</summary><p>Use <a data-bot href="https://discord.com/oauth2/authorize?client_id=1540789930329120908&amp;permissions=274878286848&amp;integration_type=0&amp;scope=bot+applications.commands">Add to Discord</a>, choose your server, and follow Discord’s permission prompts. You’ll need permission to add apps to that server.</p></details><details><summary>Can I play or manage my cards here?</summary><p>Collecting and playing happen inside Discord. This hub is where you can catch up on announcements and find the community.</p></details><details><summary>Where can I get help or suggest something?</summary><p>Join the <a data-server href="https://discord.gg/Ec2n3S7j8S">support server</a> for help, feedback, and suggestions.</p></details></div></section>
@@ -43,7 +52,10 @@ section{padding:70px 0}.section-head{display:flex;align-items:end;justify-conten
 const siteSettings = {
   serverInvite: 'https://discord.gg/Ec2n3S7j8S',
   botInvite: 'https://discord.com/oauth2/authorize?client_id=1540789930329120908&permissions=274878286848&integration_type=0&scope=bot+applications.commands',
-  discordServerId: ''
+  discordServerId: '',
+  // Public HTTPS address only. Never put a token or database URL here.
+  statsApiBase: '',
+  statsTransport: 'poll' // 'poll' works with Quick Tunnels; 'sse' needs streaming support.
 };
 document.querySelectorAll('[data-server]').forEach(link => {link.href = siteSettings.serverInvite;});
 document.querySelectorAll('[data-bot]').forEach(link => {link.href = siteSettings.botInvite;});
@@ -55,6 +67,103 @@ if (/^\d{17,20}$/.test(siteSettings.discordServerId)) {
   widget.setAttribute('sandbox','allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts');
   document.getElementById('discord-widget').appendChild(widget);
 }
+
+const statusNode = document.getElementById('live-status');
+const boardNode = document.getElementById('live-board');
+const eventsNode = document.getElementById('live-events');
+const categoryNode = document.getElementById('board-category');
+let latestStats = null;
+let stream = null;
+let pollTimer = null;
+let freshnessTimer = null;
+let pollController = null;
+function node(tag, text) {
+  const element = document.createElement(tag);
+  if (text !== undefined) element.textContent = text;
+  return element;
+}
+const number = value => Number(value).toLocaleString('en-GB');
+function renderBoard() {
+  if (!latestStats) return;
+  const board = latestStats.leaderboards[categoryNode.value];
+  boardNode.replaceChildren();
+  if (!board || !board.players.length) { boardNode.append(node('p','No ranked activity in this category yet.')); return; }
+  const table = node('table'); table.className = 'live-board';
+  table.append(node('caption','Global rankings · Top 10'));
+  const head = node('thead'); const headings = node('tr');
+  ['Rank','Collector','Score'].forEach(label => { const th = node('th',label); th.scope = 'col'; headings.append(th); });
+  head.append(headings); table.append(head);
+  const body = node('tbody');
+  board.players.forEach(player => {
+    const row = node('tr');
+    [number(player.rank),player.name,number(player.score)].forEach(value => row.append(node('td',value)));
+    body.append(row);
+  });
+  table.append(body); boardNode.append(table);
+}
+function renderEvents() {
+  eventsNode.replaceChildren();
+  if (!latestStats.events.length) { eventsNode.append(node('p','No events are active or scheduled right now. Check back for the next announcement.')); return; }
+  latestStats.events.forEach(event => {
+    const box = node('div'); box.className = 'live-event';
+    box.append(node('strong',event.name));
+    const date = event.phase === 'upcoming' ? event.starts_at : event.phase === 'earning' ? event.earning_ends_at : event.shop_ends_at;
+    const label = event.phase === 'upcoming' ? 'Starts' : event.phase === 'earning' ? 'Earn rewards until' : 'Shop open until';
+    box.append(node('p',label + ' ' + new Date(date).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'})));
+    if(event.challenge) {
+      const c = event.challenge;
+      box.append(node('p',number(c.total) + ' / ' + number(c.goal) + ' Candy · ' + c.percent + '% complete'));
+      const progress = node('progress'); progress.max = 100; progress.value = c.percent;
+      progress.setAttribute('aria-label',event.name + ' community challenge'); box.append(progress);
+      const milestones = node('ul'); milestones.className = 'live-milestones';
+      c.milestones.forEach(m => milestones.append(node('li',(c.percent >= m.percent ? '✓ ' : '') + m.percent + '% — ' + m.reward)));
+      box.append(milestones);
+    }
+    eventsNode.append(box);
+  });
+}
+function freshness() {
+  if(!latestStats) return;
+  const age = Math.max(0,Math.floor((Date.now()-Date.parse(latestStats.updated_at))/1000));
+  statusNode.textContent = (age > 15 ? 'Updates delayed' : 'Connected') + ' · Last refreshed ' + age + ' seconds ago';
+}
+function acceptStats(data) {
+  if (!data || !data.leaderboards || !Array.isArray(data.events) || !Number.isFinite(Date.parse(data.updated_at))) throw new Error('Invalid feed');
+  latestStats = data; categoryNode.disabled = false;
+  renderBoard(); renderEvents(); freshness();
+}
+categoryNode.addEventListener('change',renderBoard);
+const apiBase = siteSettings.statsApiBase.replace(/\/$/,'');
+async function pollStats() {
+  pollController = new AbortController();
+  const timeout = setTimeout(() => pollController.abort(),8000);
+  try {
+    const response = await fetch(apiBase + '/api/stats',{cache:'no-store',signal:pollController.signal});
+    if(!response.ok) throw new Error('Feed unavailable');
+    acceptStats(await response.json());
+  } catch(error) {
+    if(!document.hidden) statusNode.textContent = latestStats ? 'Connection interrupted · Showing the last received results.' : 'Live feed unavailable · Please check back shortly.';
+  } finally {
+    clearTimeout(timeout); pollController = null;
+    if(!document.hidden) pollTimer = setTimeout(pollStats,1000);
+  }
+}
+function stopLive() {
+  clearTimeout(pollTimer); clearInterval(freshnessTimer);
+  if(stream) {stream.close(); stream = null;}
+  if(pollController) pollController.abort();
+}
+function startLive() {
+  if(!apiBase || document.hidden) return;
+  freshnessTimer = setInterval(freshness,1000);
+  if(siteSettings.statsTransport === 'sse') {
+    stream = new EventSource(apiBase + '/api/stream');
+    stream.addEventListener('stats',event => {try {acceptStats(JSON.parse(event.data));} catch {statusNode.textContent = 'Could not read live results.';}});
+    stream.onerror = () => {statusNode.textContent = 'Connection interrupted · Reconnecting…';};
+  } else {pollStats();}
+}
+document.addEventListener('visibilitychange',() => {if(document.hidden) stopLive(); else startLive();});
+startLive();
 </script>
 </body>
 </html>
