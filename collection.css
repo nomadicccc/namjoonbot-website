@@ -9,3 +9,13 @@ body.view-profile main.wrap{max-width:732px}#profile{width:100%;margin-inline:au
 .showcase-grid .showcase-hover .card-button{box-shadow:0 14px 28px #0005}
 @media(prefers-reduced-motion:reduce){.showcase-grid .card-button{transform:none;transition:none}}
 @media(hover:none){.showcase-grid .card-button{transform:none}}
+
+/* Keep the information panels still; tilt only the transparent photocard PNG. */
+.showcase-grid .card-button,.showcase-grid .showcase-hover .card-button{transform:none;box-shadow:none;transition:none}
+.showcase-grid .artwrap{overflow:visible;background:transparent;perspective:850px}
+.showcase-grid .artwrap img,.interactive-card-stage img{transform:rotateX(var(--showcase-x,0deg)) rotateY(var(--showcase-y,0deg));transition:transform .18s ease-out,filter .2s ease-out;transform-origin:center;user-select:none}
+.showcase-grid .artwrap.showcase-hover img,.interactive-card-stage.showcase-hover img{filter:drop-shadow(0 10px 12px #0005)}
+.interactive-card-stage{width:min(100%,340px);margin:20px auto;perspective:900px;padding:14px}
+.modal-body .interactive-card-stage img{display:block;width:100%;height:auto;max-height:440px;object-fit:contain;margin:0}
+@media(prefers-reduced-motion:reduce){.showcase-grid .artwrap img,.interactive-card-stage img{transform:none;transition:none;filter:none!important}}
+@media(hover:none){.showcase-grid .artwrap img,.interactive-card-stage img{transform:none;filter:none!important}}
