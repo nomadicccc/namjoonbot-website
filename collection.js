@@ -39,10 +39,14 @@ function setPager(total,pageCount){
   pages=pageCount;$('page-info').textContent='Page '+currentPage+' of '+pages+' · '+fmt(total)+' '+(pageKind==='catalogue'?'designs':'cards');
   $('prev').disabled=currentPage<=1;$('next').disabled=currentPage>=pages;
 }
+function applyRarity(element,rarity){
+  const key=String(rarity || '').toLowerCase().replace(/[\s-]+/g,'_');
+  if(['mythical','secret_mythical'].includes(key))element.dataset.rarity=key;
+}
 function imagePlaceholder(){const p=el('div',undefined,'artwrap');return p;}
 function openDetails(card,isInventory,source) {
   modalBody.replaceChildren(el('h2',card.name));
-  if(source){const image=el('img');image.src=source;image.alt=card.name;image.draggable=false;if(isInventory){const stage=el('div',undefined,'interactive-card-stage');stage.append(image);modalBody.append(stage);}else modalBody.append(image);}
+  if(source){const image=el('img');image.src=source;image.alt=card.name;image.draggable=false;if(isInventory){const stage=el('div',undefined,'interactive-card-stage');applyRarity(stage,card.rarity);stage.append(image);modalBody.append(stage);}else modalBody.append(image);}
   if(isInventory){
     modalBody.append(el('p',label(card.rarity)+' · Print #'+fmt(card.serial)+' / '+fmt(card.printed)));
     modalBody.append(el('p',card.code));
@@ -62,6 +66,7 @@ function cardTile(card,isInventory){
   const article=el('article',undefined,'card'+(isInventory?'':' catalogue-card'));
   const button=el('button',undefined,'card-button');button.type='button';button.setAttribute('aria-label','View '+card.name);
   const art=imagePlaceholder(),info=el('div',undefined,'card-info');
+  if(isInventory){applyRarity(article,card.rarity);applyRarity(art,card.rarity);}
   info.append(el('span',isInventory?label(card.rarity):label(card.set),'tag'),el('h3',card.name));
   if(isInventory){info.append(el('p','Print #'+fmt(card.serial)+' / '+fmt(card.printed)),el('p',card.code,'code'));if(card.signed || card.birthday)info.append(el('p',[card.signed?'Signed':'',card.birthday?'Birthday':''].filter(Boolean).join(' · ')));}
   else info.append(el('p',fmt(card.printed)+' printed'),el('p',card.rarities.map(label).join(' · ')));
