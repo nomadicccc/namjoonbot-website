@@ -42,7 +42,7 @@ function setPager(total,pageCount){
 function imagePlaceholder(){const p=el('div',undefined,'artwrap');return p;}
 function openDetails(card,isInventory,source) {
   modalBody.replaceChildren(el('h2',card.name));
-  if(source){const image=el('img');image.src=source;image.alt=card.name;modalBody.append(image);}
+  if(source){const image=el('img');image.src=source;image.alt=card.name;image.draggable=false;if(isInventory){const stage=el('div',undefined,'interactive-card-stage');stage.append(image);modalBody.append(stage);}else modalBody.append(image);}
   if(isInventory){
     modalBody.append(el('p',label(card.rarity)+' · Print #'+fmt(card.serial)+' / '+fmt(card.printed)));
     modalBody.append(el('p',card.code));
@@ -66,7 +66,7 @@ function cardTile(card,isInventory){
   if(isInventory){info.append(el('p','Print #'+fmt(card.serial)+' / '+fmt(card.printed)),el('p',card.code,'code'));if(card.signed || card.birthday)info.append(el('p',[card.signed?'Signed':'',card.birthday?'Birthday':''].filter(Boolean).join(' · ')));}
   else info.append(el('p',fmt(card.printed)+' printed'),el('p',card.rarities.map(label).join(' · ')));
   let loadedSource=null;
-  function setImage(src){loadedSource=src;const image=el('img');image.src=src;image.alt=card.name;image.loading='lazy';image.onerror=()=>{image.remove();art.append(el('span','Artwork unavailable','muted'));};art.replaceChildren(image);}
+  function setImage(src){loadedSource=src;const image=el('img');image.src=src;image.alt=card.name;image.draggable=false;image.loading='lazy';image.onerror=()=>{image.remove();art.append(el('span','Artwork unavailable','muted'));};art.replaceChildren(image);}
   button.append(art,info);article.append(button);button.onclick=()=>openDetails(card,isInventory,loadedSource);
   if(!isInventory && card.image)setImage(API+card.image);
   else if(!isInventory)art.append(el('span','Artwork unavailable','muted'));
@@ -310,9 +310,9 @@ function resetShowcaseTilt(card) {
 }
 document.addEventListener('pointermove',event=>{
   if(showcaseMotion.matches || event.pointerType==='touch')return;
-  const card=event.target.closest?.('.showcase-grid .card');
+  const card=event.target.closest?.('.showcase-grid .artwrap, .interactive-card-stage');
   if(!card)return;
-  const bounds=card.querySelector('.card-button').getBoundingClientRect();
+  const bounds=card.getBoundingClientRect();
   const x=Math.max(-.5,Math.min(.5,(event.clientX-bounds.left)/bounds.width-.5));
   const y=Math.max(-.5,Math.min(.5,(event.clientY-bounds.top)/bounds.height-.5));
   card.style.setProperty('--showcase-x',(-y*10).toFixed(2)+'deg');
@@ -320,7 +320,7 @@ document.addEventListener('pointermove',event=>{
   card.classList.add('showcase-hover');
 });
 document.addEventListener('pointerout',event=>{
-  const card=event.target.closest?.('.showcase-grid .card');
+  const card=event.target.closest?.('.showcase-grid .artwrap, .interactive-card-stage');
   if(card && (!event.relatedTarget || !card.contains(event.relatedTarget)))resetShowcaseTilt(card);
 });
 window.addEventListener('blur',()=>document.querySelectorAll('.showcase-hover').forEach(resetShowcaseTilt));
