@@ -222,7 +222,7 @@ async function loadCollections(){
     collectionData=data;collectionPage=1;
     const selected=$('collection-set').value;
     $('collection-set').replaceChildren(new Option('All sets','all'));
-    [...new Set(data.cards.map(card=>card.set))].sort().forEach(set=>$('collection-set').append(new Option(label(set),set)));
+    Object.keys(data.summaries || Object.fromEntries(data.cards.map(card=>[card.set,{}]))).sort().forEach(set=>$('collection-set').append(new Option(label(set),set)));
     if([...$('collection-set').options].some(option=>option.value===selected))$('collection-set').value=selected;
     renderCollections();status('Collection progress updated · '+(data.basis==='owned'?'Currently owned cards':'Lifetime discoveries'));
   }catch(error){if(version===collectionRequest)status(error.message,true);}
@@ -233,7 +233,8 @@ function renderCollections(){
   const rarity=$('collection-rarity').value,kind=$('collection-variant').value,missing=$('collection-missing').checked;
   const summary=$('collection-summary');summary.replaceChildren();
   const groups=new Map();
-  collectionData.cards.forEach(card=>{const value=groups.get(card.set)||{done:0,total:0};value.done+=card.collected;value.total+=card.total;groups.set(card.set,value);});
+  if(collectionData.summaries)Object.entries(collectionData.summaries).forEach(([set,value])=>groups.set(set,value));
+  else collectionData.cards.forEach(card=>{const value=groups.get(card.set)||{done:0,total:0};value.done+=card.collected;value.total+=card.total;groups.set(card.set,value);});
   groups.forEach((value,setId)=>{
     if(set!=='all'&&set!==setId)return;
     const item=el('div',undefined,'set-summary');
@@ -259,7 +260,7 @@ function renderCollections(){
     tile.article.append(checklist);target.append(tile.article);
   });
   if(!matches.length){const empty=el('p','No variants match these filters.','empty');empty.style.gridColumn='1 / -1';target.append(empty);}
-  $('collection-count').textContent=fmt(matches.length)+' matching artworks · Birthday bonuses are tracked separately.';
+  $('collection-count').textContent=fmt(matches.length)+' matching artworks · Birthday bonuses are tracked separately. Set totals include undiscovered cards; hidden artwork stays secret.';
   $('collection-page').textContent='Page '+collectionPage+' of '+collectionPages;
   $('collection-prev').disabled=collectionPage<=1;$('collection-next').disabled=collectionPage>=collectionPages;
 }
