@@ -13,10 +13,12 @@ let requestVersion = 0, inventoryLoaded = false, profileData = null;
 let mediaVersion = 0, imageURLs = new Set(), profileURLs = new Set();
 let token = sessionStorage.getItem('namjoon_session') || '';
 let catalogueReady = false, loginConfigured = false;
+let collectionData=null, collectionPage=1, collectionPages=1, wishData=null;
+let collectionRequest=0, wishRequest=0;
 function el(tag,text,className) {const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(className)n.className=className;return n;}
 function status(message,error=false){statusEl.textContent=message;statusEl.classList.toggle('error',error);}
 function clearURLs(urls){urls.forEach(url=>URL.revokeObjectURL(url));urls.clear();}
-function clearSession(){sessionStorage.removeItem('namjoon_session');token='';profileData=null;inventoryLoaded=false;requestVersion++;mediaVersion++;clearURLs(imageURLs);clearURLs(profileURLs);grid.replaceChildren();$('profile')?.replaceChildren();$('account-content').hidden=true;$('account-actions').hidden=true;$('login-panel').hidden=false;$('login').disabled=!loginConfigured;modal.close();}
+function clearSession(){sessionStorage.removeItem('namjoon_session');token='';profileData=null;inventoryLoaded=false;requestVersion++;mediaVersion++;collectionRequest++;wishRequest++;collectionData=null;wishData=null;$('collection-cards')?.replaceChildren();$('collection-summary')?.replaceChildren();$('wish-cards')?.replaceChildren();clearURLs(imageURLs);clearURLs(profileURLs);grid.replaceChildren();$('profile')?.replaceChildren();$('account-content').hidden=true;$('account-actions').hidden=true;$('login-panel').hidden=false;$('login').disabled=!loginConfigured;modal.close();}
 async function api(path,{method='GET',body,privateRequest=false,blob=false}={}) {
   if(!API) throw new Error('The live service has not been connected yet.');
   const headers={};
@@ -65,7 +67,7 @@ function cardTile(card,isInventory){
   else info.append(el('p',fmt(card.printed)+' printed'),el('p',card.rarities.map(label).join(' · ')));
   let loadedSource=null;
   function setImage(src){loadedSource=src;const image=el('img');image.src=src;image.alt=card.name;image.loading='lazy';image.onerror=()=>{image.remove();art.append(el('span','Artwork unavailable','muted'));};art.replaceChildren(image);}
-  button.append(art,info);article.append(button);button.addEventListener('click',()=>openDetails(card,isInventory,loadedSource));
+  button.append(art,info);article.append(button);button.onclick=()=>openDetails(card,isInventory,loadedSource);
   if(!isInventory && card.image)setImage(API+card.image);
   else if(!isInventory)art.append(el('span','Artwork unavailable','muted'));
   return {article,setImage,art};
@@ -96,7 +98,7 @@ async function loadInventory(){
   if(!token)return;
   const version=++requestVersion;mediaVersion++;const versionMedia=mediaVersion;
   clearURLs(imageURLs);status('Loading your inventory…');
-  const params=new URLSearchParams({page:currentPage,q:$('search').value,member:$('member').value,set:$('set').value,rarity:$('rarity').value,sort:$('sort').value});
+  const params=new URLSearchParams({page:currentPage,q:$('search').value,member:$('member').value,set:$('set').value,rarity:$('rarity').value,sort:$('sort').value,variant:$('variant').value});
   try{
     const data=await api('/api/me/inventory?'+params,{privateRequest:true});if(version!==requestVersion || !token)return;
     currentPage=data.page;grid.replaceChildren();const jobs=[];
@@ -126,6 +128,18 @@ async function renderProfile(data){
   box.append(el('h3','Your badges'));const badges=el('div',undefined,'badge-list');
   data.badges.forEach(badge=>{const item=el('span',undefined,'badge');item.title=badge.description;if(badge.image){const image=el('img');image.src=badge.image;image.alt='';image.loading='lazy';image.onerror=()=>image.remove();item.append(image);}item.append(el('span',badge.name));badges.append(item);});
   box.append(badges);if(!data.badges.length)badges.append(el('p','No badges earned yet.','muted'));
+  const heading=el('h3','Your showcase');heading.style.marginTop='28px';box.append(heading,el('p','Your equipped Discord profile cards. Change your selection in Discord.','muted'));
+  const showcase=el('div',undefined,'grid showcase-grid');box.append(showcase);
+  const entries=data.showcase || [];
+  entries.forEach(card=>{
+    const tile=cardTile(card,true);showcase.append(tile.article);
+    privateImage(card.image,profileURLs).then(source=>{
+      if(token===activeToken && tile.article.isConnected)tile.setImage(source);
+      else {URL.revokeObjectURL(source);profileURLs.delete(source);}
+    }).catch(()=>{if(tile.article.isConnected)tile.art.append(el('span','Artwork unavailable','muted'));});
+  });
+  for(let slot=entries.length;slot<3;slot++)showcase.append(el('div','Empty showcase slot','empty showcase-empty'));
+
 }
 async function loadProfile(){
   const version=++requestVersion;
@@ -135,7 +149,15 @@ async function loadProfile(){
     await renderProfile(data);if(version===requestVersion && token)status('Your current bot profile · Use /profile in Discord to customise it.');
   }catch(error){status(error.message,true);}
 }
-function selectTab(next){view=next;$('profile').hidden=next!=='profile';$('inventory').hidden=next!=='inventory';for(const name of ['profile','inventory']){const button=$(name+'-tab');button.classList.toggle('active',name===next);button.setAttribute('aria-selected',String(name===next));}if(next==='inventory'&&!inventoryLoaded)loadInventory();}
+function selectTab(next){
+  view=next;document.body.classList.toggle('view-profile',next==='profile');
+  for(const name of ['profile','inventory','collections','wishlist']){
+    $(name).hidden=name!==next;const button=$(name+'-tab');button.classList.toggle('active',name===next);button.setAttribute('aria-selected',String(name===next));
+  }
+  if(next==='inventory'&&!inventoryLoaded)loadInventory();
+  if(next==='collections'){if(collectionData)renderCollections();else loadCollections();}
+  if(next==='wishlist'){if(wishData)renderWishes();else loadWishes();}
+}
 async function beginLogin(){
   $('login').disabled=true;status('Opening Discord…');
   try{
@@ -169,19 +191,111 @@ async function bootstrapAccount(){
 $('close-modal').addEventListener('click',()=>modal.close());
 modal.addEventListener('click',event=>{if(event.target===modal){const b=modal.getBoundingClientRect();if(event.clientX<b.left||event.clientX>b.right||event.clientY<b.top||event.clientY>b.bottom)modal.close();}});
 let filterTimer;
-for(const id of ['search','member','set','rarity','sort']){
+for(const id of ['search','member','set','rarity','sort','variant']){
   const input=$(id);if(!input)continue;
   input.addEventListener(id==='search'?'input':'change',()=>{clearTimeout(filterTimer);filterTimer=setTimeout(()=>{currentPage=1;if(pageKind==='catalogue'&&catalogueReady)renderCatalogue();else if(pageKind==='account'&&token)loadInventory();},id==='search'?250:0);});
 }
 for(const [id,delta] of [['prev',-1],['next',1]])$(id).addEventListener('click',()=>{currentPage=Math.max(1,Math.min(pages,currentPage+delta));if(pageKind==='catalogue')renderCatalogue();else loadInventory();});
-$('refresh').addEventListener('click',()=>{if(pageKind==='catalogue')loadCatalogue().catch(()=>{});else if(view==='inventory')loadInventory();else loadProfile();});
+$('refresh').addEventListener('click',()=>{if(pageKind==='catalogue')loadCatalogue().catch(()=>{});else if(view==='inventory')loadInventory();else if(view==='collections')loadCollections();else if(view==='wishlist')loadWishes();else loadProfile();});
 if(pageKind==='catalogue')loadCatalogue().catch(()=>{});
 else{
   $('login').addEventListener('click',beginLogin);
   $('logout').addEventListener('click',async()=>{try{await api('/api/auth/logout',{method:'POST',privateRequest:true});}catch{}finally{clearSession();status('Signed out.');}});
   $('profile-tab').addEventListener('click',()=>selectTab('profile'));
   $('inventory-tab').addEventListener('click',()=>selectTab('inventory'));
-  const tabs=[$('profile-tab'),$('inventory-tab')];
-  tabs.forEach((tab,index)=>tab.addEventListener('keydown',event=>{if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();const next=tabs[1-index];next.focus();next.click();}}));
+  document.body.classList.add('view-profile');
+  $('collections-tab').addEventListener('click',()=>selectTab('collections'));
+  $('wishlist-tab').addEventListener('click',()=>selectTab('wishlist'));
+  const tabs=['profile','inventory','collections','wishlist'].map(name=>$(name+'-tab'));
+  tabs.forEach((tab,index)=>tab.addEventListener('keydown',event=>{if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();const next=tabs[(index+(event.key==='ArrowRight'?1:tabs.length-1))%tabs.length];next.focus();next.click();}}));
   bootstrapAccount();
+}
+
+function variantMatches(item,kind){
+  return kind==='all' || (kind==='unsigned'&&!item.signed&&!item.birthday) || (kind==='signed'&&!!item.signed) || (kind==='birthday'&&!!item.birthday);
+}
+async function loadCollections(){
+  const version=++collectionRequest;const activeToken=token;status('Loading collection progress…');
+  try{
+    const data=await api('/api/me/collections?basis='+$('collection-basis').value,{privateRequest:true});
+    if(version!==collectionRequest || token!==activeToken || !token)return;
+    collectionData=data;collectionPage=1;
+    const selected=$('collection-set').value;
+    $('collection-set').replaceChildren(new Option('All sets','all'));
+    [...new Set(data.cards.map(card=>card.set))].sort().forEach(set=>$('collection-set').append(new Option(label(set),set)));
+    if([...$('collection-set').options].some(option=>option.value===selected))$('collection-set').value=selected;
+    renderCollections();status('Collection progress updated · '+(data.basis==='owned'?'Currently owned cards':'Lifetime discoveries'));
+  }catch(error){if(version===collectionRequest)status(error.message,true);}
+}
+function renderCollections(){
+  if(!collectionData)return;
+  const q=$('collection-search').value.trim().toLowerCase(),set=$('collection-set').value,member=$('collection-member').value;
+  const rarity=$('collection-rarity').value,kind=$('collection-variant').value,missing=$('collection-missing').checked;
+  const summary=$('collection-summary');summary.replaceChildren();
+  const groups=new Map();
+  collectionData.cards.forEach(card=>{const value=groups.get(card.set)||{done:0,total:0};value.done+=card.collected;value.total+=card.total;groups.set(card.set,value);});
+  groups.forEach((value,setId)=>{
+    if(set!=='all'&&set!==setId)return;
+    const item=el('div',undefined,'set-summary');
+    item.append(el('strong',label(setId)),el('span',fmt(value.done)+' / '+fmt(value.total)+' variants · '+(value.total?(value.done*100/value.total).toFixed(1):'0')+'%'));
+    const progress=el('progress');progress.max=value.total||1;progress.value=value.done;progress.setAttribute('aria-label',label(setId)+' completion');item.append(progress);summary.append(item);
+  });
+  const matches=collectionData.cards.filter(card=>(!q||(card.name+' '+card.id).toLowerCase().includes(q))&&(set==='all'||card.set===set)&&(member==='all'||card.members.includes(member))).map(card=>({
+    ...card,shownVariants:card.variants.filter(v=>(rarity==='all'||v.rarity===rarity)&&variantMatches(v,kind)&&(!missing||!v.collected))
+  })).filter(card=>card.shownVariants.length);
+  collectionPages=Math.max(1,Math.ceil(matches.length/12));collectionPage=Math.min(collectionPage,collectionPages);
+  const target=$('collection-cards');target.replaceChildren();
+  matches.slice((collectionPage-1)*12,collectionPage*12).forEach(card=>{
+    const tile=cardTile(card,false);const info=tile.article.querySelector('.card-info');
+    info.append(el('p',fmt(card.collected)+' / '+fmt(card.total)+' normal variants collected'));
+    if(card.birthday_collected)info.append(el('span','Birthday bonus collected','tag'));
+    const checklist=el('div',undefined,'variant-checklist');
+    card.shownVariants.forEach(v=>{
+      const row=el('div',undefined,'variant-row'+(v.collected?' collected':' missing'));
+      row.append(el('span',v.collected?'✓':'○'),el('span',label(v.rarity)+' · '+(v.signed?'Signed '+label(v.signed):'Unsigned')+(v.birthday?' · Birthday '+label(v.birthday):'')));
+      row.title=v.collected?'Collected':'Missing';checklist.append(row);
+    });
+    // Checklist is outside the details button, so scrolling does not open it.
+    tile.article.append(checklist);target.append(tile.article);
+  });
+  if(!matches.length){const empty=el('p','No variants match these filters.','empty');empty.style.gridColumn='1 / -1';target.append(empty);}
+  $('collection-count').textContent=fmt(matches.length)+' matching artworks · Birthday bonuses are tracked separately.';
+  $('collection-page').textContent='Page '+collectionPage+' of '+collectionPages;
+  $('collection-prev').disabled=collectionPage<=1;$('collection-next').disabled=collectionPage>=collectionPages;
+}
+async function loadWishes(){
+  const version=++wishRequest;const activeToken=token;status('Loading your wishlist…');
+  try{const data=await api('/api/me/wishlist',{privateRequest:true});if(version!==wishRequest || token!==activeToken || !token)return;wishData=data.wishes;renderWishes();status('Wishlist synced from Discord.');}
+  catch(error){if(version===wishRequest)status(error.message,true);}
+}
+function renderWishes(){
+  if(!wishData)return;
+  const q=$('wish-search').value.trim().toLowerCase(),filter=$('wish-status').value;
+  const wishes=wishData.filter(wish=>(!q||wish.name.toLowerCase().includes(q))&&(filter==='all'||(filter==='owned'?wish.owned:!wish.owned)));
+  const target=$('wish-cards');target.replaceChildren();
+  wishes.forEach(wish=>{
+    if(wish.hidden){target.append(el('div','Undiscovered card · Details hidden until revealed','empty'));return;}
+    const tile=cardTile(wish,false);
+    const info=tile.article.querySelector('.card-info');info.replaceChildren(el('span',wish.owned?'Currently owned':'Still missing','tag'),el('h3',wish.name),
+      el('p',wish.rarity?label(wish.rarity)+' · '+(wish.signed?'Signed '+label(wish.signed):'Unsigned')+(wish.birthday?' · Birthday '+label(wish.birthday):''):'Any rarity or variant'));
+    tile.article.querySelector('button').onclick=()=>openWish(wish);
+    target.append(tile.article);
+  });
+  if(!wishes.length){const empty=el('p','No wishlist entries match. Use /wishlist cards in Discord to manage your list.','empty');empty.style.gridColumn='1 / -1';target.append(empty);}
+  $('wish-count').textContent=fmt(wishes.length)+' wishes';
+}
+function openWish(wish){
+  modalBody.replaceChildren(el('h2',wish.name));
+  if(wish.image){const image=el('img');image.src=API+wish.image;image.alt=wish.name;modalBody.append(image);}
+  modalBody.append(el('p',wish.rarity?label(wish.rarity)+' · '+(wish.signed?'Signed by '+label(wish.signed):'Unsigned')+(wish.birthday?' · Birthday '+label(wish.birthday):''):'Any rarity or variant'),
+    el('p',wish.owned?'You currently own a matching card.':'You do not currently own a matching card.'));
+  modal.showModal();
+}
+if(pageKind==='account'){
+  $('collection-basis').addEventListener('change',loadCollections);
+  for(const id of ['collection-search','collection-set','collection-member','collection-rarity','collection-variant','collection-missing'])
+    $(id).addEventListener(id==='collection-search'?'input':'change',()=>{collectionPage=1;renderCollections();});
+  $('collection-prev').addEventListener('click',()=>{collectionPage=Math.max(1,collectionPage-1);renderCollections();});
+  $('collection-next').addEventListener('click',()=>{collectionPage=Math.min(collectionPages,collectionPage+1);renderCollections();});
+  $('wish-search').addEventListener('input',renderWishes);$('wish-status').addEventListener('change',renderWishes);
 }
