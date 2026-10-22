@@ -300,3 +300,28 @@ if(pageKind==='account'){
   $('collection-next').addEventListener('click',()=>{collectionPage=Math.min(collectionPages,collectionPage+1);renderCollections();});
   $('wish-search').addEventListener('input',renderWishes);$('wish-status').addEventListener('change',renderWishes);
 }
+
+const showcaseMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+function resetShowcaseTilt(card) {
+  if(!card)return;
+  card.style.removeProperty('--showcase-x');
+  card.style.removeProperty('--showcase-y');
+  card.classList.remove('showcase-hover');
+}
+document.addEventListener('pointermove',event=>{
+  if(showcaseMotion.matches || event.pointerType==='touch')return;
+  const card=event.target.closest?.('.showcase-grid .card');
+  if(!card)return;
+  const bounds=card.querySelector('.card-button').getBoundingClientRect();
+  const x=Math.max(-.5,Math.min(.5,(event.clientX-bounds.left)/bounds.width-.5));
+  const y=Math.max(-.5,Math.min(.5,(event.clientY-bounds.top)/bounds.height-.5));
+  card.style.setProperty('--showcase-x',(-y*10).toFixed(2)+'deg');
+  card.style.setProperty('--showcase-y',(x*12).toFixed(2)+'deg');
+  card.classList.add('showcase-hover');
+});
+document.addEventListener('pointerout',event=>{
+  const card=event.target.closest?.('.showcase-grid .card');
+  if(card && (!event.relatedTarget || !card.contains(event.relatedTarget)))resetShowcaseTilt(card);
+});
+window.addEventListener('blur',()=>document.querySelectorAll('.showcase-hover').forEach(resetShowcaseTilt));
+showcaseMotion.addEventListener('change',()=>document.querySelectorAll('.showcase-hover').forEach(resetShowcaseTilt));
