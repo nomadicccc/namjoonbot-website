@@ -77,6 +77,8 @@ let stream = null;
 let pollTimer = null;
 let freshnessTimer = null;
 let pollController = null;
+let generation = 0;
+let connectionOk = false;
 function node(tag, text) {
   const element = document.createElement(tag);
   if (text !== undefined) element.textContent = text;
@@ -125,30 +127,34 @@ function renderEvents() {
 function freshness() {
   if(!latestStats) return;
   const age = Math.max(0,Math.floor((Date.now()-Date.parse(latestStats.updated_at))/1000));
-  statusNode.textContent = (age > 15 ? 'Updates delayed' : 'Connected') + ' · Last refreshed ' + age + ' seconds ago';
+  statusNode.textContent = (!connectionOk ? 'Reconnecting' : age > 15 ? 'Updates delayed' : 'Connected') + ' · Last refreshed ' + age + ' seconds ago';
 }
 function acceptStats(data) {
   if (!data || !data.leaderboards || !Array.isArray(data.events) || !Number.isFinite(Date.parse(data.updated_at))) throw new Error('Invalid feed');
-  latestStats = data; categoryNode.disabled = false;
+  latestStats = data; connectionOk = true; categoryNode.disabled = false;
   renderBoard(); renderEvents(); freshness();
 }
 categoryNode.addEventListener('change',renderBoard);
 const apiBase = siteSettings.statsApiBase.replace(/\/$/,'');
-async function pollStats() {
-  pollController = new AbortController();
-  const timeout = setTimeout(() => pollController.abort(),8000);
+async function pollStats(token) {
+  const controller = new AbortController();
+  pollController = controller;
+  const timeout = setTimeout(() => controller.abort(),8000);
   try {
-    const response = await fetch(apiBase + '/api/stats',{cache:'no-store',signal:pollController.signal});
+    const response = await fetch(apiBase + '/api/stats',{cache:'no-store',signal:controller.signal});
     if(!response.ok) throw new Error('Feed unavailable');
-    acceptStats(await response.json());
+    const data = await response.json();
+    if(token === generation) acceptStats(data);
   } catch(error) {
-    if(!document.hidden) statusNode.textContent = latestStats ? 'Connection interrupted · Showing the last received results.' : 'Live feed unavailable · Please check back shortly.';
+    if(token === generation && !document.hidden) { connectionOk = false; statusNode.textContent = latestStats ? 'Connection interrupted · Showing the last received results.' : 'Live feed unavailable · Please check back shortly.'; }
   } finally {
-    clearTimeout(timeout); pollController = null;
-    if(!document.hidden) pollTimer = setTimeout(pollStats,1000);
+    clearTimeout(timeout);
+    if(pollController === controller) pollController = null;
+    if(!document.hidden && token === generation) pollTimer = setTimeout(() => pollStats(token),1000);
   }
 }
 function stopLive() {
+  generation++; connectionOk = false;
   clearTimeout(pollTimer); clearInterval(freshnessTimer);
   if(stream) {stream.close(); stream = null;}
   if(pollController) pollController.abort();
@@ -159,8 +165,8 @@ function startLive() {
   if(siteSettings.statsTransport === 'sse') {
     stream = new EventSource(apiBase + '/api/stream');
     stream.addEventListener('stats',event => {try {acceptStats(JSON.parse(event.data));} catch {statusNode.textContent = 'Could not read live results.';}});
-    stream.onerror = () => {statusNode.textContent = 'Connection interrupted · Reconnecting…';};
-  } else {pollStats();}
+    stream.onerror = () => {connectionOk = false; statusNode.textContent = 'Connection interrupted · Reconnecting…';};
+  } else {pollStats(++generation);}
 }
 document.addEventListener('visibilitychange',() => {if(document.hidden) stopLive(); else startLive();});
 startLive();
