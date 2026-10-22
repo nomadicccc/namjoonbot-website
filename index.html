@@ -22,6 +22,8 @@ section{padding:70px 0}.section-head{display:flex;align-items:end;justify-conten
 .live-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}.live-panel{padding:28px}.live-panel h3{margin:15px 0}.live-panel select{background:#14111b;color:var(--ink);border:1px solid #ffffff35;border-radius:7px;padding:10px;font:inherit;max-width:100%;margin:12px 0;width:100%}.live-status{color:var(--muted);font-size:12px;margin-top:10px}.live-event{padding:18px 0;border-bottom:1px solid var(--line)}.live-event p{margin:8px 0}.live-event progress{width:100%;height:16px;accent-color:var(--purple)}.live-board{width:100%;border-collapse:collapse;font-size:14px}.live-board th,.live-board td{padding:10px 5px;text-align:left;border-bottom:1px solid var(--line)}.live-board td:last-child,.live-board th:last-child{text-align:right}.live-board caption{text-align:left;font-size:12px;color:var(--muted);padding-bottom:10px}.live-board td{overflow-wrap:anywhere}.live-milestones{font-size:12px;color:var(--muted);padding-left:18px}.live-milestones li{padding:4px 0}@media(max-width:640px){.live-grid{grid-template-columns:1fr}}
 
 .player-cell{display:flex;align-items:center;gap:9px;text-align:left}.player-avatar{width:30px;height:30px;border-radius:50%;object-fit:cover;flex-shrink:0;background:#49345e}.avatar-fallback{display:inline-grid;place-items:center;color:var(--purple);font-size:12px;font-weight:700}.event-title{display:flex;align-items:center;gap:12px}.event-badge{width:48px;height:48px;object-fit:contain;flex-shrink:0}.pull-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.pull-item{padding:18px;display:flex;gap:16px;align-items:center;min-width:0}.pull-art{width:90px;aspect-ratio:5/7;object-fit:contain;border-radius:8px;flex-shrink:0;background:#30203f}.pull-info{min-width:0}.pull-info h3{font-size:16px;line-height:1.35;margin:10px 0 5px;overflow-wrap:anywhere}.pull-info p{font-size:12px}.pull-time{display:block;color:var(--muted);font-size:11px;margin-top:8px}.pull-label{color:var(--purple);font-size:9px;letter-spacing:1px;text-transform:uppercase}.pull-new{animation:pull-arrive .6s ease-out}.pull-empty{color:var(--muted);font-size:14px}.art-unavailable{display:grid;place-items:center;text-align:center;font-size:10px;color:var(--muted);padding:7px}.timeline-section{padding-top:5px}@keyframes pull-arrive{from{transform:translateY(10px);opacity:.3}to{transform:translateY(0);opacity:1}}@media(max-width:1000px){.pull-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:640px){.pull-grid{grid-template-columns:1fr}.pull-art{width:100px}}@media(prefers-reduced-motion:reduce){.pull-new{animation:none}}
+
+.candy-leaders{margin-top:25px;padding-top:22px;border-top:1px solid var(--line)}.candy-leaders h4{font-family:'Space Grotesk',sans-serif;font-size:19px;margin:0 0 8px}.reward-callout{background:linear-gradient(110deg,#69417a44,#b98c4722);border:1px solid #d5b4f445;border-radius:10px;padding:14px;margin:15px 0}.reward-callout strong{display:block;color:#e5c6ff;font-size:14px}.reward-callout p{font-size:12px;margin:5px 0!important}.candy-row{display:flex;align-items:center;gap:10px;padding:11px 9px;border-bottom:1px solid var(--line);border-radius:6px}.candy-row.top-five{background:#c5a4f40b;border-left:2px solid var(--purple);margin:5px 0}.candy-rank{font-size:12px;min-width:22px;color:var(--muted)}.top-five .candy-rank{color:var(--purple);font-weight:700}.candy-person{min-width:0;flex:1}.candy-person .player-cell>span:last-child{overflow-wrap:anywhere}.candy-score{text-align:right;white-space:nowrap;font-size:12px}.candy-score small{display:block;color:var(--muted);font-size:10px}.reward-spot{display:block;color:var(--purple);font-size:9px;padding-left:39px}.candy-divider{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:17px 0 8px}.card-art .hero-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .65s ease}.card-art.has-art .hero-image.ready{opacity:1}.card-art.has-art .monogram,.card-art.has-art:before,.card-art.has-art:after{visibility:hidden}.photocard{transform:perspective(900px) rotateX(var(--tilt-y,0deg)) rotateY(var(--tilt-x,0deg)) rotate(-10deg);transition:transform .18s ease-out;will-change:transform}.float-one{transform:translate(var(--float-x,0px),var(--float-y,0px)) rotate(-3deg);transition:transform .2s ease-out}.float-two{transform:translate(calc(var(--float-x,0px) * -0.7),calc(var(--float-y,0px) * -0.7)) rotate(4deg);transition:transform .25s ease-out}@media(prefers-reduced-motion:reduce){.card-art .hero-image{transition:none}.photocard{transform:rotate(-10deg);transition:none}.float-one{transform:rotate(-3deg);transition:none}.float-two{transform:rotate(4deg);transition:none}}
 </style>
 </head>
 <body>
@@ -29,7 +31,7 @@ section{padding:70px 0}.section-head{display:flex;align-items:end;justify-conten
 <header><nav class="wrap" aria-label="Main navigation"><a class="brand" href="./" aria-label="NamjoonBot home"><span class="logo" aria-hidden="true">✳</span>NamjoonBot</a><div class="nav-links"><a href="#updates">Updates</a><a href="#live">Live stats</a><a href="#community">Community</a><a class="btn primary" data-bot href="https://discord.com/oauth2/authorize?client_id=1540789930329120908&amp;permissions=274878286848&amp;integration_type=0&amp;scope=bot+applications.commands">Add to Discord ↗</a></div></nav></header>
 <main id="main">
 <div class="hero"><div class="wrap hero-grid"><div><div class="eyebrow">Your little corner of the fandom</div><h1>A little more<br><span>bora.</span> A lot<br>more fun.</h1><p class="lead">Collect your favourites. Trade with friends. Make your profile your own. Keep up with the latest NamjoonBot updates, events, and community news.</p><div class="actions"><a class="btn primary" data-bot href="https://discord.com/oauth2/authorize?client_id=1540789930329120908&amp;permissions=274878286848&amp;integration_type=0&amp;scope=bot+applications.commands">Add to your server ↗</a><a class="btn" href="#updates">See what’s new ↓</a></div><p class="hero-note">Your collection lives on Discord. The news lives here.</p></div>
-<div class="art" role="img" aria-label="Decorative purple NamjoonBot collectible card"><div class="orbit"></div><div class="photocard"><div class="card-art"><span class="monogram">NJ</span></div><div class="card-caption">NAMJOONBOT · BORA CLUB</div></div><div class="float float-one"><strong><span class="spark">✦</span>One more for the collection.</strong><small>There’s always a new favourite.</small></div><div class="float float-two"><strong>Make it yours. ✧</strong><small>Customise your profile, your way.</small></div></div></div></div>
+<div class="art" role="img" aria-label="A selection of NamjoonBot standard card artwork"><div class="orbit"></div><div class="photocard"><div class="card-art"><span class="monogram">NJ</span><img class="hero-image" alt="" decoding="async"></div><div class="card-caption">NAMJOONBOT · BORA CLUB</div></div><div class="float float-one"><strong><span class="spark">✦</span>One more for the collection.</strong><small>There’s always a new favourite.</small></div><div class="float float-two"><strong>Make it yours. ✧</strong><small>Customise your profile, your way.</small></div></div></div></div>
 <div class="ribbon" aria-label="Bot highlights"><span>Photocard collecting</span><span>Trading &amp; gifting</span><span>Profile customisation</span></div>
 <section id="updates" class="wrap"><div class="section-head"><div><div class="eyebrow" style="margin-bottom:12px">The noticeboard</div><h2>Fresh from NamjoonBot.</h2><p>Announcements, little changes, and things to look forward to.</p></div><span class="small-label">A place to stay in the loop</span></div>
 <div class="news-grid">
@@ -75,6 +77,51 @@ const statusNode = document.getElementById('live-status');
 const boardNode = document.getElementById('live-board');
 const eventsNode = document.getElementById('live-events');
 const categoryNode = document.getElementById('board-category');
+let gallery = [];
+let galleryIndex = -1;
+let galleryTimer = null;
+const artScene = document.querySelector('.art');
+const heroImage = document.querySelector('.hero-image');
+const artFrame = document.querySelector('.card-art');
+const cardCaption = document.querySelector('.card-caption');
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+function nextHeroArt() {
+  if(document.hidden || !gallery.length) return;
+  galleryIndex = (galleryIndex + 1) % gallery.length;
+  const entry = gallery[galleryIndex];
+  const url = apiBase + entry.image;
+  const preload = new Image();
+  preload.onload = () => {
+    if(gallery[galleryIndex] !== entry) return;
+    heroImage.classList.remove('ready');
+    setTimeout(() => {
+      heroImage.src = url;
+      heroImage.alt = entry.name + ' — standard card artwork';
+      artFrame.classList.add('has-art'); heroImage.classList.add('ready');
+      cardCaption.textContent = entry.name;
+    },reduceMotion.matches ? 0 : 220);
+  };
+  preload.src = url;
+}
+function syncGallery(cards) {
+  if(!Array.isArray(cards) || !cards.length || gallery.length) return;
+  gallery = cards;
+  nextHeroArt();
+  if(!reduceMotion.matches) galleryTimer = setInterval(nextHeroArt,5500);
+}
+artScene.addEventListener('pointermove',event => {
+  if(reduceMotion.matches || event.pointerType === 'touch') return;
+  const bounds=artScene.getBoundingClientRect();
+  const x=(event.clientX-bounds.left)/bounds.width-.5;
+  const y=(event.clientY-bounds.top)/bounds.height-.5;
+  artScene.style.setProperty('--tilt-x',x*22+'deg');
+  artScene.style.setProperty('--tilt-y',-y*18+'deg');
+  artScene.style.setProperty('--float-x',x*24+'px');
+  artScene.style.setProperty('--float-y',y*24+'px');
+});
+artScene.addEventListener('pointerleave',() => {
+  ['--tilt-x','--tilt-y','--float-x','--float-y'].forEach(property => artScene.style.removeProperty(property));
+});
 let latestStats = null;
 let boardSignature = '';
 let eventSignature = '';
@@ -152,6 +199,29 @@ function renderEvents() {
       const milestones = node('ul'); milestones.className = 'live-milestones';
       c.milestones.forEach(m => milestones.append(node('li',(c.percent >= m.percent ? '✓ ' : '') + m.percent + '% — ' + m.reward)));
       box.append(milestones);
+      const leaders = node('div'); leaders.className = 'candy-leaders';
+      leaders.append(node('h4','The Candy leaderboard'));
+      leaders.append(node('p','Top 10 contributors · Ranked by Candy earned'));
+      const reward = node('div'); reward.className = 'reward-callout';
+      reward.append(node('strong','✦ Final top 5 → Secret OT7 Halloween card'),
+        node('p','Five exclusive copies. Finish in the top five when Candy earning ends to earn your numbered OT7 card.'),
+        node('p','At least ' + number(c.minimum_earned || 100) + ' Candy earned is required. Current positions can change until the event closes.'));
+      leaders.append(reward);
+      if(!c.leaders.length) leaders.append(node('p','No Candy contributions recorded yet.'));
+      c.leaders.slice(0,10).forEach(player => {
+        if(player.rank === 6) {const divider=node('div','Chasing the top five · Places 6–10'); divider.className='candy-divider'; leaders.append(divider);}
+        const row=node('div'); row.className='candy-row' + (player.rank <= 5 ? ' top-five' : '');
+        const rank=node('span','#' + player.rank); rank.className='candy-rank';
+        const person=node('div'); person.className='candy-person'; person.append(playerCell(player));
+        if(player.rank <= 5) {
+          const eligible=Number(player.score) >= Number(c.minimum_earned || 100);
+          const marker=node('span',eligible ? '✦ OT7 reward position' : '✦ Top-five position · Reach minimum Candy');
+          marker.className='reward-spot'; person.append(marker);
+        }
+        const score=node('span',number(player.score)); score.className='candy-score'; score.append(node('small','Candy'));
+        row.append(rank,person,score); leaders.append(row);
+      });
+      box.append(leaders);
     }
     eventsNode.append(box);
   });
@@ -200,7 +270,7 @@ function freshness() {
 function acceptStats(data) {
   if (!data || !data.leaderboards || !Array.isArray(data.events) || !Number.isFinite(Date.parse(data.updated_at))) throw new Error('Invalid feed');
   latestStats = data; connectionOk = true; categoryNode.disabled = false;
-  renderBoard(); renderEvents(); renderPulls(); freshness();
+  renderBoard(); renderEvents(); renderPulls(); syncGallery(data.standard_cards); freshness();
 }
 categoryNode.addEventListener('change',renderBoard);
 const apiBase = siteSettings.statsApiBase.replace(/\/$/,'');
