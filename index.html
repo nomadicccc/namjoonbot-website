@@ -54,7 +54,7 @@ const siteSettings = {
   botInvite: 'https://discord.com/oauth2/authorize?client_id=1540789930329120908&permissions=274878286848&integration_type=0&scope=bot+applications.commands',
   discordServerId: '',
   // Public HTTPS address only. Never put a token or database URL here.
-  statsApiBase: '',
+  statsApiBase: 'https://say-lesson-practical-lip.trycloudflare.com',
   statsTransport: 'poll' // 'poll' works with Quick Tunnels; 'sse' needs streaming support.
 };
 document.querySelectorAll('[data-server]').forEach(link => {link.href = siteSettings.serverInvite;});
