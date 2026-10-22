@@ -4,16 +4,11 @@ The website's Live Stats section supports a public read-only API served by the r
 
 ## Website settings
 
-In `index.html`, find `siteSettings` and change:
+All pages now use `site-config.js`. Set `window.NAMJOON_SITE.apiBase` to the public API base address, without `/api/stats`. The homepage, catalogue and account pages share it. Never add a bot token, database string or OAuth client secret to website files.
 
-```js
-statsApiBase: 'https://YOUR-PUBLIC-API-ADDRESS',
-statsTransport: 'poll'
-```
+The homepage uses polling by default; its `statsTransport` setting remains in `index.html`. Quick Tunnels require polling. A streaming-capable permanent connection can use `sse`.
 
-Use the base address without `/api/stats`. Never add a bot token or database connection string here.
-
-`poll` checks again one second after the previous response. `sse` uses `/api/stream` for a persistent connection and needs streaming-capable hosting. Cloudflare's temporary Quick Tunnels do not support SSE; use polling for those. A permanent address avoids changing this setting whenever a temporary tunnel restarts.
+For Discord login configuration, see `ACCOUNT-SETUP.md`.
 
 ## Bot setup
 
