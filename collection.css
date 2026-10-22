@@ -19,3 +19,20 @@ body.view-profile main.wrap{max-width:732px}#profile{width:100%;margin-inline:au
 .modal-body .interactive-card-stage img{display:block;width:100%;height:auto;max-height:440px;object-fit:contain;margin:0}
 @media(prefers-reduced-motion:reduce){.showcase-grid .artwrap img,.interactive-card-stage img{transform:none;transition:none;filter:none!important}}
 @media(hover:none){.showcase-grid .artwrap img,.interactive-card-stage img{transform:none;filter:none!important}}
+
+/* Rarity accents follow the actual owned variant, never a catalogue preview. */
+[data-rarity="mythical"]{--rarity-glow:#c5a4f4;--rarity-shadow:#c5a4f440}
+[data-rarity="secret_mythical"]{--rarity-glow:#ead1f9;--rarity-shadow:#dfb2ef59}
+.card[data-rarity] .tag{color:var(--rarity-glow);background:#c5a4f419;border:1px solid var(--rarity-shadow)}
+.artwrap[data-rarity],.interactive-card-stage[data-rarity]{isolation:isolate}
+.artwrap[data-rarity] img,.interactive-card-stage[data-rarity] img{filter:drop-shadow(0 0 5px var(--rarity-shadow))}
+@media(hover:hover){
+  .artwrap[data-rarity]:hover img,.interactive-card-stage[data-rarity]:hover img{filter:drop-shadow(0 0 9px var(--rarity-shadow)) drop-shadow(0 9px 12px #0004)}
+  .artwrap[data-rarity="secret_mythical"]::after,.interactive-card-stage[data-rarity="secret_mythical"]::after{content:"";position:absolute;inset:0;border-radius:12px;pointer-events:none;background:linear-gradient(115deg,transparent 25%,#e6c9f200 38%,#f7e9ff20 48%,#d4c7ff12 53%,transparent 65%);background-size:250% 100%;background-position:100% 0;opacity:0;transition:background-position .85s ease,opacity .25s ease}
+  .artwrap[data-rarity="secret_mythical"]:hover::after,.interactive-card-stage[data-rarity="secret_mythical"]:hover::after{opacity:1;background-position:0 0}
+}
+.interactive-card-stage[data-rarity]{position:relative}
+@media(prefers-reduced-motion:reduce){
+  .artwrap[data-rarity]::after,.interactive-card-stage[data-rarity]::after{display:none}
+  .artwrap[data-rarity] img,.interactive-card-stage[data-rarity] img{transition:none}
+}
