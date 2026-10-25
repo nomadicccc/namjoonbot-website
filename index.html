@@ -122,6 +122,14 @@ section{padding:70px 0}.section-head{display:flex;align-items:end;justify-conten
 @media(max-width:900px){.counter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:480px){.community-counters{padding:17px}.counter-heading{align-items:start;flex-direction:column;gap:12px}.counter-heading h3{font-size:17px}.counter-card{padding:14px 11px}.counter-period{width:100%}.counter-period select{width:100%}.rarity-tooltip{max-width:calc(100vw - 70px)}}
 
+
+/* Match the time filter to the community panels while keeping native keyboard controls. */
+.counter-period{gap:7px;font-size:10px;font-weight:700;letter-spacing:.8px}
+.counter-period select{appearance:none;-webkit-appearance:none;color:#f4effb;font:600 12px/1.5 'DM Sans',sans-serif;letter-spacing:0;min-width:160px;padding:10px 38px 10px 14px;border:1px solid #c5a4f44d;border-radius:11px;background-color:#281f35;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23d9b9ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"),linear-gradient(120deg,#362743,#211a2d);background-repeat:no-repeat;background-position:right 13px center,center;background-size:14px,100%;box-shadow:inset 0 1px 0 #ffffff08,0 4px 12px #0002;cursor:pointer;transition:border-color .18s,box-shadow .18s}
+.counter-period select:hover{border-color:#c5a4f48c}.counter-period select:focus-visible{outline:2px solid var(--purple);outline-offset:3px;box-shadow:0 0 0 5px #c5a4f415}
+.counter-period select:disabled{opacity:.55;cursor:wait}.counter-period option{background:#281f35;color:#f4effb}
+@media(prefers-reduced-motion:reduce){.counter-period select{transition:none}}
+
 </style>
 </head>
 <body>
@@ -137,14 +145,14 @@ section{padding:70px 0}.section-head{display:flex;align-items:end;justify-conten
 
 <div class="community-counters" aria-labelledby="community-count-title">
   <div class="counter-heading"><div><h3 id="community-count-title">A little community. A lot of collecting.</h3><p id="community-count-status">Community totals will appear when the bot feed updates.</p></div>
-  <label class="counter-period">Time period<select id="community-count-period" disabled><option value="week">Last 7 days</option><option value="month">Last 30 days</option><option value="lifetime" selected>Lifetime</option></select></label></div>
+  <label class="counter-period">Time Period<select id="community-count-period" disabled><option value="week">Last 7 days</option><option value="month">Last 30 days</option><option value="lifetime" selected>Lifetime</option></select></label></div>
   <div class="counter-grid">
-    <article class="counter-card"><details id="card-pull-details"><summary aria-controls="community-rarity-tooltip"><span class="counter-label">Cards pulled</span><strong data-community-count="cards_pulled">—</strong><span class="counter-hint">Rarity breakdown ↗</span></summary></details><div id="community-rarity-tooltip" class="rarity-tooltip" role="region" aria-label="Pulled card rarity breakdown"><h4>Inside the pulls</h4><p id="rarity-period-note">Lifetime pull distribution</p><div id="community-rarity-rows"></div><p class="rarity-empty" id="community-rarity-empty">Waiting for pull history.</p></div></article>
-    <article class="counter-card"><span class="counter-label">Quests completed</span><strong data-community-count="quests_completed">—</strong><span class="counter-hint">Daily &amp; weekly quests</span></article>
-    <article class="counter-card"><span class="counter-label">Cards recycled</span><strong data-community-count="cards_recycled">—</strong><span class="counter-hint">A new life as petals</span></article>
-    <article class="counter-card"><span class="counter-label">Daily claims</span><strong data-community-count="daily_claims">—</strong><span class="counter-hint">Showing up, together</span></article>
+    <article class="counter-card"><details id="card-pull-details"><summary aria-controls="community-rarity-tooltip"><span class="counter-label">Cards Pulled</span><strong data-community-count="cards_pulled">—</strong><span class="counter-hint">Rarity breakdown ↗</span></summary></details><div id="community-rarity-tooltip" class="rarity-tooltip" role="region" aria-label="Pulled card rarity breakdown"><h4>Inside the pulls</h4><p id="rarity-period-note">Lifetime pull distribution</p><div id="community-rarity-rows"></div><p class="rarity-empty" id="community-rarity-empty">Waiting for pull history.</p></div></article>
+    <article class="counter-card"><span class="counter-label">Quests Completed</span><strong data-community-count="quests_completed">—</strong><span class="counter-hint">Daily &amp; weekly quests</span></article>
+    <article class="counter-card"><span class="counter-label">Cards Recycled</span><strong data-community-count="cards_recycled">—</strong><span class="counter-hint">A new life as petals</span></article>
+    <article class="counter-card"><span class="counter-label">Daily Claims</span><strong data-community-count="daily_claims">—</strong><span class="counter-hint">Showing up, together</span></article>
   </div>
-  <p class="counter-footnote">Across NamjoonBot · Recorded activity · Totals refresh every minute. Hover, focus or tap Cards pulled for rarity percentages.</p>
+  <p class="counter-footnote">Across NamjoonBot · Recorded activity · Totals refresh every minute. Hover, focus or tap Cards Pulled for rarity percentages.</p>
 </div>
 <div class="live-grid" style="margin-top:22px">
 <article class="panel live-panel rankings-panel"><div class="eyebrow">Community rankings</div><h3>Meet the collectors.</h3><label for="board-category" class="small-label">Leaderboard category</label><select id="board-category" disabled><option value="coins">Total coins earned</option><option value="packs">Packs opened</option><option value="unique">Unique cards collected</option><option value="mythicals">Mythicals pulled</option><option value="streak">Longest daily streak</option><option value="gifted">Cards gifted</option><option value="traded">Cards traded</option></select><div id="live-board"><p>Rankings will appear here once the live feed is connected.</p></div></article>
@@ -421,7 +429,7 @@ function freshness() {
 }
 
 const communityPeriod = document.getElementById('community-count-period');
-const rarityLabels = {common:'Common',uncommon:'Uncommon',rare:'Rare',event:'Event',legendary:'Legendary',mythical:'Mythical',secret_mythical:'Secret Mythical'};
+const rarityLabels = {common:'Common',uncommon:'Uncommon',rare:'Rare',legendary:'Legendary',mythical:'Mythical',secret_mythical:'Secret Mythical'};
 function renderCommunityCounts() {
   const stats = latestStats?.community_stats;
   const totals = stats?.periods?.[communityPeriod.value];
