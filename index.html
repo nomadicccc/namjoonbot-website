@@ -157,7 +157,7 @@ section{padding:70px 0}.section-head{display:flex;align-items:end;justify-conten
   <div class="counter-grid">
     <article class="counter-card"><details id="card-pull-details"><summary aria-controls="community-rarity-tooltip"><span class="counter-label">Cards Pulled</span><strong data-community-count="cards_pulled">—</strong><span class="counter-hint">Rarity breakdown ↗</span></summary></details><div id="community-rarity-tooltip" class="rarity-tooltip" role="region" aria-label="Pulled card rarity breakdown"><h4>Inside the pulls</h4><p id="rarity-period-note">Lifetime pull distribution</p><div id="community-rarity-rows"></div><p class="rarity-empty" id="community-rarity-empty">Waiting for pull history.</p></div></article>
     <article class="counter-card"><span class="counter-label">Quests Completed</span><strong data-community-count="quests_completed">—</strong><span class="counter-hint">Daily &amp; weekly quests</span></article>
-    <article class="counter-card"><span class="counter-label">Cards Recycled</span><strong data-community-count="cards_recycled">—</strong><span class="counter-hint">A new life as petals</span></article>
+    <article class="counter-card"><span class="counter-label">Petals Earned</span><strong data-community-count="petals_earned">—</strong><span class="counter-hint">Rewards across the community</span></article>
     <article class="counter-card"><span class="counter-label">Daily Claims</span><strong data-community-count="daily_claims">—</strong><span class="counter-hint">Showing up, together</span></article>
   </div>
   <p class="counter-footnote">Across NamjoonBot · Recorded activity · Live totals · Updates about every 5 seconds. Hover, focus or tap Cards Pulled for rarity percentages.</p>
@@ -486,7 +486,9 @@ function renderCommunityCounts() {
   if (!totals) return;
   communityPeriod.disabled = false;
   document.querySelectorAll('[data-community-count]').forEach(el => {
-    updateCommunityCounter(el,totals[el.dataset.communityCount] || 0);
+    const value = totals[el.dataset.communityCount];
+    if (value == null) {el.textContent = '—'; delete el.dataset.counterText; return;}
+    updateCommunityCounter(el,value);
   });
   const periodLabels = {week:'Last 7 days',month:'Last 30 days',lifetime:'Lifetime'};
   document.getElementById('community-count-status').textContent = periodLabels[communityPeriod.value] + ' · Across the whole community';
