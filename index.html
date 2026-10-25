@@ -130,6 +130,14 @@ section{padding:70px 0}.section-head{display:flex;align-items:end;justify-conten
 .counter-period select:disabled{opacity:.55;cursor:wait}.counter-period option{background:#281f35;color:#f4effb}
 @media(prefers-reduced-motion:reduce){.counter-period select{transition:none}}
 
+
+.counter-readable{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+.flip-strip{display:inline-flex;align-items:center;gap:2px;max-width:100%;font-variant-numeric:tabular-nums;letter-spacing:0}
+.flip-digit{position:relative;display:inline-block;width:.65em;line-height:1.25;perspective:180px;overflow:hidden;border-radius:4px;background:linear-gradient(#c5a4f40b 49%,#0003 50%,#ffffff05 52%);box-shadow:inset 0 0 0 1px #c5a4f410}
+.flip-face{display:block;text-align:center;transform-origin:50% 50%;backface-visibility:hidden}
+.flip-outgoing{position:absolute;inset:0;pointer-events:none}
+.flip-separator{display:inline-block;width:.25em;line-height:1.25}
+@media(max-width:480px){.flip-strip{gap:1px}.counter-card strong:has(.flip-strip){font-size:clamp(18px,5.6vw,26px)}}
 </style>
 </head>
 <body>
@@ -152,7 +160,7 @@ section{padding:70px 0}.section-head{display:flex;align-items:end;justify-conten
     <article class="counter-card"><span class="counter-label">Cards Recycled</span><strong data-community-count="cards_recycled">—</strong><span class="counter-hint">A new life as petals</span></article>
     <article class="counter-card"><span class="counter-label">Daily Claims</span><strong data-community-count="daily_claims">—</strong><span class="counter-hint">Showing up, together</span></article>
   </div>
-  <p class="counter-footnote">Across NamjoonBot · Recorded activity · Totals refresh every minute. Hover, focus or tap Cards Pulled for rarity percentages.</p>
+  <p class="counter-footnote">Across NamjoonBot · Recorded activity · Live totals · Updates about every 5 seconds. Hover, focus or tap Cards Pulled for rarity percentages.</p>
 </div>
 <div class="live-grid" style="margin-top:22px">
 <article class="panel live-panel rankings-panel"><div class="eyebrow">Community rankings</div><h3>Meet the collectors.</h3><label for="board-category" class="small-label">Leaderboard category</label><select id="board-category" disabled><option value="coins">Total coins earned</option><option value="packs">Packs opened</option><option value="unique">Unique cards collected</option><option value="mythicals">Mythicals pulled</option><option value="streak">Longest daily streak</option><option value="gifted">Cards gifted</option><option value="traded">Cards traded</option></select><div id="live-board"><p>Rankings will appear here once the live feed is connected.</p></div></article>
@@ -430,13 +438,55 @@ function freshness() {
 
 const communityPeriod = document.getElementById('community-count-period');
 const rarityLabels = {common:'Common',uncommon:'Uncommon',rare:'Rare',legendary:'Legendary',mythical:'Mythical',secret_mythical:'Secret Mythical'};
+
+function updateCommunityCounter(el, value) {
+  const text = number(value);
+  const period = communityPeriod.value;
+  if (el.dataset.counterText === text && el.dataset.counterPeriod === period) return;
+  const previous = el.dataset.counterText;
+  const animate = previous !== undefined && el.dataset.counterPeriod === period
+    && !reduceMotion.matches && !document.hidden;
+  (el._counterAnimations || []).forEach(animation => animation.cancel());
+  el._counterAnimations = [];
+  el.dataset.counterText = text;
+  el.dataset.counterPeriod = period;
+  el.replaceChildren();
+  const readable = node('span',text); readable.className = 'counter-readable';
+  el.append(readable);
+  const strip = node('span'); strip.className = 'flip-strip'; strip.setAttribute('aria-hidden','true');
+  [...text].forEach((character,index) => {
+    const slot = node('span'); slot.className = /[0-9]/.test(character) ? 'flip-digit' : 'flip-separator';
+    const next = node('span',character); next.className = 'flip-face'; slot.append(next);
+    const old = previous?.[previous.length - text.length + index];
+    if (animate && old !== character && /[0-9]/.test(character) && typeof next.animate === 'function') {
+      const outgoing = node('span',old && /[0-9]/.test(old) ? old : '');
+      outgoing.className = 'flip-face flip-outgoing'; slot.append(outgoing);
+      const options = {duration:580,easing:'cubic-bezier(.22,.65,.28,1)',fill:'both'};
+      const incoming = next.animate([
+        {transform:'translateY(-45%) rotateX(75deg)',opacity:0,filter:'blur(3px)'},
+        {transform:'translateY(-8%) rotateX(18deg)',opacity:.85,filter:'blur(1px)',offset:.55},
+        {transform:'translateY(0) rotateX(0deg)',opacity:1,filter:'blur(0px)'}
+      ],options);
+      const departing = outgoing.animate([
+        {transform:'translateY(0) rotateX(0deg)',opacity:1,filter:'blur(0px)'},
+        {transform:'translateY(45%) rotateX(-75deg)',opacity:0,filter:'blur(3px)'}
+      ],options);
+      el._counterAnimations.push(incoming,departing);
+      departing.finished.then(() => {outgoing.remove(); departing.cancel();}).catch(() => {});
+      incoming.finished.then(() => incoming.cancel()).catch(() => {});
+    }
+    strip.append(slot);
+  });
+  el.append(strip);
+}
+
 function renderCommunityCounts() {
   const stats = latestStats?.community_stats;
   const totals = stats?.periods?.[communityPeriod.value];
   if (!totals) return;
   communityPeriod.disabled = false;
   document.querySelectorAll('[data-community-count]').forEach(el => {
-    el.textContent = number(totals[el.dataset.communityCount] || 0);
+    updateCommunityCounter(el,totals[el.dataset.communityCount] || 0);
   });
   const periodLabels = {week:'Last 7 days',month:'Last 30 days',lifetime:'Lifetime'};
   document.getElementById('community-count-status').textContent = periodLabels[communityPeriod.value] + ' · Across the whole community';
