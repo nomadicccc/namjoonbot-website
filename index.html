@@ -102,6 +102,9 @@ section{padding:70px 0}.section-head{display:flex;align-items:end;justify-conten
 .spoiler-note{margin:-12px 0 18px}.timeline-hint{margin-top:10px}
 @media(max-width:640px){.timeline-section .section-head{flex-direction:column;gap:12px}.pull-item{flex-basis:285px;padding:17px;gap:12px}.pull-art{width:85px}.pull-hidden{min-height:119px}.spoiler-note{margin-top:-10px}}
 @media(prefers-reduced-motion:reduce){.switch-track,.switch-track:before{transition:none}}
+.player-identity{display:inline-flex;align-items:center;gap:5px 7px;flex-wrap:wrap;min-width:0}
+.player-name{overflow-wrap:anywhere;min-width:0}
+.supporter-pill{display:inline-flex;align-items:center;gap:3px;flex-shrink:0;white-space:nowrap;border-radius:999px;padding:2px 8px;background:linear-gradient(115deg,#63418e,#82529c);border:1px solid #d6b1f552;color:#fff0ff;font-size:10px;font-weight:700;line-height:1.6;letter-spacing:.15px}
 </style>
 </head>
 <body>
@@ -245,7 +248,17 @@ function avatar(player) {
 }
 function playerCell(player) {
   const cell = node('span'); cell.className = 'player-cell';
-  cell.append(avatar(player),node('span',player.name || 'Collector')); return cell;
+  const identity = node('span'); identity.className = 'player-identity';
+  const name = node('span',player.name || 'Collector'); name.className = 'player-name';
+  identity.append(name);
+  if (player.supporter === true) {
+    const badge = node('span'); badge.className = 'supporter-pill';
+    const heart = node('span','\u2661'); heart.setAttribute('aria-hidden','true');
+    badge.append(heart,document.createTextNode(' Supporter'));
+    badge.title = 'Supports NamjoonBot';
+    identity.append(badge);
+  }
+  cell.append(avatar(player),identity); return cell;
 }
 function renderBoard() {
   if (!latestStats) return;
