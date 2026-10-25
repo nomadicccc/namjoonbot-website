@@ -105,6 +105,23 @@ section{padding:70px 0}.section-head{display:flex;align-items:end;justify-conten
 .player-identity{display:inline-flex;align-items:center;gap:5px 7px;flex-wrap:wrap;min-width:0}
 .player-name{overflow-wrap:anywhere;min-width:0}
 .supporter-pill{display:inline-flex;align-items:center;gap:3px;flex-shrink:0;white-space:nowrap;border-radius:999px;padding:2px 8px;background:linear-gradient(115deg,#63418e,#82529c);border:1px solid #d6b1f552;color:#fff0ff;font-size:10px;font-weight:700;line-height:1.6;letter-spacing:.15px}
+
+.community-counters{margin-top:25px;padding:25px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(120deg,#281e3544,#1d1827)}
+.counter-heading{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:20px}.counter-heading h3{font-size:19px}.counter-heading p{color:var(--muted);font-size:12px;margin-top:5px}
+.counter-period{display:grid;gap:5px;flex-shrink:0;color:var(--muted);font-size:11px}.counter-period select{width:auto;min-width:140px;margin:0;padding:8px 12px}
+.counter-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.counter-card{min-width:0;position:relative;padding:20px 16px;border:1px solid #c5a4f420;border-radius:12px;background:#14111b66}
+.counter-label{display:block;font-size:12px;color:var(--muted)}.counter-card strong{display:block;font-family:'Space Grotesk',sans-serif;font-size:clamp(23px,2.8vw,35px);letter-spacing:-1px;line-height:1.3;margin:9px 0;color:var(--ink);overflow-wrap:anywhere}
+.counter-hint{display:block;font-size:10px;color:#c5a4f4}.counter-footnote{font-size:10px;color:var(--muted);margin-top:15px}
+.counter-card details{border:0;padding:0}.counter-card summary{display:block;list-style:none;cursor:pointer}.counter-card summary::-webkit-details-marker{display:none}.counter-card summary:focus-visible{outline:2px solid var(--purple);outline-offset:5px;border-radius:4px}
+.rarity-tooltip{display:none;position:absolute;left:0;top:calc(100% - 2px);width:320px;max-width:calc(100vw - 72px);padding:20px;z-index:9;border:1px solid #c5a4f45c;border-radius:12px;background:#251c32;box-shadow:0 12px 35px #0007}
+.counter-card details[open]+.rarity-tooltip,.counter-card:focus-within>.rarity-tooltip{display:block}
+@media(hover:hover){.counter-card:hover>.rarity-tooltip{display:block}}
+.counter-card[data-dismissed]>.rarity-tooltip{display:none}
+.rarity-tooltip h4{margin:0;font-size:14px}.rarity-tooltip p{font-size:10px;color:var(--muted);margin:5px 0 12px}
+.rarity-row{display:grid;grid-template-columns:1fr auto;gap:5px 12px;font-size:11px;margin:10px 0}.rarity-row .rarity-bar{grid-column:1/-1;height:3px;border-radius:3px;background:#ffffff12;overflow:hidden}.rarity-fill{height:100%;background:linear-gradient(90deg,#9970d1,#e5bdf5);border-radius:3px}
+@media(max-width:900px){.counter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.community-counters{padding:17px}.counter-heading{align-items:start;flex-direction:column;gap:12px}.counter-heading h3{font-size:17px}.counter-card{padding:14px 11px}.counter-period{width:100%}.counter-period select{width:100%}.rarity-tooltip{max-width:calc(100vw - 70px)}}
+
 </style>
 </head>
 <body>
@@ -117,6 +134,18 @@ section{padding:70px 0}.section-head{display:flex;align-items:end;justify-conten
 <section id="live" class="wrap">
 <div class="section-head"><div><div class="eyebrow" style="margin-bottom:12px">From the bot</div><h2>The community, in motion.</h2><p>Player rankings, events, and the goals we’re working towards together.</p></div></div>
 <p id="live-status" class="live-status" role="status">Live statistics are being connected. You can check /leaderboard and the event shop in Discord in the meantime.</p>
+
+<div class="community-counters" aria-labelledby="community-count-title">
+  <div class="counter-heading"><div><h3 id="community-count-title">A little community. A lot of collecting.</h3><p id="community-count-status">Community totals will appear when the bot feed updates.</p></div>
+  <label class="counter-period">Time period<select id="community-count-period" disabled><option value="week">Last 7 days</option><option value="month">Last 30 days</option><option value="lifetime" selected>Lifetime</option></select></label></div>
+  <div class="counter-grid">
+    <article class="counter-card"><details id="card-pull-details"><summary aria-controls="community-rarity-tooltip"><span class="counter-label">Cards pulled</span><strong data-community-count="cards_pulled">—</strong><span class="counter-hint">Rarity breakdown ↗</span></summary></details><div id="community-rarity-tooltip" class="rarity-tooltip" role="region" aria-label="Pulled card rarity breakdown"><h4>Inside the pulls</h4><p id="rarity-period-note">Lifetime pull distribution</p><div id="community-rarity-rows"></div><p class="rarity-empty" id="community-rarity-empty">Waiting for pull history.</p></div></article>
+    <article class="counter-card"><span class="counter-label">Quests completed</span><strong data-community-count="quests_completed">—</strong><span class="counter-hint">Daily &amp; weekly quests</span></article>
+    <article class="counter-card"><span class="counter-label">Cards recycled</span><strong data-community-count="cards_recycled">—</strong><span class="counter-hint">A new life as petals</span></article>
+    <article class="counter-card"><span class="counter-label">Daily claims</span><strong data-community-count="daily_claims">—</strong><span class="counter-hint">Showing up, together</span></article>
+  </div>
+  <p class="counter-footnote">Across NamjoonBot · Recorded activity · Totals refresh every minute. Hover, focus or tap Cards pulled for rarity percentages.</p>
+</div>
 <div class="live-grid" style="margin-top:22px">
 <article class="panel live-panel rankings-panel"><div class="eyebrow">Community rankings</div><h3>Meet the collectors.</h3><label for="board-category" class="small-label">Leaderboard category</label><select id="board-category" disabled><option value="coins">Total coins earned</option><option value="packs">Packs opened</option><option value="unique">Unique cards collected</option><option value="mythicals">Mythicals pulled</option><option value="streak">Longest daily streak</option><option value="gifted">Cards gifted</option><option value="traded">Cards traded</option></select><div id="live-board"><p>Rankings will appear here once the live feed is connected.</p></div></article>
 <article class="panel live-panel event-panel"><div class="eyebrow">Events &amp; challenges</div><h3>A little effort. A shared reward.</h3><div class="event-scroll" tabindex="0" role="region" aria-label="Event progress and Candy leaderboard"><div id="live-events"><p>Event status and community challenge progress will appear here once connected.</p></div><div class="candy-section"><div class="eyebrow">The Candy race</div><h3>Five spots. One special card.</h3><div id="candy-board"><p>The Candy leaderboard will appear here once connected.</p></div></div></div><p class="scroll-note">Scroll for the Candy leaderboard ↓</p></article>
@@ -390,10 +419,48 @@ function freshness() {
   const age = Math.max(0,Math.floor((Date.now()-Date.parse(latestStats.updated_at))/1000));
   statusNode.textContent = (!connectionOk ? 'Reconnecting' : age > 15 ? 'Updates delayed' : 'Connected') + ' · Last refreshed ' + age + ' seconds ago';
 }
+
+const communityPeriod = document.getElementById('community-count-period');
+const rarityLabels = {common:'Common',uncommon:'Uncommon',rare:'Rare',event:'Event',legendary:'Legendary',mythical:'Mythical',secret_mythical:'Secret Mythical'};
+function renderCommunityCounts() {
+  const stats = latestStats?.community_stats;
+  const totals = stats?.periods?.[communityPeriod.value];
+  if (!totals) return;
+  communityPeriod.disabled = false;
+  document.querySelectorAll('[data-community-count]').forEach(el => {
+    el.textContent = number(totals[el.dataset.communityCount] || 0);
+  });
+  const periodLabels = {week:'Last 7 days',month:'Last 30 days',lifetime:'Lifetime'};
+  document.getElementById('community-count-status').textContent = periodLabels[communityPeriod.value] + ' · Across the whole community';
+  document.getElementById('rarity-period-note').textContent = periodLabels[communityPeriod.value] + ' · Original pulls, including cards later traded or recycled.';
+  const rows = document.getElementById('community-rarity-rows');
+  rows.replaceChildren();
+  const total = Number(totals.cards_pulled) || 0;
+  Object.entries(rarityLabels).forEach(([rarity,label]) => {
+    const count = Number(totals.rarities?.[rarity]) || 0;
+    const percent = total ? count / total * 100 : 0;
+    const row = node('div'); row.className = 'rarity-row';
+    row.append(node('span',label),node('span',number(count) + ' · ' + percent.toFixed(1) + '%'));
+    const bar = node('div'); bar.className = 'rarity-bar'; bar.setAttribute('aria-hidden','true');
+    const fill = node('div'); fill.className = 'rarity-fill'; fill.style.width = Math.min(100,Math.max(0,percent)) + '%';
+    bar.append(fill); row.append(bar); rows.append(row);
+  });
+  document.getElementById('community-rarity-empty').hidden = total > 0;
+  document.getElementById('community-rarity-empty').textContent = 'No recorded pulls in this period yet.';
+}
+communityPeriod.addEventListener('change',renderCommunityCounts);
+const pullCounterCard = document.getElementById('card-pull-details').closest('.counter-card');
+pullCounterCard.addEventListener('mouseleave',() => {delete pullCounterCard.dataset.dismissed;});
+pullCounterCard.querySelector('summary').addEventListener('click',() => {delete pullCounterCard.dataset.dismissed;});
+pullCounterCard.querySelector('summary').addEventListener('focus',() => {delete pullCounterCard.dataset.dismissed;});
+document.getElementById('card-pull-details').addEventListener('keydown',event => {
+  if(event.key === 'Escape') {event.currentTarget.open = false; event.currentTarget.closest('.counter-card').dataset.dismissed = 'true'; event.currentTarget.querySelector('summary').blur();}
+});
+
 function acceptStats(data) {
   if (!data || !data.leaderboards || !Array.isArray(data.events) || !Number.isFinite(Date.parse(data.updated_at))) throw new Error('Invalid feed');
   latestStats = data; connectionOk = true; categoryNode.disabled = false;
-  renderBoard(); renderEvents(); renderPulls(); syncGallery(data.standard_cards); freshness();
+  renderBoard(); renderEvents(); renderPulls(); renderCommunityCounts(); syncGallery(data.standard_cards); freshness();
 }
 categoryNode.addEventListener('change',renderBoard);
 const apiBase = siteSettings.statsApiBase.replace(/\/$/,'');
