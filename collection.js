@@ -13,6 +13,28 @@ let requestVersion = 0, inventoryLoaded = false, profileData = null;
 let mediaVersion = 0, imageURLs = new Set(), profileURLs = new Set();
 let token = sessionStorage.getItem('namjoon_session') || '';
 let catalogueReady = false, loginConfigured = false;
+let showCatalogueSpoilers = false;
+function catalogueSpoilerHidden(card) {
+  return pageKind === 'catalogue' && !showCatalogueSpoilers &&
+    (card.type === 'secret' || (card.rarities || []).includes('secret_mythical'));
+}
+function catalogueSearchText(card) {
+  return catalogueSpoilerHidden(card) ? 'secret mythical card' : (card.name+' '+card.id).toLowerCase();
+}
+const catalogueSpoilerSwitch = $('show-catalogue-spoilers');
+if(catalogueSpoilerSwitch) {
+  catalogueSpoilerSwitch.checked = false;
+  catalogueSpoilerSwitch.addEventListener('change',() => {
+    showCatalogueSpoilers = catalogueSpoilerSwitch.checked;
+    modal.close(); modalBody.replaceChildren();
+    if(catalogueReady) renderCatalogue();
+  });
+  window.addEventListener('pageshow',() => {
+    catalogueSpoilerSwitch.checked = false; showCatalogueSpoilers = false;
+    modal.close(); modalBody.replaceChildren();
+    if(catalogueReady) renderCatalogue();
+  });
+}
 let collectionData=null, collectionPage=1, collectionPages=1, wishData=null;
 let collectionRequest=0, wishRequest=0;
 function el(tag,text,className) {const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(className)n.className=className;return n;}
@@ -45,6 +67,11 @@ function applyRarity(element,rarity){
 }
 function imagePlaceholder(){const p=el('div',undefined,'artwrap');return p;}
 function openDetails(card,isInventory,source) {
+  if(!isInventory && catalogueSpoilerHidden(card)) {
+    modalBody.replaceChildren(el('h2','Secret Mythical card'),el('p','Turn on “Show spoilers” above the catalogue to reveal discovered card names and artwork.'));
+    modal.showModal();
+    return;
+  }
   modalBody.replaceChildren(el('h2',card.name));
   if(source){const image=el('img');image.src=source;image.alt=card.name;image.draggable=false;if(isInventory){const stage=el('div',undefined,'interactive-card-stage');applyRarity(stage,card.rarity);stage.append(image);modalBody.append(stage);}else modalBody.append(image);}
   if(isInventory){
@@ -63,6 +90,19 @@ function openDetails(card,isInventory,source) {
   modal.showModal();
 }
 function cardTile(card,isInventory){
+  if(!isInventory && catalogueSpoilerHidden(card)) {
+    const article=el('article',undefined,'card catalogue-card spoiler-hidden');
+    const button=el('button',undefined,'card-button');button.type='button';
+    button.setAttribute('aria-label','Secret Mythical card. Spoilers hidden.');
+    const art=el('div',undefined,'artwrap spoiler-placeholder');
+    const mark=el('span','✦','spoiler-mark');mark.setAttribute('aria-hidden','true');
+    art.append(mark,el('span','Unrevealed','spoiler-caption'));
+    const info=el('div',undefined,'card-info');
+    info.append(el('span','Secret Mythical','tag'),el('h3','A secret to discover'),el('p','Turn on spoilers to reveal this card.'));
+    button.append(art,info);article.append(button);
+    button.onclick=()=>openDetails(card,false,null);
+    return {article,art,setImage:()=>{}};
+  }
   const article=el('article',undefined,'card'+(isInventory?'':' catalogue-card'));
   const button=el('button',undefined,'card-button');button.type='button';button.setAttribute('aria-label','View '+card.name);
   const art=imagePlaceholder(),info=el('div',undefined,'card-info');
@@ -90,7 +130,7 @@ async function loadCatalogue(){
 }
 function renderCatalogue(){
   const query=$('search').value.trim().toLowerCase(),member=$('member').value,set=$('set').value,rarity=$('rarity').value;
-  const matches=allCards.filter(card=>(!query || (card.name+' '+card.id).toLowerCase().includes(query))&&(member==='all'||card.members.includes(member))&&(set==='all'||card.set===set)&&(rarity==='all'||card.rarities.includes(rarity)));
+  const matches=allCards.filter(card=>(!query || catalogueSearchText(card).includes(query))&&(member==='all'||card.members.includes(member))&&(set==='all'||card.set===set)&&(rarity==='all'||card.rarities.includes(rarity)));
   pages=Math.max(1,Math.ceil(matches.length/24));currentPage=Math.min(currentPage,pages);
   grid.replaceChildren();matches.slice((currentPage-1)*24,currentPage*24).forEach(card=>grid.append(cardTile(card,false).article));
   if(!matches.length)noResults('No cards match these filters.');
