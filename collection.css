@@ -36,3 +36,16 @@ body.view-profile main.wrap{max-width:732px}#profile{width:100%;margin-inline:au
   .artwrap[data-rarity]::after,.interactive-card-stage[data-rarity]::after{display:none}
   .artwrap[data-rarity] img,.interactive-card-stage[data-rarity] img{transition:none}
 }
+
+/* Catalogue spoilers are opt-in; inventory and profile cards keep their own display. */
+body[data-page="catalogue"] .catalogue-spoiler-toggle{display:inline-flex;align-items:center;gap:10px;position:relative;min-height:44px;cursor:pointer;font-size:13px;color:var(--muted)}
+.catalogue-spoiler-toggle input{position:absolute;left:0;top:9px;width:42px;height:26px;margin:0;opacity:0;cursor:pointer}
+.catalogue-switch-track{display:block;width:42px;height:26px;border:1px solid #ffffff35;background:#30263e;border-radius:20px;padding:3px;transition:background .2s}
+.catalogue-switch-track:before{content:"";display:block;width:18px;height:18px;border-radius:50%;background:#c7bbd6;transition:transform .2s}
+.catalogue-spoiler-toggle input:checked+.catalogue-switch-track{background:var(--purple);border-color:var(--purple)}
+.catalogue-spoiler-toggle input:checked+.catalogue-switch-track:before{transform:translateX(16px);background:#24182f}
+.catalogue-spoiler-toggle input:focus-visible+.catalogue-switch-track{outline:3px solid var(--purple);outline-offset:4px}
+.catalogue-spoiler-note{font-size:12px;max-width:540px;margin:4px 0 0}
+.spoiler-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;border:1px solid #c5a4f435;background:radial-gradient(ellipse at 50% 35%,#c5a4f41c,transparent 70%),#21182c;color:var(--purple)}
+.spoiler-mark{font-size:42px;line-height:1}.spoiler-caption{font-size:10px;letter-spacing:1.6px;text-transform:uppercase}
+@media(prefers-reduced-motion:reduce){.catalogue-switch-track,.catalogue-switch-track:before{transition:none}}
