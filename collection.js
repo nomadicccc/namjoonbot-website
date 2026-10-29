@@ -40,7 +40,7 @@ let collectionRequest=0, wishRequest=0;
 function el(tag,text,className) {const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(className)n.className=className;return n;}
 function status(message,error=false){statusEl.textContent=message;statusEl.classList.toggle('error',error);}
 function clearURLs(urls){urls.forEach(url=>URL.revokeObjectURL(url));urls.clear();}
-function clearSession(){sessionStorage.removeItem('namjoon_session');token='';profileData=null;inventoryLoaded=false;requestVersion++;mediaVersion++;collectionRequest++;wishRequest++;collectionData=null;wishData=null;$('collection-cards')?.replaceChildren();$('collection-summary')?.replaceChildren();$('wish-cards')?.replaceChildren();clearURLs(imageURLs);clearURLs(profileURLs);grid.replaceChildren();$('profile')?.replaceChildren();$('account-content').hidden=true;$('account-actions').hidden=true;$('login-panel').hidden=false;$('login').disabled=!loginConfigured;modal.close();}
+function clearSession(){window.clearBinderBeta?.();sessionStorage.removeItem('namjoon_session');token='';profileData=null;inventoryLoaded=false;requestVersion++;mediaVersion++;collectionRequest++;wishRequest++;collectionData=null;wishData=null;$('collection-cards')?.replaceChildren();$('collection-summary')?.replaceChildren();$('wish-cards')?.replaceChildren();clearURLs(imageURLs);clearURLs(profileURLs);grid.replaceChildren();$('profile')?.replaceChildren();$('account-content').hidden=true;$('account-actions').hidden=true;$('login-panel').hidden=false;$('login').disabled=!loginConfigured;modal.close();}
 async function api(path,{method='GET',body,privateRequest=false,blob=false}={}) {
   if(!API) throw new Error('The live service has not been connected yet.');
   const headers={};
@@ -190,15 +190,16 @@ async function loadProfile(){
   const version=++requestVersion;
   status('Loading your profile…');
   try{const data=await api('/api/me',{privateRequest:true});if(version!==requestVersion || !token)return;
-    profileData=data;$('login-panel').hidden=true;$('account-actions').hidden=false;$('account-content').hidden=false;$('signed-in').textContent='Signed in as '+data.player.name;
+    profileData=data;window.checkBinderBetaAccess?.();$('login-panel').hidden=true;$('account-actions').hidden=false;$('account-content').hidden=false;$('signed-in').textContent='Signed in as '+data.player.name;
     await renderProfile(data);if(version===requestVersion && token)status('Your current bot profile · Use /profile in Discord to customise it.');
   }catch(error){status(error.message,true);}
 }
 function selectTab(next){
   view=next;document.body.classList.toggle('view-profile',next==='profile');
-  for(const name of ['profile','inventory','collections','wishlist']){
+  for(const name of ['profile','inventory','collections','wishlist','binders']){
     $(name).hidden=name!==next;const button=$(name+'-tab');button.classList.toggle('active',name===next);button.setAttribute('aria-selected',String(name===next));
   }
+  if(next==='binders')window.openBinderBeta?.();
   if(next==='inventory'&&!inventoryLoaded)loadInventory();
   if(next==='collections'){if(collectionData)renderCollections();else loadCollections();}
   if(next==='wishlist'){if(wishData)renderWishes();else loadWishes();}
@@ -251,7 +252,7 @@ else{
   document.body.classList.add('view-profile');
   $('collections-tab').addEventListener('click',()=>selectTab('collections'));
   $('wishlist-tab').addEventListener('click',()=>selectTab('wishlist'));
-  const tabs=['profile','inventory','collections','wishlist'].map(name=>$(name+'-tab'));
+  const tabs=['profile','inventory','collections','wishlist','binders'].map(name=>$(name+'-tab'));
   tabs.forEach((tab,index)=>tab.addEventListener('keydown',event=>{if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();const next=tabs[(index+(event.key==='ArrowRight'?1:tabs.length-1))%tabs.length];next.focus();next.click();}}));
   bootstrapAccount();
 }
@@ -370,3 +371,4 @@ document.addEventListener('pointerout',event=>{
 });
 window.addEventListener('blur',()=>document.querySelectorAll('.showcase-hover').forEach(resetShowcaseTilt));
 showcaseMotion.addEventListener('change',()=>document.querySelectorAll('.showcase-hover').forEach(resetShowcaseTilt));
+
