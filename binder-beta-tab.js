@@ -47,7 +47,7 @@ window.openBinderBeta=async function(){
     const bootstrap='<script>('+binderAssetBootstrap.toString()+')('+json+');<\/script>';
     const frame=document.createElement('iframe');frame.title='NamjoonBot binder editor';frame.className='binder-beta-frame';frame.referrerPolicy='no-referrer';
     binderBetaFrame=frame;frame.srcdoc=data.html.replace('<!--BINDER_BETA_RUNTIME-->',bootstrap);$('binder-beta-host').replaceChildren(frame);$('expand-binder-beta').hidden=false;
-    $('binder-beta-status').textContent='Supporter beta · browser-local saves · demo card catalogue.';
+    $('binder-beta-status').textContent='Supporter beta · browser-local saves.';
   }catch(error){if(version===binderBetaVersion&&token===sent)$('binder-beta-status').textContent=error.message;}
   finally{if(version===binderBetaVersion)binderBetaOpening=false;}
 };
