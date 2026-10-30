@@ -7,7 +7,7 @@ function binderAssetBootstrap(runtime){
   const srcDescriptor=Object.getOwnPropertyDescriptor(HTMLImageElement.prototype,'src');
   function deny(){parent.postMessage({type:'binder-beta-expired'},runtime.siteOrigin);}
   window.binderBetaAsset=async function(src){
-    const match=/^assets\/(cards|frames)\/([a-zA-Z0-9_-]+\.webp)$/.exec(String(src));
+    const match=/^assets\/(cards|frames|stickers)\/([a-zA-Z0-9_-]+\.(?:webp|png))$/.exec(String(src));
     if(!match)return src;
     if(!cache.has(src)){
       const request=fetch(runtime.apiBase+'/api/me/binder-beta/assets/'+match[1]+'/'+match[2],{headers:{Authorization:'Bearer '+runtime.session},credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer'}).then(async response=>{if(response.status===401||response.status===403){deny();throw Error('Binder access expired');}if(!response.ok)throw Error('Card artwork unavailable');return URL.createObjectURL(await response.blob());}).catch(error=>{cache.delete(src);throw error;});
@@ -17,7 +17,7 @@ function binderAssetBootstrap(runtime){
   };
   Object.defineProperty(HTMLImageElement.prototype,'src',{...srcDescriptor,set(value){
     const src=String(value);wanted.set(this,src);
-    if(/^assets\/(cards|frames)\/[a-zA-Z0-9_-]+\.webp$/.test(src)){
+    if(/^assets\/(cards|frames|stickers)\/[a-zA-Z0-9_-]+\.(?:webp|png)$/.test(src)){
       window.binderBetaAsset(src).then(url=>{if(wanted.get(this)===src)srcDescriptor.set.call(this,url);}).catch(()=>{this.alt='Artwork unavailable — refresh or sign in again';});
     }else srcDescriptor.set.call(this,value);
   }});
