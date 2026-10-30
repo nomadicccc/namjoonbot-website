@@ -66,6 +66,35 @@ function applyRarity(element,rarity){
   if(['mythical','secret_mythical'].includes(key))element.dataset.rarity=key;
 }
 function imagePlaceholder(){const p=el('div',undefined,'artwrap');return p;}
+
+async function showTopCollectors(card) {
+  const section=el('section',undefined,'top-collectors');
+  section.setAttribute('aria-label','Top collectors');
+  section.append(el('span','THE COLLECTION CLUB','collectors-eyebrow'),el('h3','Top Collectors'),el('p','Copies currently in their inventories across all variants. This is current ownership, not lifetime pulls.','collectors-note'));
+  const content=el('div','Loading collectors…','collectors-content');content.setAttribute('aria-live','polite');section.append(content);modalBody.append(section);
+  async function load() {
+    content.replaceChildren(el('p','Loading collectors…','muted'));
+    try {
+      const data=await api('/api/catalogue/'+encodeURIComponent(card.id)+'/collectors');
+      if(!section.isConnected)return;
+      const list=el('ol',undefined,'collectors-list');
+      for(const [index,collector] of data.collectors.entries()){
+        const row=el('li'),rank=el('span',String(index+1).padStart(2,'0'),'collector-rank'),identity=el('div',undefined,'collector-identity');
+        if(collector.avatar){const avatar=el('img');avatar.src=collector.avatar;avatar.alt='';avatar.loading='lazy';avatar.className='collector-avatar';avatar.onerror=()=>avatar.remove();row.append(avatar);}
+        identity.append(el('span',collector.name,'collector-name'));
+        if(collector.supporter)identity.append(el('span','♡ Supporter','collector-supporter'));
+        row.prepend(rank);row.append(identity,el('span',fmt(collector.copies)+(collector.copies===1?' copy':' copies'),'collector-count'));list.append(row);
+      }
+      content.replaceChildren(data.collectors.length?list:el('p','No copies are currently held in player inventories.','muted'));
+    }catch{
+      if(!section.isConnected)return;
+      const retry=el('button','Try again','btn');retry.type='button';retry.onclick=load;
+      content.replaceChildren(el('p','Collector rankings are temporarily unavailable.','muted'),retry);
+    }
+  }
+  await load();
+}
+
 function openDetails(card,isInventory,source) {
   if(!isInventory && catalogueSpoilerHidden(card)) {
     modalBody.replaceChildren(el('h2','Secret Mythical card'),el('p','Turn on “Show spoilers” above the catalogue to reveal discovered card names and artwork.'));
@@ -86,6 +115,7 @@ function openDetails(card,isInventory,source) {
     const list=el('div',undefined,'rarity-list');
     card.rarities.forEach(rarity=>list.append(el('span',label(rarity)+' · '+fmt(card.printed_by_rarity[rarity] || 0)+' printed','tag')));
     modalBody.append(list,el('p','Artwork preview. Borders and variant details depend on the rarity and card you pull.'));
+    void showTopCollectors(card);
   }
   modal.showModal();
 }
