@@ -37,7 +37,7 @@
       },
       "theme": "halloween",
       "badge": "https://cdn.discordapp.com/emojis/1546655301573414922.png?size=128&quality=lossless",
-      "description": "Fangs out. Candy collected. A little autumn mischief, together.",
+      "description": "Fangs Out -- A vampire themed Halloween event & collection",
       "banners": [
         {
           "name": "Like Animals",
@@ -95,7 +95,7 @@
         }
       ],
       "limitedCard": {
-        "name": "OT7 Â· Like Animals",
+        "name": "OT7 \u00b7 Like Animals",
         "revealed": false,
         "image": null,
         "editionSize": 5
