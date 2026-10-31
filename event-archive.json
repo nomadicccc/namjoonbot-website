@@ -1,0 +1,24 @@
+{
+  "events": [
+    {
+      "id": "halloween_2026",
+      "name": "Like Animals",
+      "edition": "Halloween 2026",
+      "status": "pending",
+      "startsAt": "2026-10-12T00:00:00+09:00",
+      "earningEndsAt": "2026-11-02T00:00:00+09:00",
+      "shopEndsAt": "2026-11-04T00:00:00+09:00",
+      "participants": null,
+      "candyEarned": null,
+      "cardsCollected": null,
+      "quest": { "name": "Community Candy Challenge", "total": null, "goal": null, "unit": "Candy" },
+      "cosmetics": [
+        { "type": "Titles", "items": ["Like Animals", "Fangs Out", "You're In Danger"] },
+        { "type": "Profile Banners", "items": ["Like Animals", "Blood Moon Phases", "Wild Moon"] },
+        { "type": "Toploader", "items": ["Bite Me"] },
+        { "type": "Badge", "items": ["Halloween 2026"] },
+        { "type": "Photocards", "items": ["Seven Like Animals member photocards", "Secret OT7 reward photocard"] }
+      ]
+    }
+  ]
+}
