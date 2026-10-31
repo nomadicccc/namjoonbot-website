@@ -11,14 +11,95 @@
       "participants": null,
       "candyEarned": null,
       "cardsCollected": null,
-      "quest": { "name": "Community Candy Challenge", "total": null, "goal": null, "unit": "Candy" },
-      "cosmetics": [
-        { "type": "Titles", "items": ["Like Animals", "Fangs Out", "You're In Danger"] },
-        { "type": "Profile Banners", "items": ["Like Animals", "Blood Moon Phases", "Wild Moon"] },
-        { "type": "Toploader", "items": ["Bite Me"] },
-        { "type": "Badge", "items": ["Halloween 2026"] },
-        { "type": "Photocards", "items": ["Seven Like Animals member photocards", "Secret OT7 reward photocard"] }
-      ]
+      "quest": {
+        "name": "Community Candy Challenge",
+        "total": null,
+        "goal": 35000,
+        "unit": "Candy",
+        "milestones": [
+          {
+            "percent": 25,
+            "reward": "Random Halloween card + 3,000 Bora Coins"
+          },
+          {
+            "percent": 50,
+            "reward": "Bite Me toploader + 150 Smeraldo Petals"
+          },
+          {
+            "percent": 75,
+            "reward": "2 Signature Scents + 2 Bias Bouquets + 3 Lucky Petals"
+          },
+          {
+            "percent": 100,
+            "reward": "Choose an unsigned Halloween member + 5,000 Bora Coins"
+          }
+        ]
+      },
+      "theme": "halloween",
+      "badge": "https://cdn.discordapp.com/emojis/1546655301573414922.png?size=128&quality=lossless",
+      "description": "Fangs out. Candy collected. A little autumn mischief, together.",
+      "banners": [
+        {
+          "name": "Like Animals",
+          "image": "./assets/event-archive/halloween-2026/banner-1.webp"
+        },
+        {
+          "name": "Blood Moon Phases",
+          "image": "./assets/event-archive/halloween-2026/banner-2.webp"
+        },
+        {
+          "name": "Wild Moon",
+          "image": "./assets/event-archive/halloween-2026/banner-3.webp"
+        }
+      ],
+      "titles": [
+        "Like Animals",
+        "Fangs Out",
+        "You're In Danger",
+        "Sweeter than Sweet"
+      ],
+      "cards": [
+        {
+          "name": "RM",
+          "image": "./assets/event-archive/halloween-2026/rm.webp"
+        },
+        {
+          "name": "Jin",
+          "image": "./assets/event-archive/halloween-2026/jin.webp"
+        },
+        {
+          "name": "SUGA",
+          "image": "./assets/event-archive/halloween-2026/suga.webp"
+        },
+        {
+          "name": "j-hope",
+          "image": "./assets/event-archive/halloween-2026/jhope.webp"
+        },
+        {
+          "name": "Jimin",
+          "image": "./assets/event-archive/halloween-2026/jimin.webp"
+        },
+        {
+          "name": "V",
+          "image": "./assets/event-archive/halloween-2026/v.webp"
+        },
+        {
+          "name": "Jungkook",
+          "image": "./assets/event-archive/halloween-2026/jungkook.webp"
+        }
+      ],
+      "frames": [
+        {
+          "name": "Bite Me Toploader",
+          "image": "./assets/event-archive/halloween-2026/bite-me.webp"
+        }
+      ],
+      "limitedCard": {
+        "name": "OT7 Â· Like Animals",
+        "revealed": false,
+        "image": null,
+        "editionSize": 5
+      }
     }
   ]
 }
