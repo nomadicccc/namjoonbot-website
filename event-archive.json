@@ -99,7 +99,8 @@
         "revealed": false,
         "image": null,
         "editionSize": 5
-      }
+      },
+      "topContributors": null
     }
   ]
 }

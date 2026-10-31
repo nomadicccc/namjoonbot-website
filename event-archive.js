@@ -18,6 +18,35 @@ function artwork(item,label=item.name){
  figure.append(button,el('figcaption',label));return figure;
 }
 function section(title,note){const wrapper=el('section',undefined,'collection-section'),heading=el('div',undefined,'section-title');heading.append(el('h3',title));if(note)heading.append(el('small',note));wrapper.append(heading);return wrapper;}
+
+function contributorSection(event, pending){
+ const section=el('section',undefined,'contributors');
+ const heading=el('div',undefined,'section-title');
+ heading.append(el('h3','Top 5 Contributors'));
+ const players=Array.isArray(event.topContributors)?event.topContributors.slice(0,5):[];
+ const ready=!pending&&players.length>0;
+ heading.append(el('small',ready?'Final standings':'Final standings pending'));
+ section.append(heading);
+ if(!ready){section.append(el('p','The top five will appear here once earning closes and the results are confirmed.','contributors-pending'));return section;}
+ const board=el('ol',undefined,'contributors-board');
+ board.setAttribute('aria-label','Final top five contributors');
+ players.forEach((player,index)=>{
+  const row=el('li',undefined,'contributor');
+  row.append(el('span','#'+(index+1),'contributor-rank'));
+  const name=typeof player.displayName==='string'&&player.displayName.trim()?player.displayName:'Discord user';
+  const portrait=el('span',undefined,'contributor-avatar');
+  const initials=el('span',Array.from(name)[0].toLocaleUpperCase(),'contributor-initial');
+  portrait.append(initials);
+  const src=safeImage(player.avatar);
+  if(src){const avatar=el('img');avatar.alt='';avatar.loading='lazy';avatar.decoding='async';avatar.width=28;avatar.height=28;avatar.src=src;avatar.addEventListener('error',()=>avatar.remove(),{once:true});portrait.append(avatar);}
+  const info=el('div',undefined,'contributor-info');
+  const label=el('span',name,'contributor-name');label.title=name;
+  const score=el('span',present(player.contributed)?number(player.contributed)+' '+event.quest.unit:'Total pending','contributor-score');
+  info.append(label,score);row.append(portrait,info);board.append(row);
+ });
+ section.append(board);return section;
+}
+
 function render(event){
  const pending=event.status!=='final',article=el('article',undefined,'event-detail');article.dataset.theme=event.theme||'default';
  const hero=el('div',undefined,'event-hero'),top=el('div',undefined,'hero-top');
@@ -38,6 +67,7 @@ function render(event){
  const milestones=el('ul',undefined,'milestones');
  for(const milestone of event.quest.milestones||[]){const row=el('li');row.append(el('strong',(hasResults&&percent>=milestone.percent?'\u2713 ':'')+milestone.percent+'%'),el('span',milestone.reward));milestones.append(row);}
  quest.append(milestones,el('p',hasResults?number(event.quest.total)+' / '+number(event.quest.goal)+' '+event.quest.unit+' earned together.':'The final community total and completion percentage will be saved here after earning closes.','quest-note'));article.append(quest);
+ article.append(contributorSection(event,pending));
  const cards=section('The Photocards',event.cards.length+' members \u00b7 Event edition'),strip=el('div',undefined,'card-strip');strip.tabIndex=0;strip.setAttribute('role','region');strip.setAttribute('aria-label','Event photocard gallery, scroll for more');event.cards.forEach(card=>strip.append(artwork(card)));cards.append(strip);article.append(cards);
  const banners=section('Profile Banners','A little seasonal colour'),grid=el('div',undefined,'banners');event.banners.forEach(banner=>grid.append(artwork(banner)));banners.append(grid);article.append(banners);
  const extras=el('div',undefined,'extras'),titles=el('section',undefined,'extra-panel'),titleHeading=el('div',undefined,'section-title');titleHeading.append(el('h3','Titles & Badge'));titles.append(titleHeading);
