@@ -4,16 +4,16 @@
       "id": "halloween_2026",
       "name": "Like Animals",
       "edition": "Halloween 2026",
-      "status": "pending",
+      "status": "spending",
       "startsAt": "2026-10-12T00:00:00+09:00",
       "earningEndsAt": "2026-11-02T00:00:00+09:00",
       "shopEndsAt": "2026-11-04T00:00:00+09:00",
       "participants": null,
-      "candyEarned": null,
+      "candyEarned": 90925,
       "cardsCollected": null,
       "quest": {
         "name": "Community Candy Challenge",
-        "total": null,
+        "total": 90925,
         "goal": 35000,
         "unit": "Candy",
         "milestones": [
@@ -96,11 +96,39 @@
       ],
       "limitedCard": {
         "name": "OT7 \u00b7 Like Animals",
-        "revealed": false,
-        "image": null,
+        "revealed": true,
+        "image": "./assets/event-archive/halloween-2026/ot7.webp",
         "editionSize": 5
       },
-      "topContributors": null
+      "topContributors": [
+        {
+          "displayName": "angie",
+          "contributed": 11045,
+          "avatar": "https://cdn.discordapp.com/avatars/1232994498800255067/c1e9057b79d675d37ad73482c93e0e56.png?size=128"
+        },
+        {
+          "displayName": "arem \u27ed\u27ec",
+          "contributed": 10053,
+          "avatar": "https://cdn.discordapp.com/avatars/966267573983395860/7639d07a2053658005f7c78f835f9405.png?size=128"
+        },
+        {
+          "displayName": "\u20df",
+          "contributed": 9075,
+          "avatar": "https://cdn.discordapp.com/avatars/1519963776957288469/a_eda4ffc9c8d7a2037faa72c74c68fe23.gif?size=128"
+        },
+        {
+          "displayName": "keeks",
+          "contributed": 8588,
+          "avatar": "https://cdn.discordapp.com/avatars/524694887174504458/a_2d6d89d3f492716e7a8ce151749bf55b.gif?size=128"
+        },
+        {
+          "displayName": "!!!! TURKEY TIME !!!!!!",
+          "contributed": 6297,
+          "avatar": "https://cdn.discordapp.com/avatars/389348372965883905/6650cd166bb8922b577fb156df6d5fc4.png?size=128"
+        }
+      ],
+      "resultsRecordedAt": "2026-11-01T16:51:26.452473+00:00"
     }
   ]
 }
+

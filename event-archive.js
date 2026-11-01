@@ -48,17 +48,18 @@ function contributorSection(event, pending){
 }
 
 function render(event){
- const pending=event.status!=='final',article=el('article',undefined,'event-detail');article.dataset.theme=event.theme||'default';
+ const pending=!['spending','final'].includes(event.status),article=el('article',undefined,'event-detail');article.dataset.theme=event.theme||'default';
  const hero=el('div',undefined,'event-hero'),top=el('div',undefined,'hero-top');
- top.append(el('span',event.edition,'season-label'),el('span',pending?'Final results pending':'Archived','status-pill'));
+ top.append(el('span',event.edition,'season-label'),el('span',event.status==='spending'?'Earning ended \u00b7 Shop open':pending?'Final results pending':'Archived','status-pill'));
  const identity=el('div',undefined,'event-identity'),copy=el('div');copy.append(el('h2',event.name),el('p',event.description,'event-description'));identity.append(image(event.badge,event.edition+' badge','hero-badge'),copy);
  const dates=el('div',undefined,'event-dates');
  dates.append(el('span','Earning: '+date(event.startsAt)+' \u2013 '+date(event.earningEndsAt)+' \u00b7 KST'),el('span','Shop closes: '+date(event.shopEndsAt)+' \u00b7 KST'));
  hero.append(top,identity,dates);article.append(hero);
  const stats=el('dl',undefined,'stats'),days=Math.round((Date.parse(event.earningEndsAt)-Date.parse(event.startsAt))/86400000);
  for(const [label,value] of [['Earning Period',days+' days'],['Participants',pending?null:event.participants],['Candy Earned',pending?null:event.candyEarned],['Event Cards Collected',pending?null:event.cardsCollected]]){
-  const item=el('div',undefined,'stat'),known=typeof value==='string'||present(value);item.append(el('dt',label),el('dd',known?(typeof value==='number'?number(value):value):'Results pending',known?'':'pending'));stats.append(item);
+  const item=el('div',undefined,'stat'),known=typeof value==='string'||present(value);item.append(el('dt',label),el('dd',known?(typeof value==='number'?number(value):value):(label==='Event Cards Collected'&&event.status==='spending'?'After shop closes':'Results pending'),known?'':'pending'));stats.append(item);
  }article.append(stats);
+ if(event.status==='spending')article.append(el('p','Earning and leaderboard positions are final. Event cards collected will be confirmed after the 48-hour spending period ends.','quest-note'));
  const quest=el('section',undefined,'quest'),heading=el('div',undefined,'section-title');heading.append(el('h3',event.quest.name));
  const hasResults=!pending&&present(event.quest.total)&&present(event.quest.goal)&&event.quest.goal>0,percent=hasResults?event.quest.total/event.quest.goal*100:null;
  heading.append(el('span',hasResults?percent.toFixed(1)+'% complete':'Awaiting final total','quest-count'));quest.append(heading);
@@ -76,7 +77,7 @@ function render(event){
  const frames=el('section',undefined,'extra-panel'),frameHeading=el('div',undefined,'section-title');frameHeading.append(el('h3','The Toploader'));frames.append(frameHeading);
  event.frames.forEach(frame=>{const row=el('div',undefined,'frame-showcase'),text=el('div');text.append(el('strong',frame.name),el('p','An exclusive finishing touch for your collection.'));row.append(artwork(frame),text);frames.append(row);});extras.append(titles,frames);article.append(extras);
  if(event.limitedCard){const card=event.limitedCard,limited=el('section',undefined,'limited');if(card.revealed&&safeImage(card.image))limited.append(artwork(card));else{const hidden=el('div',undefined,'unrevealed');hidden.setAttribute('aria-label','OT7 artwork not yet unveiled');hidden.append(el('span','\u2726'),el('small','Unrevealed'));limited.append(hidden);}
- const text=el('div');text.append(el('span','\u2726 Limited edition \u00b7 '+card.editionSize+' copies','edition-pill'),el('h4',card.name),el('p',card.revealed?'A rare keepsake from this event.':'A rare keepsake. Artwork will appear here after its official reveal.'));limited.append(text);article.append(limited);}
+ const text=el('div');text.append(el('span','\u2726 Limited edition \u00b7 '+card.editionSize+' copies','edition-pill'),el('h4',card.name),el('p',card.revealed?'Exclusive Top 5 reward. Only '+card.editionSize+' copies available.':'A rare keepsake. Artwork will appear here after its official reveal.'));limited.append(text);article.append(limited);}
  article.append(el('p','A look back at what was available this season. Archive previews do not offer purchases or reward claims.','archive-footnote'));return article;
 }
 function selectEvent(id,updateHash=false){const selected=events.find(event=>event.id===id)||events[0];if(!selected)return;root.replaceChildren(render(selected));list.querySelectorAll('button').forEach(button=>button.setAttribute('aria-current',String(button.dataset.event===selected.id)));document.title=selected.name+' \u00b7 Event Archive \u00b7 NamjoonBot';if(updateHash)history.replaceState(null,'','#'+encodeURIComponent(selected.id));}
@@ -90,3 +91,4 @@ fetch('./event-archive.json',{cache:'no-cache'}).then(response=>{if(!response.ok
  if(events.length)fromHash();else root.replaceChildren(el('p','Our first event memories will appear here soon.','notice'));
 }).catch(()=>{root.replaceChildren(el('p','Event memories could not be loaded. Please refresh to try again.','notice'));list.replaceChildren(el('p','Events unavailable','muted'));});
 })();
+
