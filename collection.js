@@ -109,12 +109,19 @@ function openDetails(card,isInventory,source) {
     if(card.signed)modalBody.append(el('p','Signed by '+label(card.signed)));
     if(card.birthday)modalBody.append(el('p','Birthday variant · '+label(card.birthday)));
     modalBody.append(el('p','Status: '+label(card.availability)+(card.favorite?' · Favourite':'')));
-    modalBody.append(el('p','Use /view in Discord with the card code to manage this card.'));
+    const actions=el('div',undefined,'exchange-actions');
+    if(card.availability==='available'){
+      for(const [name,key] of [['Sell This Card','sell'],['Offer for Trade','trade']]){
+        const link=el('a',name,'btn');link.href='./market.html?'+key+'='+encodeURIComponent(card.id);actions.append(link);
+      }
+    }
+    const marketLink=el('a','Browse Market','btn');marketLink.href='./market.html';actions.append(marketLink);modalBody.append(actions);
   } else {
     modalBody.append(el('p',label(card.set)+' · '+label(card.type)+' · '+fmt(card.printed)+' printed across all variants'));
     const list=el('div',undefined,'rarity-list');
     card.rarities.forEach(rarity=>list.append(el('span',label(rarity)+' · '+fmt(card.printed_by_rarity[rarity] || 0)+' printed','tag')));
     modalBody.append(list,el('p','Artwork preview. Borders and variant details depend on the rarity and card you pull.'));
+    const actions=el('div',undefined,'exchange-actions'),wanted=el('a','Create Wanted Request','btn');wanted.href='./market.html?wanted='+encodeURIComponent(card.id);actions.append(wanted);modalBody.append(actions);
     void showTopCollectors(card);
   }
   modal.showModal();

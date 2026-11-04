@@ -6,7 +6,7 @@
   const fmt = n => Number(n || 0).toLocaleString('en-GB');
   const label = value => String(value || '').replaceAll('_',' ').replace(/\b\w/g,c=>c.toUpperCase());
   const isMarket = document.body.dataset.page === 'market';
-  let token=sessionStorage.getItem('namjoon_session') || '', wallet=null, page=1, pages=1, scope='all', generation=0, busy=false;
+  let token=sessionStorage.getItem('namjoon_session') || '', wallet=null, page=1, pages=1, scope='all', kind='wts', generation=0, busy=false;
   let inventoryGeneration=0, privateImages=new Set();
   async function api(path,{body,auth=false,blob=false}={}) {
     if(!API)throw new Error('The market service is not connected yet.');
@@ -24,6 +24,7 @@
   }
   function tags(card) {
     const row=node('div',undefined,'market-tags'),rarity=node('span',label(card.rarity),'market-tag');rarity.dataset.rarity=card.rarity;row.append(rarity);
+    if(!card.rarity)rarity.textContent='Any variant';
     if(card.signed)row.append(node('span','Signed','market-tag'));
     if(card.birthday)row.append(node('span','Birthday','market-tag'));
     return row;
@@ -34,8 +35,11 @@
   }
   function tile(card,onClick) {
     const item=node('article',undefined,'market-card'),button=node('button',undefined,'market-card-button'),info=node('div',undefined,'market-card-info');button.type='button';
-    button.setAttribute('aria-label',card.name+', '+label(card.rarity)+', '+fmt(card.price)+' coins');
-    info.append(tags(card),node('h3',card.name),node('p','Print #'+fmt(card.serial)+' / '+fmt(card.printed),'market-print'),node('p',fmt(card.price)+' coins','market-price'),node('p','Listed by '+card.seller.name,'market-seller'));
+    button.setAttribute('aria-label',card.name+', '+(card.kind==='wtt'?'For trade':fmt(card.price)+' coins'));
+    info.append(node('p',card.kind==='wtb'?'WTB · Wanted':card.kind==='wtt'?'WTT · For Trade':'WTS · For Sale','exchange-kind'),tags(card),node('h3',card.name));
+    if(card.available_count>1)info.append(node('p',card.available_count+' available · from '+fmt(card.price)+' coins','market-owned'));
+    if(card.serial)info.append(node('p','Print #'+fmt(card.serial)+' / '+fmt(card.printed),'market-print'));
+    info.append(node('p',card.kind==='wtt'?'Open to offers':(card.kind==='wtb'?'Offering ':'')+fmt(card.price)+' coins','market-price'),node('p',(card.kind==='wtb'?'Wanted by ':'Listed by ')+card.seller.name,'market-seller'));
     if(card.owned!==null&&card.owned!==undefined)info.append(node('p',card.owned?'✓ Variant owned':'Missing from your collection','market-owned'));
     button.append(art(card),info);item.append(button);button.onclick=()=>onClick(card);return item;
   }
@@ -51,7 +55,7 @@
   const dialog=$('market-dialog'),body=$('market-dialog-body');
   function syncAuth() {
     $('market-login').hidden=!!wallet;$('market-sell').hidden=!wallet?.exists;$('market-wallet').hidden=!wallet;
-    $('market-mine').disabled=!wallet;$('market-ownership').disabled=!wallet;
+    $('market-mine').disabled=!wallet;document.querySelectorAll('[data-exchange-auth]').forEach(el=>el.disabled=!wallet?.exists);$('market-ownership').disabled=!wallet;
     $('market-wallet').textContent=fmt(wallet?.coins)+' coins';
     $('market-ownership-note').textContent=wallet?'Matches the exact rarity, signature and birthday variant.':'Sign in to find cards missing from your collection.';
     if(!wallet){scope='all';$('market-ownership').value='all';$('market-all').setAttribute('aria-pressed','true');$('market-mine').setAttribute('aria-pressed','false');$('market-all').classList.add('active');$('market-mine').classList.remove('active');}
@@ -60,27 +64,29 @@
   function status(text,error=false){$('market-status').textContent=text;$('market-status').classList.toggle('error',error);}
   async function loadWallet(){if(token){try{wallet=await api('/api/me/market',{auth:true});}catch(error){status(error.message,true);}}syncAuth();}
   function query() {
-    return new URLSearchParams({page,scope,q:$('market-search').value,member:$('market-member').value,set:$('market-set').value,rarity:$('market-rarity').value,ownership:$('market-ownership').value,sort:$('market-sort').value,signed:$('market-signed').checked?'yes':'all',birthday:$('market-birthday').checked?'yes':'all'});
+    return new URLSearchParams({page,scope,kind,group:$('market-group')?.checked?'yes':'no',q:$('market-search').value,member:$('market-member').value,set:$('market-set').value,rarity:$('market-rarity').value,ownership:$('market-ownership').value,sort:$('market-sort').value,signed:$('market-signed').checked?'yes':'all',birthday:$('market-birthday').checked?'yes':'all'});
   }
   async function browse(quiet=false) {
     const version=++generation;if(!quiet)status('Loading listings…');$('market-prev').disabled=true;$('market-next').disabled=true;
     try {
-      const data=await api('/api/market?'+query(),{auth:!!wallet});if(version!==generation)return;
-      page=data.page;pages=data.pages;$('market-grid').replaceChildren(...data.listings.map(card=>tile(card,openListing)));
+      if(kind==='offers'){await window.NamjoonExchange?.offers();return;}
+      const params=query();if(kind==='wts'&&params.get('ownership')==='supply')params.set('ownership','owned');
+      const data=await api((kind==='wts'?'/api/market?':'/api/market/exchange?')+params,{auth:!!wallet});if(version!==generation)return;
+      page=data.page;pages=data.pages;$('market-grid').classList.remove('exchange-offers-grid');$('market-grid').replaceChildren(...data.listings.map(card=>tile(card,kind==='wts'?(card=>card.available_count>1?window.NamjoonExchange.group(card):openListing(card)):card=>window.NamjoonExchange.open(card))));
       if(!data.listings.length)$('market-grid').append(node('div',scope==='mine'?'You have no active listings. Use Sell a Card to add one.':'No listings match these filters. Try another search.','market-empty'));
-      status(fmt(data.total)+' '+(data.total===1?'listing':'listings')+(scope==='mine'?' in your shop':''));
+      remember();status(fmt(data.total)+' '+(data.total===1?'listing':'listings')+(scope==='mine'?' in your shop':''));
       $('market-page').textContent='Page '+page+' of '+pages;
       const select=$('market-set'),selected=select.value;
-      if(select.options.length===1){data.sets.forEach(pack=>select.append(new Option(label(pack),pack)));select.value=selected;}
+      data.sets.forEach(pack=>{if(![...select.options].some(option=>option.value===pack))select.append(new Option(label(pack),pack));});select.value=selected;window.syncMarketDropdowns?.();
     }catch(error){if(version!==generation)return;status(error.message,true);}
     finally{if(version===generation){$('market-prev').disabled=page<=1;$('market-next').disabled=page>=pages;}}
   }
   function clearPrivateImages(){privateImages.forEach(url=>URL.revokeObjectURL(url));privateImages.clear();}
-  function openDialog(title){inventoryGeneration++;clearPrivateImages();$('market-dialog-title').textContent=title;body.replaceChildren();if(!dialog.open)dialog.showModal();}
+  function openDialog(title){body.dataset.exchangeScreen='';inventoryGeneration++;clearPrivateImages();$('market-dialog-title').textContent=title;body.replaceChildren();if(!dialog.open)dialog.showModal();}
   function button(text,action,primary=false){const b=node('button',text,'m-btn'+(primary?' primary':''));b.type='button';b.onclick=action;return b;}
   async function mutate(path,data,trigger,errorEl,onSuccess) {
     if(busy)return;busy=true;trigger.disabled=true;$('market-close').disabled=true;errorEl.textContent='';
-    try{const result=await api(path,{body:data,auth:true});if(wallet){wallet.coins=result.coins;syncAuth();}await onSuccess(result);void browse(true);}
+    try{const result=await api(path,{body:data,auth:true});if(wallet&&result.coins!==undefined){wallet.coins=result.coins;syncAuth();}await onSuccess(result);void browse(true);}
     catch(error){errorEl.textContent=error.message;trigger.disabled=false;}
     finally{busy=false;$('market-close').disabled=false;}
   }
@@ -99,7 +105,7 @@
       if(!wallet){const login=node('a','Sign in to purchase ↗','m-btn primary');login.href='./account.html';info.append(login);}
       else if(current.seller.id===wallet.id){
         info.append(node('p','Remove this listing to make the card available in your inventory again.','dialog-note'));
-        const remove=button('Confirm removal',()=>mutate('/api/me/market/remove',{listing_id:current.id},remove,error,()=>{body.replaceChildren(node('p','Listing removed. Your card is available again.'));}));info.append(remove);
+        const remove=button('Confirm removal',()=>mutate('/api/me/market/remove',{listing_id:current.id},remove,error,()=>{body.replaceChildren(node('p','Listing removed. Your card is available again.'));}));info.append(remove,button('Edit price',()=>window.NamjoonExchange.edit(current)));
       }else if(!wallet.exists){info.append(node('p','Start your collection in Discord before purchasing.','dialog-note'));}
       else {
         info.append(node('p','Your balance: '+fmt(wallet.coins)+' coins','dialog-note'));
@@ -148,7 +154,7 @@
     };
   }
   $('market-close').onclick=()=>{if(!busy)dialog.close();};dialog.addEventListener('cancel',e=>{if(busy)e.preventDefault();});dialog.addEventListener('close',()=>{inventoryGeneration++;clearPrivateImages();});
-  $('market-sell').onclick=sell;
+  $('market-sell').onclick=()=>window.NamjoonExchange.create();
   let debounce;
   $('market-search').oninput=()=>{clearTimeout(debounce);debounce=setTimeout(()=>{page=1;browse();},250);};
   ['member','set','rarity','ownership','sort','signed','birthday'].forEach(name=>$('market-'+name).addEventListener('change',()=>{page=1;browse();}));
@@ -156,6 +162,12 @@
   $('market-all').onclick=()=>setScope('all');$('market-mine').onclick=()=>setScope('mine');
   $('market-prev').onclick=()=>{page--;browse();};$('market-next').onclick=()=>{page++;browse();};
   $('market-reset').onclick=()=>{clearTimeout(debounce);$('market-search').value='';['member','set','rarity','ownership'].forEach(name=>$('market-'+name).value='all');$('market-sort').value='newest';$('market-signed').checked=$('market-birthday').checked=false;window.syncMarketDropdowns?.();page=1;browse();};
-  async function init(){await loadWallet();await browse();const id=new URLSearchParams(location.search).get('listing');if(id)await openListing({id});}
-  init();setInterval(()=>{if(!document.hidden&&!dialog.open&&!busy)browse(true);},30000);
+  window.NamjoonMarket={api,node,button,openDialog,mutate,art,tags,sell,priceCard,browse,status,
+    get body(){return body;},get dialog(){return dialog;},get wallet(){return wallet;},openListing,get kind(){return kind;},get page(){return page;},get scope(){return scope;},query,
+    setPage(value){page=value;},setKind(value){kind=value;page=1;scope='all';if($('market-ownership').value==='supply'&&value!=='wtb')$('market-ownership').value='all';if(value==='wtt'&&['cheapest','priciest'].includes($('market-sort').value))$('market-sort').value='newest';setScope('all');},
+    setPagination(data){page=data.page;pages=data.pages;$('market-page').textContent='Page '+page+' of '+pages;$('market-prev').disabled=page<=1;$('market-next').disabled=page>=pages;}};
+  function remember(){const state=Object.fromEntries(query());state.scroll=window.scrollY;try{sessionStorage.setItem('namjoon-market-view',JSON.stringify(state));}catch{}}
+  function restore(){try{const state=JSON.parse(sessionStorage.getItem('namjoon-market-view')||'{}');if(state.set&&state.set!=='all')$('market-set').append(new Option(label(state.set),state.set));['member','set','rarity','ownership','sort'].forEach(key=>{if(state[key]&&[...$('market-'+key).options].some(x=>x.value===state[key]))$('market-'+key).value=state[key];});$('market-search').value=state.q||'';if($('market-group'))$('market-group').checked=state.group==='yes';window.__marketScroll=Number(state.scroll)||0;$('market-signed').checked=state.signed==='yes';$('market-birthday').checked=state.birthday==='yes';page=Math.max(1,Number(state.page)||1);if(['wts','wtb','wtt'].includes(state.kind))kind=state.kind;if(wallet&&state.scope==='mine')scope='mine';}catch{}}
+  async function init(){await loadWallet();restore();if(!wallet){scope='all';$('market-ownership').value='all';}await browse();if(window.__marketScroll)window.scrollTo(0,window.__marketScroll);const id=new URLSearchParams(location.search).get('listing');if(id)await openListing({id});window.NamjoonExchange?.syncTabs();}
+  window.addEventListener('pagehide',remember);init();setInterval(()=>{if(!document.hidden&&!dialog.open&&!busy)browse(true);},30000);
 })();
