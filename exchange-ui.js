@@ -150,11 +150,11 @@
     signature.input.disabled=birthday.input.disabled=true;rarity.input.onchange=()=>{signature.input.disabled=birthday.input.disabled=!rarity.input.value;};
     price.input.min=1;price.input.max=1000000000;price.input.step=1;price.input.required=true;
     const error=errorNode(),review=el('p','Coins are checked when someone fulfils this request; they are not reserved. Each request buys one card.','dialog-note'),submit=el('button','Review Request','m-btn primary');submit.type='submit';
-    form.append(rarity.wrap,signature.wrap,birthday.wrap,price.wrap,review,error,submit);M.body.append(form);let reviewed='';
-    form.oninput=()=>{reviewed='';submit.textContent='Review Request';};
+    const matches=el('div',undefined,'suggested-listings');form.append(rarity.wrap,signature.wrap,birthday.wrap,price.wrap,review,matches,error,submit);M.body.append(form);let reviewed='';
+    form.oninput=()=>{reviewed='';submit.disabled=false;submit.textContent='Review Request';window.NamjoonPriceOffers?.cancelSuggestions(matches);};
     form.onsubmit=e=>{e.preventDefault();const amount=Number(price.input.value);if(!Number.isSafeInteger(amount)||amount<1||amount>1000000000){error.textContent='Choose a whole coin price.';return;}
       const data={action:'wanted',card_id:card.id,rarity:rarity.input.value||null,signed:rarity.input.value?signature.input.value||null:null,birthday:rarity.input.value?birthday.input.value||null:null,price:amount};
-      const key=JSON.stringify(data);if(reviewed!==key){reviewed=key;submit.textContent='Confirm Request · '+fmt(amount)+' coins';return;}
+      const key=JSON.stringify(data);if(reviewed!==key){reviewed=key;submit.textContent='Confirm Request · '+fmt(amount)+' coins';if(window.NamjoonPriceOffers){submit.disabled=true;window.NamjoonPriceOffers.suggestMatches(data,matches).finally(()=>{if(reviewed===key)submit.disabled=false;});}return;}
       M.mutate('/api/me/market/exchange',data,submit,error,()=>success('Your wanted request is now published.'));
     };
   }
@@ -164,7 +164,7 @@
       if(!authForDetail(info))return;
       if(card.seller.id===M.wallet.id)info.append(action('Remove Request',{action:'cancel_wanted',id:card.id},error));
       else info.append(button('Sell a Matching Card',()=>picker({title:'Choose a Matching Copy',max:1,cardId:card.card_id,matchWanted:card.id,filter:c=>!card.rarity||(c.rarity===card.rarity&&(c.signed||null)===(card.signed||null)&&(c.birthday||null)===(card.birthday||null)),done:cards=>fulfil(card,cards[0])}),true));
-      info.append(error);return;
+      window.NamjoonPriceOffers?.addWantedActions(card,info,done=>picker({title:'Choose Your Matching Copy',max:1,cardId:card.card_id,matchWanted:card.id,done:cards=>done(cards[0])}));info.append(error);return;
     }
     const version=open('Trade Card');M.dialog.classList.add('card-preview-dialog');
     try {
@@ -195,12 +195,13 @@
   }
   let bucket='incoming',offerRequest=0;
   async function offers() {
+    if(window.NamjoonPriceOffers?.active)return window.NamjoonPriceOffers.show();
     if(!M.wallet){M.status('Sign in to view your offers.');return;}
     const version=++offerRequest,grid=$('market-grid');grid.classList.add('exchange-offers-grid');grid.replaceChildren();
-    const nav=el('div',undefined,'market-type-tabs');[['incoming','Received'],['outgoing','Sent'],['confirm','Final Confirmation'],['history','History']].forEach(([value,title])=>{const b=button(title,()=>{bucket=value;M.setPage(1);M.browse();});b.classList.toggle('active',value===bucket);nav.append(b);});grid.append(nav);
+    const nav=el('div',undefined,'market-type-tabs');[['incoming','Received'],['outgoing','Sent'],['confirm','Final Confirmation'],['history','History']].forEach(([value,title])=>{const b=button(title,()=>{bucket=value;M.setPage(1);M.browse();});b.classList.toggle('active',value===bucket);nav.append(b);});if(window.NamjoonPriceOffers?.supported)nav.append(button('Price Offers',()=>{M.setPage(1);window.NamjoonPriceOffers.show();}));grid.append(nav);
     try {
       const params=new URLSearchParams({bucket,page:M.page});
-      const data=await api('/api/me/market/offers?'+params,{auth:true});if(version!==offerRequest||M.kind!=='offers')return;
+      const data=await api('/api/me/market/offers?'+params,{auth:true});if(version!==offerRequest||M.kind!=='offers'||window.NamjoonPriceOffers?.active)return;
       M.setPagination(data);M.status(fmt(data.total)+' offers');
       for(const trade of data.offers){
         const item=el('article',undefined,'exchange-offer'),mine=trade.proposer.id===M.wallet.id;

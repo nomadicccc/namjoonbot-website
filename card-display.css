@@ -41,3 +41,5 @@
 #card-modal .card-preview-art:not(.interactive-card-stage) img{border-radius:12px}
 
 #card-modal details.top-collectors{padding:12px 15px}#card-modal .top-collectors>summary{cursor:pointer;font-size:14px;font-weight:650;line-height:1.6}#card-modal .top-collectors>summary::marker{color:var(--purple,#c5a4f4)}#card-modal .top-collectors>summary:focus-visible{outline:2px solid var(--purple,#c5a4f4);outline-offset:4px;border-radius:3px}
+
+.suggested-listings{margin:16px 0}.suggested-listings:empty{display:none}.suggested-listings h3{font-size:16px;margin:0 0 8px}.suggested-sale{padding:12px 0;border-top:1px solid var(--line,#c5a4f430)}.suggested-sale .exchange-actions{margin-top:7px}.suggested-sale .m-btn{font-size:11px;padding:8px 10px}

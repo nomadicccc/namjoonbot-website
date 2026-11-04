@@ -94,7 +94,7 @@
   async function openListing(card) {
     openDialog('Card details');dialog.classList.add('card-preview-dialog');const version=inventoryGeneration;body.append(node('p','Checking this listing…','muted'));
     try {
-      const current=await api('/api/market/listings/'+encodeURIComponent(card.id),{auth:!!wallet});
+      const current=await api('/api/market/listings/'+encodeURIComponent(card.id),{auth:!!wallet});if(card.wanted_id)current.wanted_id=card.wanted_id;
       if(!dialog.open||version!==inventoryGeneration)return;
       if(wallet){await loadWallet();if(!dialog.open||version!==inventoryGeneration)return;}
       $('market-dialog-title').textContent=current.name;
@@ -114,11 +114,11 @@
         const requestId=crypto.randomUUID();
         const buy=button('Buy for '+fmt(current.price)+' coins',()=>{
           buy.textContent='Confirm purchase · '+fmt(current.price)+' coins';
-          buy.onclick=()=>mutate('/api/me/market/buy',{listing_id:current.id,price:current.price,request_id:requestId},buy,error,()=>{body.replaceChildren(node('p','Purchase complete! This card is now in your inventory.'),node('a','View My Collection →','m-btn'));body.lastChild.href='./account.html';});
+          buy.onclick=()=>mutate('/api/me/market/buy',{listing_id:current.id,price:current.price,request_id:requestId,...(current.wanted_id?{wanted_id:current.wanted_id}:{})},buy,error,()=>{body.replaceChildren(node('p','Purchase complete! This card is now in your inventory.'),node('a','View My Collection →','m-btn'));body.lastChild.href='./account.html';});
         },true);
         buy.disabled=wallet.coins<current.price;if(buy.disabled)info.append(node('p','You need '+fmt(current.price-wallet.coins)+' more coins.','dialog-note'));info.append(buy);
       }
-      info.append(error);detail.append(art(current),info);body.replaceChildren(detail);
+      window.NamjoonPriceOffers?.addListingAction(current,info);info.append(error);detail.append(art(current),info);body.replaceChildren(detail);
     }catch(error){if(dialog.open&&version===inventoryGeneration)body.replaceChildren(node('p',error.message,'dialog-error'));}
   }
   async function sell() {
