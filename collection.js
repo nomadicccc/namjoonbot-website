@@ -371,9 +371,9 @@ function renderWishes(){
   $('wish-count').textContent=fmt(wishes.length)+' wishes';
 }
 function openWish(wish){
-  modalBody.replaceChildren(el('h2',wish.name));
-  if(wish.image){const image=el('img');image.src=API+wish.image;image.alt=wish.name;modalBody.append(image);}
-  modalBody.append(el('p',wish.rarity?label(wish.rarity)+' · '+(wish.signed?'Signed by '+label(wish.signed):'Unsigned')+(wish.birthday?' · Birthday '+label(wish.birthday):''):'Any rarity or variant'),
+  const layout=el('div',undefined,'card-preview-layout'),info=el('div',undefined,'card-preview-info');info.append(el('h2',wish.name));layout.append(info);modalBody.replaceChildren(layout);if(!wish.image)layout.classList.add('without-art');
+  if(wish.image){const image=el('img');image.src=API+wish.image;image.alt=wish.name;const stage=el('div',undefined,'card-preview-art');stage.append(image);layout.prepend(stage);}
+  info.append(el('p',wish.rarity?label(wish.rarity)+' · '+(wish.signed?'Signed by '+label(wish.signed):'Unsigned')+(wish.birthday?' · Birthday '+label(wish.birthday):''):'Any rarity or variant'),
     el('p',wish.owned?'You currently own a matching card.':'You do not currently own a matching card.'));
   modal.showModal();
 }
