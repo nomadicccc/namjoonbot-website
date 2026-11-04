@@ -1,3 +1,41 @@
 .card-display-controls{display:flex;justify-content:flex-end;margin:14px 0;gap:12px}.card-display-controls label{font:inherit;font-size:12px;color:var(--muted,#b6acbf)}.card-display-controls select{background:var(--surface,#211a2b);color:inherit;border:1px solid #c5a4f440;border-radius:7px;padding:8px;margin-left:8px;font:inherit}body .adjustable-card-grid{display:grid;grid-template-columns:repeat(var(--card-columns,4),minmax(0,1fr));gap:16px}body[data-page=market] .market-main{width:min(1520px,calc(100% - 48px))}body[data-page=catalogue] main.wrap,body[data-page=account] main.wrap{width:min(1440px,calc(100% - 48px))}.adjustable-card-grid>*{min-width:0}.adjustable-card-grid .card-info,.adjustable-card-grid .market-card-info{overflow-wrap:anywhere}.adjustable-card-grid img{max-width:100%}html[data-card-columns="6"] .adjustable-card-grid .code,html[data-card-columns="6"] .adjustable-card-grid .market-seller,html[data-card-columns="6"] .adjustable-card-grid .market-print{display:none}html[data-card-columns="5"] .adjustable-card-grid h3,html[data-card-columns="6"] .adjustable-card-grid h3{font-size:12px}html[data-card-columns="6"] .adjustable-card-grid .market-card-info{padding:9px}.market-type-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}.market-filter-toggle{margin-bottom:12px}.market-layout.filters-collapsed{grid-template-columns:minmax(0,1fr)}.market-layout.filters-collapsed .market-filters{display:none}.exchange-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}.exchange-offer{padding:20px;border:1px solid var(--line,#c5a4f430);border-radius:12px;margin-bottom:15px}.exchange-offer h3{margin:0 0 12px}.exchange-sides{display:grid;grid-template-columns:1fr 1fr;gap:16px}.exchange-side{padding:12px;background:#c5a4f409;border-radius:9px}.exchange-side img{width:58px;max-height:88px;object-fit:contain}.exchange-copy{display:flex;align-items:center;gap:10px;margin:8px 0}.exchange-copy span{font-size:12px;overflow-wrap:anywhere}.exchange-picks{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}.exchange-picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:15px 0}.exchange-picker button{text-align:left;white-space:normal}.exchange-picker img{width:100%;height:145px;object-fit:contain}.exchange-picker [aria-pressed=true]{outline:2px solid var(--purple,#c5a4f4);background:#c5a4f425}.exchange-field{display:block;margin:14px 0}.exchange-field input,.exchange-field select,.exchange-field textarea{display:block;width:100%;margin-top:6px;padding:10px;border:1px solid #c5a4f440;border-radius:8px;background:#17121f;color:inherit;font:inherit}.exchange-offers-grid{grid-template-columns:1fr!important}.exchange-kind{color:var(--purple,#c5a4f4);font-size:11px;font-weight:700}.exchange-note{white-space:pre-wrap}.exchange-bulk-row{display:flex;gap:10px;align-items:center;margin:10px 0}.exchange-bulk-row label{flex:1}.exchange-bulk-row input{width:150px}.market-toolbar{flex-wrap:wrap}@media(max-width:1100px){body .adjustable-card-grid{grid-template-columns:repeat(min(var(--card-columns,4),4),minmax(0,1fr))}}@media(max-width:760px){body .adjustable-card-grid{grid-template-columns:repeat(min(var(--card-columns,4),3),minmax(0,1fr));gap:10px}.exchange-picker{grid-template-columns:repeat(2,minmax(0,1fr))}.exchange-sides{grid-template-columns:1fr}body[data-page=market] .market-main,body[data-page=catalogue] main.wrap,body[data-page=account] main.wrap{width:calc(100% - 28px)}}@media(max-width:480px){body .adjustable-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 .trade-requirement-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 15px}.trade-looking-for{font-size:11px;color:var(--purple,#c5a4f4);margin-top:10px!important;line-height:1.5}.exchange-picker button{display:flex;flex-direction:column;gap:7px}.exchange-picker small{color:var(--muted,#b6acbf)}@media(max-width:480px){.trade-requirement-fields{grid-template-columns:1fr}}
+
+/* Card previews keep the image silhouette; forms and card pickers retain their own layout. */
+#card-modal{width:min(660px,calc(100% - 28px));max-height:86dvh;padding:20px;overflow:auto;scrollbar-width:thin}
+#card-modal .modal-close{float:none;display:flex;width:fit-content;margin:0 0 14px auto;position:sticky;top:0;z-index:2;background:var(--surface,#1d1827)}
+.card-preview-layout{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:22px;align-items:start;clear:both}
+.card-preview-layout.without-art{grid-template-columns:minmax(0,1fr)}
+.card-preview-info{min-width:0;font-size:13px;line-height:1.6}
+#card-modal .card-preview-info h2{padding-top:0;font-size:21px;line-height:1.25;margin:0 0 14px;overflow-wrap:anywhere;letter-spacing:-.4px}
+#card-modal .card-preview-info p{margin:10px 0}
+#card-modal .card-preview-art{display:flex;align-items:flex-start;justify-content:center;align-self:start;width:100%;height:auto;max-width:220px;margin:0;padding:0;background:transparent;aspect-ratio:auto;border-radius:0}
+#card-modal .card-preview-art img{display:block;width:auto;height:auto;max-width:100%;max-height:min(54dvh,350px);object-fit:contain;margin:0;border-radius:0}
+#card-modal .card-preview-info .exchange-actions{gap:7px}
+#card-modal .card-preview-info .btn{font-size:12px;padding:9px 12px}
+#card-modal .top-collectors{margin-top:20px;padding:15px;border-radius:10px}
+#card-modal .top-collectors h3{font-size:18px}
+#card-modal .collectors-list{max-height:200px;overflow:auto;scrollbar-width:thin}
+#card-modal .collectors-list li{padding:9px 0}
+#market-dialog.card-preview-dialog{width:min(660px,calc(100% - 28px));max-height:86dvh;padding:20px;overflow:auto;scrollbar-width:thin}
+.card-preview-dialog .market-dialog-bar{gap:14px;margin-bottom:18px;align-items:start}
+.card-preview-dialog .market-dialog-bar h2{font-size:20px;line-height:1.3;overflow-wrap:anywhere}
+.card-preview-dialog .market-dialog-bar .m-btn{flex-shrink:0}
+.card-preview-dialog .market-detail{grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:22px;align-items:start}
+.card-preview-dialog .market-detail>div{min-width:0}
+.card-preview-dialog .market-detail>.market-art{display:flex;align-items:flex-start;justify-content:center;width:100%;max-width:220px;height:auto;max-height:none;aspect-ratio:auto;padding:0;background:none}
+.card-preview-dialog .market-detail>.market-art img{display:block;width:auto;height:auto;max-width:100%;max-height:min(54dvh,350px);object-fit:contain}
+.card-preview-dialog .market-detail h3{margin:0 0 12px;font-size:17px;line-height:1.4}
+.card-preview-dialog .market-detail p{overflow-wrap:anywhere;margin:10px 0}
+.card-preview-dialog .market-detail .market-price{font-size:23px}
+.card-preview-dialog .market-detail .m-btn{margin-top:9px;padding:9px 12px}
+@media(max-width:540px){
+ .card-preview-layout,.card-preview-dialog .market-detail{grid-template-columns:minmax(0,1fr);gap:18px}
+ #card-modal .card-preview-art,.card-preview-dialog .market-detail>.market-art{justify-self:center;max-width:170px}
+ #card-modal .card-preview-art img,.card-preview-dialog .market-detail>.market-art img{max-height:min(35dvh,250px)}
+ #card-modal,#market-dialog.card-preview-dialog{padding:16px;max-height:88dvh}
+ #card-modal .card-preview-info h2{font-size:20px}
+}
+
+#card-modal .card-preview-art:not(.interactive-card-stage) img{border-radius:12px}

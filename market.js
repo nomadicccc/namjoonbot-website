@@ -83,7 +83,7 @@
     finally{if(version===generation){$('market-prev').disabled=page<=1;$('market-next').disabled=page>=pages;}}
   }
   function clearPrivateImages(){privateImages.forEach(url=>URL.revokeObjectURL(url));privateImages.clear();}
-  function openDialog(title){body.dataset.exchangeScreen='';inventoryGeneration++;clearPrivateImages();$('market-dialog-title').textContent=title;body.replaceChildren();if(!dialog.open)dialog.showModal();}
+  function openDialog(title){dialog.classList.remove('card-preview-dialog');body.dataset.exchangeScreen='';inventoryGeneration++;clearPrivateImages();$('market-dialog-title').textContent=title;body.replaceChildren();if(!dialog.open)dialog.showModal();}
   function button(text,action,primary=false){const b=node('button',text,'m-btn'+(primary?' primary':''));b.type='button';b.onclick=action;return b;}
   async function mutate(path,data,trigger,errorEl,onSuccess) {
     if(busy)return;busy=true;trigger.disabled=true;$('market-close').disabled=true;errorEl.textContent='';
@@ -92,7 +92,7 @@
     finally{busy=false;$('market-close').disabled=false;}
   }
   async function openListing(card) {
-    openDialog('Card details');const version=inventoryGeneration;body.append(node('p','Checking this listing…','muted'));
+    openDialog('Card details');dialog.classList.add('card-preview-dialog');const version=inventoryGeneration;body.append(node('p','Checking this listing…','muted'));
     try {
       const current=await api('/api/market/listings/'+encodeURIComponent(card.id),{auth:!!wallet});
       if(!dialog.open||version!==inventoryGeneration)return;

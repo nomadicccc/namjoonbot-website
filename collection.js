@@ -101,27 +101,29 @@ function openDetails(card,isInventory,source) {
     modal.showModal();
     return;
   }
-  modalBody.replaceChildren(el('h2',card.name));
-  if(source){const image=el('img');image.src=source;image.alt=card.name;image.draggable=false;if(isInventory){const stage=el('div',undefined,'interactive-card-stage');applyRarity(stage,card.rarity);stage.append(image);modalBody.append(stage);}else modalBody.append(image);}
+  const layout=el('div',undefined,'card-preview-layout'),info=el('div',undefined,'card-preview-info');
+  info.append(el('h2',card.name));layout.append(info);modalBody.replaceChildren(layout);
+  if(!source)layout.classList.add('without-art');
+  if(source){const image=el('img');image.src=source;image.alt=card.name;image.draggable=false;const stage=el('div',undefined,'card-preview-art'+(isInventory?' interactive-card-stage':''));if(isInventory)applyRarity(stage,card.rarity);stage.append(image);layout.prepend(stage);}
   if(isInventory){
-    modalBody.append(el('p',label(card.rarity)+' · Print #'+fmt(card.serial)+' / '+fmt(card.printed)));
-    modalBody.append(el('p',card.code));
-    if(card.signed)modalBody.append(el('p','Signed by '+label(card.signed)));
-    if(card.birthday)modalBody.append(el('p','Birthday variant · '+label(card.birthday)));
-    modalBody.append(el('p','Status: '+label(card.availability)+(card.favorite?' · Favourite':'')));
+    info.append(el('p',label(card.rarity)+' · Print #'+fmt(card.serial)+' / '+fmt(card.printed)));
+    info.append(el('p',card.code));
+    if(card.signed)info.append(el('p','Signed by '+label(card.signed)));
+    if(card.birthday)info.append(el('p','Birthday variant · '+label(card.birthday)));
+    info.append(el('p','Status: '+label(card.availability)+(card.favorite?' · Favourite':'')));
     const actions=el('div',undefined,'exchange-actions');
     if(card.availability==='available'){
       for(const [name,key] of [['Sell This Card','sell'],['Offer for Trade','trade']]){
         const link=el('a',name,'btn');link.href='./market.html?'+key+'='+encodeURIComponent(card.id);actions.append(link);
       }
     }
-    const marketLink=el('a','Browse Market','btn');marketLink.href='./market.html';actions.append(marketLink);modalBody.append(actions);
+    const marketLink=el('a','Browse Market','btn');marketLink.href='./market.html';actions.append(marketLink);info.append(actions);
   } else {
-    modalBody.append(el('p',label(card.set)+' · '+label(card.type)+' · '+fmt(card.printed)+' printed across all variants'));
+    info.append(el('p',label(card.set)+' · '+label(card.type)+' · '+fmt(card.printed)+' printed across all variants'));
     const list=el('div',undefined,'rarity-list');
     card.rarities.forEach(rarity=>list.append(el('span',label(rarity)+' · '+fmt(card.printed_by_rarity[rarity] || 0)+' printed','tag')));
-    modalBody.append(list,el('p','Artwork preview. Borders and variant details depend on the rarity and card you pull.'));
-    const actions=el('div',undefined,'exchange-actions'),wanted=el('a','Create Wanted Request','btn');wanted.href='./market.html?wanted='+encodeURIComponent(card.id);actions.append(wanted);modalBody.append(actions);
+    info.append(list,el('p','Artwork preview. Borders and variant details depend on the rarity and card you pull.'));
+    const actions=el('div',undefined,'exchange-actions'),wanted=el('a','Create Wanted Request','btn');wanted.href='./market.html?wanted='+encodeURIComponent(card.id);actions.append(wanted);info.append(actions);
     void showTopCollectors(card);
   }
   modal.showModal();

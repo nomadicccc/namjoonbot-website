@@ -160,22 +160,22 @@
   }
   async function openListing(card) {
     if(card.kind==='wtb') {
-      open('Wanted · '+card.name);const error=errorNode();M.body.append(M.art(card),M.tags(card),el('p',card.seller.name+' is offering '+fmt(card.price)+' coins.'),el('p',card.rarity?'Matches this exact rarity, signature and birthday edition.':'Accepts any variant of this artwork.','dialog-note'));
-      if(!authForDetail())return;
-      if(card.seller.id===M.wallet.id)M.body.append(action('Remove Request',{action:'cancel_wanted',id:card.id},error));
-      else M.body.append(button('Sell a Matching Card',()=>picker({title:'Choose a Matching Copy',max:1,cardId:card.card_id,matchWanted:card.id,filter:c=>!card.rarity||(c.rarity===card.rarity&&(c.signed||null)===(card.signed||null)&&(c.birthday||null)===(card.birthday||null)),done:cards=>fulfil(card,cards[0])}),true));
-      M.body.append(error);return;
+      open('Wanted · '+card.name);M.dialog.classList.add('card-preview-dialog');const detail=el('div',undefined,'market-detail'),info=el('div');detail.append(M.art(card),info);M.body.append(detail);const error=errorNode();info.append(M.tags(card),el('p',card.seller.name+' is offering '+fmt(card.price)+' coins.'),el('p',card.rarity?'Matches this exact rarity, signature and birthday edition.':'Accepts any variant of this artwork.','dialog-note'));
+      if(!authForDetail(info))return;
+      if(card.seller.id===M.wallet.id)info.append(action('Remove Request',{action:'cancel_wanted',id:card.id},error));
+      else info.append(button('Sell a Matching Card',()=>picker({title:'Choose a Matching Copy',max:1,cardId:card.card_id,matchWanted:card.id,filter:c=>!card.rarity||(c.rarity===card.rarity&&(c.signed||null)===(card.signed||null)&&(c.birthday||null)===(card.birthday||null)),done:cards=>fulfil(card,cards[0])}),true));
+      info.append(error);return;
     }
-    const version=open('Trade Card');
+    const version=open('Trade Card');M.dialog.classList.add('card-preview-dialog');
     try {
       const fresh=await api('/api/market/copies/'+encodeURIComponent(card.copy_id||card.id),{auth:!!M.wallet});if(!live(version))return;
-      M.body.append(M.art(fresh),el('h3',fresh.name),M.tags(fresh),el('p','Print #'+fresh.serial),el('p',fresh.code,'dialog-note'),el('p',requirementsText(fresh.requirements),'trade-looking-for'));const error=errorNode();
-      if(!authForDetail())return;
-      if(fresh.seller.id===M.wallet.id)M.body.append(action('Remove from Trade Listings',{action:'wtt',copy_id:fresh.id,enabled:false},error),button('Edit What I Want',()=>markTrade([fresh])));
-      else M.body.append(button('Make an Offer',()=>compose({recipient:fresh.seller,requested:[fresh],offered:[]}),true));M.body.append(error);
+      const detail=el('div',undefined,'market-detail'),info=el('div');detail.append(M.art(fresh),info);M.body.append(detail);info.append(el('h3',fresh.name),M.tags(fresh),el('p','Print #'+fresh.serial),el('p',fresh.code,'dialog-note'),el('p',requirementsText(fresh.requirements),'trade-looking-for'));const error=errorNode();
+      if(!authForDetail(info))return;
+      if(fresh.seller.id===M.wallet.id)info.append(action('Remove from Trade Listings',{action:'wtt',copy_id:fresh.id,enabled:false},error),button('Edit What I Want',()=>markTrade([fresh])));
+      else info.append(button('Make an Offer',()=>compose({recipient:fresh.seller,requested:[fresh],offered:[]}),true));info.append(error);
     }catch(error){if(live(version))M.body.append(el('p',error.message,'dialog-error'));}
   }
-  function authForDetail(){if(M.wallet?.exists)return true;const link=el('a','Sign in with Discord','m-btn primary');link.href='./account.html';M.body.append(link);return false;}
+  function authForDetail(container=M.body){if(M.wallet?.exists)return true;const link=el('a','Sign in with Discord','m-btn primary');link.href='./account.html';container.append(link);return false;}
   function fulfil(request,copy) {
     open('Review Sale');const error=errorNode();M.body.append(el('p','Sell '+copy.name+' · #'+copy.serial+' to '+request.seller.name+' for '+fmt(request.price)+' coins?'),M.tags(copy),el('p',copy.code,'dialog-note'),el('p','Your equipped frame stays with you.','dialog-note'),action('Complete Sale',{action:'fulfil',id:request.id,copy_id:copy.id,price:request.price},error,()=>success('Sale complete. The card and coins have been transferred.'),true),error);
   }
