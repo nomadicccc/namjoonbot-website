@@ -68,9 +68,9 @@ function applyRarity(element,rarity){
 function imagePlaceholder(){const p=el('div',undefined,'artwrap');return p;}
 
 async function showTopCollectors(card) {
-  const section=el('section',undefined,'top-collectors');
+  const section=el('details',undefined,'top-collectors');
   section.setAttribute('aria-label','Top collectors');
-  section.append(el('span','THE COLLECTION CLUB','collectors-eyebrow'),el('h3','Top Collectors'),el('p','Copies currently owned across all variants.','collectors-note'));
+  section.append(el('summary','Top Collectors'),el('p','Copies currently owned across all variants.','collectors-note'));
   const content=el('div','Loading collectors…','collectors-content');content.setAttribute('aria-live','polite');section.append(content);modalBody.append(section);
   async function load() {
     content.replaceChildren(el('p','Loading collectors…','muted'));
