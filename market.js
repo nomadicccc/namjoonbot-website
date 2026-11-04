@@ -37,6 +37,7 @@
     const item=node('article',undefined,'market-card'),button=node('button',undefined,'market-card-button'),info=node('div',undefined,'market-card-info');button.type='button';
     button.setAttribute('aria-label',card.name+', '+(card.kind==='wtt'?'For trade':fmt(card.price)+' coins'));
     info.append(node('p',card.kind==='wtb'?'WTB · Wanted':card.kind==='wtt'?'WTT · For Trade':'WTS · For Sale','exchange-kind'),tags(card),node('h3',card.name));
+    if(card.kind==='wtt'&&card.requirements)info.append(node('p',window.NamjoonExchange?.requirementsText(card.requirements)||'Open to offers','trade-looking-for'));
     if(card.available_count>1)info.append(node('p',card.available_count+' available · from '+fmt(card.price)+' coins','market-owned'));
     if(card.serial)info.append(node('p','Print #'+fmt(card.serial)+' / '+fmt(card.printed),'market-print'));
     info.append(node('p',card.kind==='wtt'?'Open to offers':(card.kind==='wtb'?'Offering ':'')+fmt(card.price)+' coins','market-price'),node('p',(card.kind==='wtb'?'Wanted by ':'Listed by ')+card.seller.name,'market-seller'));
@@ -64,7 +65,7 @@
   function status(text,error=false){$('market-status').textContent=text;$('market-status').classList.toggle('error',error);}
   async function loadWallet(){if(token){try{wallet=await api('/api/me/market',{auth:true});}catch(error){status(error.message,true);}}syncAuth();}
   function query() {
-    return new URLSearchParams({page,scope,kind,group:$('market-group')?.checked?'yes':'no',q:$('market-search').value,member:$('market-member').value,set:$('market-set').value,rarity:$('market-rarity').value,ownership:$('market-ownership').value,sort:$('market-sort').value,signed:$('market-signed').checked?'yes':'all',birthday:$('market-birthday').checked?'yes':'all'});
+    return new URLSearchParams({page,scope,kind,matching:$('market-matching')?.checked?'yes':'no',group:$('market-group')?.checked?'yes':'no',q:$('market-search').value,member:$('market-member').value,set:$('market-set').value,rarity:$('market-rarity').value,ownership:$('market-ownership').value,sort:$('market-sort').value,signed:$('market-signed').checked?'yes':'all',birthday:$('market-birthday').checked?'yes':'all'});
   }
   async function browse(quiet=false) {
     const version=++generation;if(!quiet)status('Loading listings…');$('market-prev').disabled=true;$('market-next').disabled=true;
@@ -161,13 +162,13 @@
   function setScope(value){scope=value;page=1;['all','mine'].forEach(name=>{const active=name===scope;$('market-'+name).classList.toggle('active',active);$('market-'+name).setAttribute('aria-pressed',String(active));});browse();}
   $('market-all').onclick=()=>setScope('all');$('market-mine').onclick=()=>setScope('mine');
   $('market-prev').onclick=()=>{page--;browse();};$('market-next').onclick=()=>{page++;browse();};
-  $('market-reset').onclick=()=>{clearTimeout(debounce);$('market-search').value='';['member','set','rarity','ownership'].forEach(name=>$('market-'+name).value='all');$('market-sort').value='newest';$('market-signed').checked=$('market-birthday').checked=false;window.syncMarketDropdowns?.();page=1;browse();};
+  $('market-reset').onclick=()=>{clearTimeout(debounce);$('market-search').value='';['member','set','rarity','ownership'].forEach(name=>$('market-'+name).value='all');$('market-sort').value='newest';$('market-signed').checked=$('market-birthday').checked=false;if($('market-matching'))$('market-matching').checked=false;window.syncMarketDropdowns?.();page=1;browse();};
   window.NamjoonMarket={api,node,button,openDialog,mutate,art,tags,sell,priceCard,browse,status,
     get body(){return body;},get dialog(){return dialog;},get wallet(){return wallet;},openListing,get kind(){return kind;},get page(){return page;},get scope(){return scope;},query,
     setPage(value){page=value;},setKind(value){kind=value;page=1;scope='all';if($('market-ownership').value==='supply'&&value!=='wtb')$('market-ownership').value='all';if(value==='wtt'&&['cheapest','priciest'].includes($('market-sort').value))$('market-sort').value='newest';setScope('all');},
     setPagination(data){page=data.page;pages=data.pages;$('market-page').textContent='Page '+page+' of '+pages;$('market-prev').disabled=page<=1;$('market-next').disabled=page>=pages;}};
   function remember(){const state=Object.fromEntries(query());state.scroll=window.scrollY;try{sessionStorage.setItem('namjoon-market-view',JSON.stringify(state));}catch{}}
-  function restore(){try{const state=JSON.parse(sessionStorage.getItem('namjoon-market-view')||'{}');if(state.set&&state.set!=='all')$('market-set').append(new Option(label(state.set),state.set));['member','set','rarity','ownership','sort'].forEach(key=>{if(state[key]&&[...$('market-'+key).options].some(x=>x.value===state[key]))$('market-'+key).value=state[key];});$('market-search').value=state.q||'';if($('market-group'))$('market-group').checked=state.group==='yes';window.__marketScroll=Number(state.scroll)||0;$('market-signed').checked=state.signed==='yes';$('market-birthday').checked=state.birthday==='yes';page=Math.max(1,Number(state.page)||1);if(['wts','wtb','wtt'].includes(state.kind))kind=state.kind;if(wallet&&state.scope==='mine')scope='mine';}catch{}}
+  function restore(){try{const state=JSON.parse(sessionStorage.getItem('namjoon-market-view')||'{}');if(state.set&&state.set!=='all')$('market-set').append(new Option(label(state.set),state.set));['member','set','rarity','ownership','sort'].forEach(key=>{if(state[key]&&[...$('market-'+key).options].some(x=>x.value===state[key]))$('market-'+key).value=state[key];});$('market-search').value=state.q||'';if($('market-group'))$('market-group').checked=state.group==='yes';if($('market-matching'))$('market-matching').checked=state.matching==='yes';window.__marketScroll=Number(state.scroll)||0;$('market-signed').checked=state.signed==='yes';$('market-birthday').checked=state.birthday==='yes';page=Math.max(1,Number(state.page)||1);if(['wts','wtb','wtt'].includes(state.kind))kind=state.kind;if(wallet&&state.scope==='mine')scope='mine';}catch{}}
   async function init(){await loadWallet();restore();if(!wallet){scope='all';$('market-ownership').value='all';}await browse();if(window.__marketScroll)window.scrollTo(0,window.__marketScroll);const id=new URLSearchParams(location.search).get('listing');if(id)await openListing({id});window.NamjoonExchange?.syncTabs();}
   window.addEventListener('pagehide',remember);init();setInterval(()=>{if(!document.hidden&&!dialog.open&&!busy)browse(true);},30000);
 })();
