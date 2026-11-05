@@ -2,9 +2,6 @@
 .menu-toggle{display:none}
 .hero-grid{padding-top:76px;padding-bottom:76px}
 .hero .lead{max-width:490px}
-.hero-gallery-controls{position:absolute;bottom:0;left:50%;transform:translateX(-50%);display:flex;gap:8px;white-space:nowrap}
-.hero-gallery-controls button{border:1px solid var(--line);border-radius:999px;padding:8px 13px;background:var(--surface);color:var(--muted);font:600 12px 'DM Sans',sans-serif;cursor:pointer;min-height:40px}
-.hero-gallery-controls button:hover{border-color:var(--purple);color:var(--ink)}
 button:focus-visible{outline:3px solid var(--purple);outline-offset:4px}
 .collection-start{padding-top:36px;padding-bottom:16px}
 .collection-start .section-head{margin-bottom:20px}
@@ -27,3 +24,17 @@ button:focus-visible{outline:3px solid var(--purple);outline-offset:4px}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.destination{transition:none}}
 
 .shop-home-link{color:var(--purple);font-size:13px;white-space:nowrap;padding:10px 0}.shop-home-link:hover{text-decoration:underline;text-underline-offset:4px}@media(max-width:640px){.collection-start .section-head{flex-wrap:wrap;gap:6px}.shop-home-link{padding:4px 0}}
+
+/* Artwork gives the hero its visual weight without extra content panels. */
+.hero{background:radial-gradient(ellipse at 78% 48%,#9861ce2b,transparent 54%),radial-gradient(ellipse at 6% 100%,#67418912,transparent 60%)}
+.hero-grid{padding-top:80px;padding-bottom:84px;gap:58px}.hero .art{min-height:430px}
+.hero .photocard{width:236px;cursor:pointer;box-shadow:20px 30px 65px #0006,0 0 65px #bc8bea14;isolation:isolate}
+.hero .photocard:focus-visible{outline:3px solid var(--purple);outline-offset:9px}
+.hero .orbit{width:370px;height:370px;background:radial-gradient(circle,#c5a4f40a,transparent 68%);border-color:#c5a4f42b}
+.hero .orbit:before{inset:30px;border-color:#c5a4f422}.hero .orbit:after{right:34px;top:40px}
+.hero .art:before,.hero .art:after{content:'✧';position:absolute;color:#c5a4f4aa;pointer-events:none}
+.hero .art:before{left:9%;bottom:12%;font-size:29px}.hero .art:after{right:10%;top:9%;font-size:18px}
+.hero .card-art .hero-image{transition:opacity .7s ease}.home-explore{background:linear-gradient(90deg,transparent,#c5a4f407,transparent)}
+@media(max-width:850px){.hero-grid{gap:20px}.hero .photocard{width:215px}.hero .orbit{width:320px;height:320px}}
+@media(max-width:640px){.hero-grid{padding-top:36px;padding-bottom:34px}.hero .art{min-height:390px}.hero .photocard{width:210px}.hero .orbit{width:315px;height:315px}.hero .art:before{left:7%;bottom:12%}.hero .art:after{right:7%}}
+@media(prefers-reduced-motion:reduce){.hero .card-art .hero-image{transition:none}.hero .photocard{transition:none;transform:rotate(-10deg)}}
