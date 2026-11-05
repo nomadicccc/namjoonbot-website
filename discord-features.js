@@ -25,6 +25,7 @@
     const cards=button.dataset.profileExample==='cards';
     root.querySelector('.dc-profile-home').hidden=cards;
     root.querySelector('.dc-profile-actions').hidden=cards;
+    root.querySelector('.profile-look-picker').hidden=cards;
     root.querySelector('.dc-showcase').hidden=!cards;
     root.querySelector('.dc-showcase-actions').hidden=!cards;
     root.querySelector(cards?'[data-profile-example="home"]':'[data-profile-example="cards"]').focus();
