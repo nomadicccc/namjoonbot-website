@@ -40,7 +40,7 @@ let collectionRequest=0, wishRequest=0;
 function el(tag,text,className) {const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(className)n.className=className;return n;}
 function status(message,error=false){statusEl.textContent=message;statusEl.classList.toggle('error',error);}
 function clearURLs(urls){urls.forEach(url=>URL.revokeObjectURL(url));urls.clear();}
-function clearSession(){window.clearBinderBeta?.();sessionStorage.removeItem('namjoon_session');token='';profileData=null;inventoryLoaded=false;requestVersion++;mediaVersion++;collectionRequest++;wishRequest++;collectionData=null;wishData=null;$('collection-cards')?.replaceChildren();$('collection-summary')?.replaceChildren();$('wish-cards')?.replaceChildren();clearURLs(imageURLs);clearURLs(profileURLs);grid.replaceChildren();$('profile')?.replaceChildren();$('account-content').hidden=true;$('account-actions').hidden=true;$('login-panel').hidden=false;$('login').disabled=!loginConfigured;modal.close();}
+function clearSession(){window.clearBinderBeta?.();sessionStorage.removeItem('namjoon_session');window.dispatchEvent(new CustomEvent('namjoon:identity',{detail:null}));token='';profileData=null;inventoryLoaded=false;requestVersion++;mediaVersion++;collectionRequest++;wishRequest++;collectionData=null;wishData=null;$('collection-cards')?.replaceChildren();$('collection-summary')?.replaceChildren();$('wish-cards')?.replaceChildren();clearURLs(imageURLs);clearURLs(profileURLs);grid.replaceChildren();$('profile')?.replaceChildren();$('account-content').hidden=true;$('account-actions').hidden=true;$('login-panel').hidden=false;$('login').disabled=!loginConfigured;modal.close();}
 async function api(path,{method='GET',body,privateRequest=false,blob=false}={}) {
   if(!API) throw new Error('The live service has not been connected yet.');
   const headers={};
@@ -232,11 +232,13 @@ async function loadProfile(){
   const version=++requestVersion;
   status('Loading your profile…');
   try{const data=await api('/api/me',{privateRequest:true});if(version!==requestVersion || !token)return;
-    profileData=data;window.checkBinderBetaAccess?.();$('login-panel').hidden=true;$('account-actions').hidden=false;$('account-content').hidden=false;$('signed-in').textContent='Signed in as '+data.player.name;
+    profileData=data;window.dispatchEvent(new CustomEvent('namjoon:identity',{detail:data.player}));window.checkBinderBetaAccess?.();$('login-panel').hidden=true;$('account-actions').hidden=false;$('account-content').hidden=false;$('signed-in').textContent='Signed in as '+data.player.name;
     await renderProfile(data);if(version===requestVersion && token)status('Your current bot profile · Use /profile in Discord to customise it.');
   }catch(error){status(error.message,true);}
 }
 function selectTab(next){
+  if(!['profile','inventory','collections','wishlist','binders'].includes(next))return;
+  history.replaceState(history.state,'',location.pathname+location.search+'#'+next);
   view=next;document.body.classList.toggle('view-profile',next==='profile');
   for(const name of ['profile','inventory','collections','wishlist','binders']){
     $(name).hidden=name!==next;const button=$(name+'-tab');button.classList.toggle('active',name===next);button.setAttribute('aria-selected',String(name===next));
@@ -252,7 +254,7 @@ async function beginLogin(){
     const bytes=crypto.getRandomValues(new Uint8Array(32));const proof=Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');
     const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(proof));const hash=Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');
     const pending=await api('/api/auth/start',{method:'POST',body:{proof_hash:hash}});
-    sessionStorage.setItem('namjoon_login',JSON.stringify({state:pending.state,proof,at:Date.now()}));
+    sessionStorage.setItem('namjoon_login',JSON.stringify({state:pending.state,proof,at:Date.now(),tab:location.hash.slice(1)}));
     location.assign(pending.url);
   }catch(error){status(error.message,true);$('login').disabled=false;}
 }
@@ -271,8 +273,9 @@ async function bootstrapAccount(){
       status('Verifying your Discord account…');
       const result=await api('/api/auth/exchange',{method:'POST',body:{code:params.get('code'),state:pending.state,proof:pending.proof}});
       token=result.session;sessionStorage.setItem('namjoon_session',token);
+      if(['profile','inventory','collections','wishlist','binders'].includes(pending.tab))history.replaceState(null,'',location.pathname+'#'+pending.tab);
     }
-    if(token){await loadProfile();void loadCatalogue().catch(()=>{});}
+    if(token){await loadProfile();if(profileData&&token){const target=location.hash.slice(1);if(['profile','inventory','collections','wishlist','binders'].includes(target))selectTab(target);}void loadCatalogue().catch(()=>{});}
     else status(loginConfigured?'Sign in to view your existing profile and cards.':'Discord login is awaiting setup. The public catalogue is available now.');
   }catch(error){status(error.message,true);}
 }
@@ -414,3 +417,5 @@ document.addEventListener('pointerout',event=>{
 window.addEventListener('blur',()=>document.querySelectorAll('.showcase-hover').forEach(resetShowcaseTilt));
 showcaseMotion.addEventListener('change',()=>document.querySelectorAll('.showcase-hover').forEach(resetShowcaseTilt));
 
+
+window.addEventListener('hashchange',()=>{if(pageKind==='account'&&token&&profileData){const target=location.hash.slice(1);if(['profile','inventory','collections','wishlist','binders'].includes(target))selectTab(target);}});
