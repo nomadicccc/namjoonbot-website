@@ -163,17 +163,20 @@ function populateSets(cards){
   if([...$('set').options].some(option=>option.value===selected))$('set').value=selected;
 }
 async function loadCatalogue(){
-  if(pageKind==='catalogue')status('Loading the catalogue…');
+  if(pageKind==='catalogue'){status('Loading the catalogue…');$('refresh').disabled=true;grid.setAttribute('aria-busy','true');}
   try{const data=await api('/api/catalogue');allCards=data.cards;catalogueReady=true;populateSets(allCards);if(pageKind==='catalogue')renderCatalogue();return data;}
-  catch(error){if(pageKind==='catalogue'){status(error.message,true);noResults('The catalogue is unavailable right now.');}throw error;}
+  catch(error){if(pageKind==='catalogue'){status(error.message,true);if(!catalogueReady)noResults('The catalogue is unavailable right now.');}throw error;}
+  finally{if(pageKind==='catalogue'){$('refresh').disabled=false;grid.setAttribute('aria-busy','false');}}
 }
 function renderCatalogue(){
+  window.catalogueTools?.beforeRender();
   const query=$('search').value.trim().toLowerCase(),member=$('member').value,set=$('set').value,rarity=$('rarity').value;
   const matches=allCards.filter(card=>(!query || catalogueSearchText(card).includes(query))&&(member==='all'||card.members.includes(member))&&(set==='all'||card.set===set)&&(rarity==='all'||card.rarities.includes(rarity)));
   pages=Math.max(1,Math.ceil(matches.length/24));currentPage=Math.min(currentPage,pages);
   grid.replaceChildren();matches.slice((currentPage-1)*24,currentPage*24).forEach(card=>grid.append(cardTile(card,false).article));
   if(!matches.length)noResults('No cards match these filters.');
-  setPager(matches.length,pages);status(fmt(matches.length)+' matching designs · Counts refresh from the bot approximately every 30 seconds.');
+  setPager(matches.length,pages);status(fmt(matches.length)+' matching designs · Select a card for print counts and details.');
+  window.catalogueTools?.sync();
 }
 async function privateImage(path,urls){
   const blob=await api(path,{privateRequest:true,blob:true});const url=URL.createObjectURL(blob);urls.add(url);return url;
