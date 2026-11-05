@@ -25,3 +25,5 @@ button:focus-visible{outline:3px solid var(--purple);outline-offset:4px}
  .destination-grid{grid-template-columns:1fr;gap:10px}.destination{grid-template-columns:40px 1fr 16px;gap:13px;padding:18px}.destination-icon{grid-column:auto}.collection-start{padding-top:28px}.collection-start h2{font-size:22px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.destination{transition:none}}
+
+.shop-home-link{color:var(--purple);font-size:13px;white-space:nowrap;padding:10px 0}.shop-home-link:hover{text-decoration:underline;text-underline-offset:4px}@media(max-width:640px){.collection-start .section-head{flex-wrap:wrap;gap:6px}.shop-home-link{padding:4px 0}}

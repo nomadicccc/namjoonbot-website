@@ -156,29 +156,22 @@ select[hidden]{display:none!important}
 .events-panel-header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}.event-archive-link{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-size:12px;font-weight:500;color:var(--muted);transition:color .2s}.event-archive-link:hover{color:var(--purple)}.event-archive-link span{color:var(--purple)}.event-panel>h3{margin-bottom:24px}@media(max-width:400px){.events-panel-header{gap:10px}.event-archive-link{font-size:11px}.events-panel-header .eyebrow{font-size:9px;letter-spacing:1.5px}}
 </style>
 <link rel="stylesheet" href="./market.css?v=1">
-<link rel="stylesheet" href="./homepage.css?v=1">
-<link rel="stylesheet" href="./site-qol.css?v=20261105"><link rel="stylesheet" href="./shop-rotation.css?v=20261105"></head>
+<link rel="stylesheet" href="./homepage.css?v=20261105-shop-page">
+<link rel="stylesheet" href="./site-qol.css?v=20261105"></head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<header><nav class="wrap" aria-label="Main navigation"><a class="brand" href="./" aria-label="NamjoonBot home"><span class="logo" aria-hidden="true">✳</span>NamjoonBot</a><button id="menu-toggle" class="menu-toggle" type="button" aria-controls="main-navigation" aria-expanded="true">Menu <span aria-hidden="true">☰</span></button><div id="main-navigation" class="nav-links"><a class="account-link" href="./catalogue.html">Catalogue</a><a class="account-link" href="./account.html">My Collection</a><a class="account-link" href="./market.html">Market</a><a data-server href="https://discord.gg/Ec2n3S7j8S">Updates ↗</a><a href="#live">Live Stats</a><a href="#community">Community</a><a class="btn primary" data-bot href="https://discord.com/oauth2/authorize?client_id=1540789930329120908&amp;permissions=274878286848&amp;integration_type=0&amp;scope=bot+applications.commands">Add to Discord ↗</a></div></nav></header>
+<header><nav class="wrap" aria-label="Main navigation"><a class="brand" href="./" aria-label="NamjoonBot home"><span class="logo" aria-hidden="true">✳</span>NamjoonBot</a><button id="menu-toggle" class="menu-toggle" type="button" aria-controls="main-navigation" aria-expanded="true">Menu <span aria-hidden="true">☰</span></button><div id="main-navigation" class="nav-links"><a class="account-link" href="./catalogue.html">Catalogue</a><a class="account-link" href="./account.html">My Collection</a><a class="account-link" href="./market.html">Market</a><a class="account-link" href="./shop.html">Shop</a><a data-server href="https://discord.gg/Ec2n3S7j8S">Updates ↗</a><a href="#live">Live Stats</a><a href="#community">Community</a><a class="btn primary" data-bot href="https://discord.com/oauth2/authorize?client_id=1540789930329120908&amp;permissions=274878286848&amp;integration_type=0&amp;scope=bot+applications.commands">Add to Discord ↗</a></div></nav></header>
 <main id="main">
 <div class="hero"><div class="wrap hero-grid"><div><div class="eyebrow">NamjoonBot</div><h1>Collect BTS<br><span>photocards</span><br>on Discord.</h1><p class="lead">Collect, trade and manage your BTS photocards.</p><div class="actions"><a class="btn primary" data-bot href="https://discord.com/oauth2/authorize?client_id=1540789930329120908&amp;permissions=274878286848&amp;integration_type=0&amp;scope=bot+applications.commands">Add to your server ↗</a><a class="btn" href="./catalogue.html">Explore the cards ↗</a></div></div>
 <div class="art" role="group" aria-label="NamjoonBot standard card gallery"><div class="orbit"></div><div class="photocard"><div class="card-art"><span class="monogram">NJ</span><img class="hero-image" alt="" decoding="async"></div></div><div class="float float-one"><strong><span class="spark">✦</span>Standard card artwork</strong><small>Browse more in the catalogue.</small></div><div class="float float-two"><strong>Profile customisation</strong><small>Customise your profile, your way.</small></div><div class="hero-gallery-controls"><button id="gallery-pause" type="button" aria-pressed="false">Pause gallery</button><button id="gallery-next" type="button" aria-label="Show next card">Next card →</button></div></div></div></div>
 <div class="ribbon" aria-label="Bot highlights"><span>Photocard collecting</span><span>Trading &amp; gifting</span><span>Profile customisation</span><span>Daily &amp; weekly quests</span><span>Recycling &amp; crafting</span><span>Seasonal events</span></div>
 <section class="wrap collection-start" aria-labelledby="collection-start-title">
-<div class="section-head"><div><h2 id="collection-start-title">Quick links</h2><p>View card designs, check your inventory or browse market listings.</p></div></div>
+<div class="section-head"><div><h2 id="collection-start-title">Quick links</h2><p>View card designs, check your inventory or browse market listings.</p></div><a class="shop-home-link" href="./shop.html">Shop rotation <span aria-hidden="true">→</span></a></div>
 <div class="destination-grid">
 <a class="destination" href="./catalogue.html"><span class="destination-icon" aria-hidden="true">▦</span><div><strong>Card catalogue</strong><p>Filter card designs by member, set and rarity.</p></div><span class="destination-arrow" aria-hidden="true">↗</span></a>
 <a class="destination" href="./account.html"><span class="destination-icon" aria-hidden="true">♡</span><div><strong>My collection</strong><p>Sign in to see your cards, wishlist and personal profile.</p></div><span class="destination-arrow" aria-hidden="true">↗</span></a>
 <a class="destination" href="./market.html"><span class="destination-icon" aria-hidden="true">⇄</span><div><strong>Market</strong><p>Explore the market and see what other collectors are offering.</p></div><span class="destination-arrow" aria-hidden="true">↗</span></a>
 </div></section>
-<section id="shop-rotation" class="wrap shop-rotation" aria-labelledby="shop-rotation-title">
-<div class="section-head"><div><h2 id="shop-rotation-title">In the shop</h2><p>Current packs and the weekly collectible frame. Use <code>/shop</code> in Discord to buy.</p></div></div>
-<div class="shop-layout">
-<div class="daily-packs"><h3>Today’s packs</h3><p class="shop-reset"><time id="pack-reset">Resets daily at 00:00 KST</time></p><div id="shop-packs" class="shop-items"></div><p class="shop-note">Standard daily rotation. A reserved pack may make your personal shop different.</p></div>
-<div class="weekly-frame"><h3>Weekly frame</h3><p class="shop-reset"><time id="frame-reset">Resets Monday at 00:00 KST</time></p><div id="shop-frame"></div><p class="shop-note">Available through <code>/shop → Frames</code>.</p></div>
-</div><p id="shop-status" class="shop-status" role="status">Loading shop information…</p><button id="shop-retry" class="shop-retry" type="button" hidden>Try again</button>
-</section>
 <section id="live" class="wrap">
 <div class="section-head"><div><h2>Live Stats</h2><p>Player rankings, event progress and community totals.</p></div></div>
 <p id="live-status" class="live-status" role="status">Live statistics are being connected. You can check /leaderboard and the event shop in Discord in the meantime.</p>
@@ -731,7 +724,7 @@ startLive();
 <a class="kofi-float" href="https://ko-fi.com/namjoonbot" target="_blank" rel="noopener noreferrer" aria-label="Support NamjoonBot on Ko-fi (opens in a new tab)" aria-describedby="kofi-tooltip"><span class="kofi-float-icon" aria-hidden="true">♡</span><span>Support on Ko-fi ↗</span><span class="kofi-touch-note">Optional one-off donations</span><span id="kofi-tooltip" class="kofi-tooltip" role="tooltip"><strong>A little love for NamjoonBot ♡</strong>Enjoy the bot? You can send a one-off donation on Ko-fi. Support is completely optional and always appreciated.</span></a>
 <script src="./market.js?v=1"></script>
 <script src="./homepage.js?v=1"></script>
-<script src="./site-qol.js?v=20261105"></script><script src="./shop-rotation.js?v=20261105"></script></body>
+<script src="./site-qol.js?v=20261105"></script></body>
 </html>
 
 
