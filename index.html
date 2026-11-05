@@ -157,7 +157,7 @@ select[hidden]{display:none!important}
 </style>
 <link rel="stylesheet" href="./market.css?v=1">
 <link rel="stylesheet" href="./homepage.css?v=1">
-<link rel="stylesheet" href="./site-qol.css?v=20261105"></head>
+<link rel="stylesheet" href="./site-qol.css?v=20261105"><link rel="stylesheet" href="./shop-rotation.css?v=20261105"></head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header><nav class="wrap" aria-label="Main navigation"><a class="brand" href="./" aria-label="NamjoonBot home"><span class="logo" aria-hidden="true">✳</span>NamjoonBot</a><button id="menu-toggle" class="menu-toggle" type="button" aria-controls="main-navigation" aria-expanded="true">Menu <span aria-hidden="true">☰</span></button><div id="main-navigation" class="nav-links"><a class="account-link" href="./catalogue.html">Catalogue</a><a class="account-link" href="./account.html">My Collection</a><a class="account-link" href="./market.html">Market</a><a data-server href="https://discord.gg/Ec2n3S7j8S">Updates ↗</a><a href="#live">Live Stats</a><a href="#community">Community</a><a class="btn primary" data-bot href="https://discord.com/oauth2/authorize?client_id=1540789930329120908&amp;permissions=274878286848&amp;integration_type=0&amp;scope=bot+applications.commands">Add to Discord ↗</a></div></nav></header>
@@ -172,6 +172,13 @@ select[hidden]{display:none!important}
 <a class="destination" href="./account.html"><span class="destination-icon" aria-hidden="true">♡</span><div><strong>My collection</strong><p>Sign in to see your cards, wishlist and personal profile.</p></div><span class="destination-arrow" aria-hidden="true">↗</span></a>
 <a class="destination" href="./market.html"><span class="destination-icon" aria-hidden="true">⇄</span><div><strong>Market</strong><p>Explore the market and see what other collectors are offering.</p></div><span class="destination-arrow" aria-hidden="true">↗</span></a>
 </div></section>
+<section id="shop-rotation" class="wrap shop-rotation" aria-labelledby="shop-rotation-title">
+<div class="section-head"><div><h2 id="shop-rotation-title">In the shop</h2><p>Current packs and the weekly collectible frame. Use <code>/shop</code> in Discord to buy.</p></div></div>
+<div class="shop-layout">
+<div class="daily-packs"><h3>Today’s packs</h3><p class="shop-reset"><time id="pack-reset">Resets daily at 00:00 KST</time></p><div id="shop-packs" class="shop-items"></div><p class="shop-note">Standard daily rotation. A reserved pack may make your personal shop different.</p></div>
+<div class="weekly-frame"><h3>Weekly frame</h3><p class="shop-reset"><time id="frame-reset">Resets Monday at 00:00 KST</time></p><div id="shop-frame"></div><p class="shop-note">Available through <code>/shop → Frames</code>.</p></div>
+</div><p id="shop-status" class="shop-status" role="status">Loading shop information…</p><button id="shop-retry" class="shop-retry" type="button" hidden>Try again</button>
+</section>
 <section id="live" class="wrap">
 <div class="section-head"><div><h2>Live Stats</h2><p>Player rankings, event progress and community totals.</p></div></div>
 <p id="live-status" class="live-status" role="status">Live statistics are being connected. You can check /leaderboard and the event shop in Discord in the meantime.</p>
@@ -724,6 +731,7 @@ startLive();
 <a class="kofi-float" href="https://ko-fi.com/namjoonbot" target="_blank" rel="noopener noreferrer" aria-label="Support NamjoonBot on Ko-fi (opens in a new tab)" aria-describedby="kofi-tooltip"><span class="kofi-float-icon" aria-hidden="true">♡</span><span>Support on Ko-fi ↗</span><span class="kofi-touch-note">Optional one-off donations</span><span id="kofi-tooltip" class="kofi-tooltip" role="tooltip"><strong>A little love for NamjoonBot ♡</strong>Enjoy the bot? You can send a one-off donation on Ko-fi. Support is completely optional and always appreciated.</span></a>
 <script src="./market.js?v=1"></script>
 <script src="./homepage.js?v=1"></script>
-<script src="./site-qol.js?v=20261105"></script></body>
+<script src="./site-qol.js?v=20261105"></script><script src="./shop-rotation.js?v=20261105"></script></body>
 </html>
+
 
