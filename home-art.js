@@ -27,6 +27,11 @@
         const target=active===first?second:first;target.src=url;target.alt='';target.setAttribute('aria-hidden','true');
         active.classList.remove('ready');target.classList.add('ready');frame.classList.add('has-art');active=target;
         previous=entry.id;currentName=entry.name||'Standard photocard';hasArt=true;
+        const behind=deck.filter(item=>item.id!==entry.id);
+        document.querySelectorAll('.stack-photo').forEach((image,i)=>{
+          const other=behind[i%behind.length];if(!other)return;
+          image.onerror=()=>image.remove();image.src=API+other.image;
+        });
       }
       schedule();
     };
@@ -56,7 +61,12 @@
     .then(data=>{
       const cards=Array.isArray(data.standard_cards)?data.standard_cards:[];
       deck=cards.filter(item=>typeof item.image==='string'&&/^\/api\/art\/[a-z0-9_]+\.png$/.test(item.image));
-      shuffle();showNext();
+      shuffle();
+      document.querySelectorAll('[data-gallery-card]').forEach(image=>{
+        const entry=deck[Number(image.dataset.galleryCard)%deck.length];if(!entry)return;
+        image.onerror=()=>image.remove();image.src=API+entry.image;
+      });
+      showNext();
     }).catch(()=>{}).finally(()=>clearTimeout(timeout));
   label();
 })();
