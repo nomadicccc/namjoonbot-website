@@ -1,5 +1,8 @@
 (() => {
   'use strict';
+  function publiclyDiscovered(card) {
+    return card.discovered === true || Number(card.printed) > 0;
+  }
   const scene=document.querySelector('.art'),card=document.querySelector('.photocard');
   const first=document.querySelector('.hero-image'),frame=document.querySelector('.card-art');
   const API=(window.NAMJOON_SITE?.apiBase||'').replace(/\/$/,'');
@@ -56,11 +59,11 @@
   window.addEventListener('pagehide',()=>{clearTimeout(timer);resetTilt();});
   window.addEventListener('pageshow',event=>{if(event.persisted)schedule();});
   const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),8000);
-  fetch(API+'/api/stats',{signal:controller.signal,cache:'no-store',credentials:'omit',referrerPolicy:'no-referrer'})
+  fetch(API+'/api/catalogue',{signal:controller.signal,cache:'no-store',credentials:'omit',referrerPolicy:'no-referrer'})
     .then(response=>{if(!response.ok)throw Error();return response.json();})
     .then(data=>{
-      const cards=Array.isArray(data.standard_cards)?data.standard_cards:[];
-      deck=cards.filter(item=>typeof item.image==='string'&&/^\/api\/art\/[a-z0-9_]+\.png$/.test(item.image));
+      const cards=Array.isArray(data.cards)?data.cards:[];
+      deck=cards.filter(item=>item.type==='standard'&&publiclyDiscovered(item)&&typeof item.image==='string'&&/^\/api\/catalogue\/art\/[a-z0-9_]+\.png$/.test(item.image));
       shuffle();
       document.querySelectorAll('[data-gallery-card]').forEach(image=>{
         const entry=deck[Number(image.dataset.galleryCard)%deck.length];if(!entry)return;

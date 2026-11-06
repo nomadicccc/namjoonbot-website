@@ -14,6 +14,9 @@ let mediaVersion = 0, imageURLs = new Set(), profileURLs = new Set();
 let token = sessionStorage.getItem('namjoon_session') || '';
 let catalogueReady = false, loginConfigured = false;
 let showCatalogueSpoilers = false;
+function publiclyDiscovered(card) {
+  return card.discovered === true || Number(card.printed) > 0;
+}
 function catalogueSpoilerHidden(card) {
   return pageKind === 'catalogue' && !showCatalogueSpoilers &&
     (card.type === 'secret' || (card.rarities || []).includes('secret_mythical'));
@@ -164,7 +167,7 @@ function populateSets(cards){
 }
 async function loadCatalogue(){
   if(pageKind==='catalogue'){status('Loading the catalogue…');$('refresh').disabled=true;grid.setAttribute('aria-busy','true');}
-  try{const data=await api('/api/catalogue');allCards=data.cards;catalogueReady=true;populateSets(allCards);if(pageKind==='catalogue')renderCatalogue();return data;}
+  try{const data=await api('/api/catalogue');allCards=data.cards.filter(publiclyDiscovered);catalogueReady=true;populateSets(allCards);if(pageKind==='catalogue')renderCatalogue();return {...data,cards:allCards};}
   catch(error){if(pageKind==='catalogue'){status(error.message,true);if(!catalogueReady)noResults('The catalogue is unavailable right now.');}throw error;}
   finally{if(pageKind==='catalogue'){$('refresh').disabled=false;grid.setAttribute('aria-busy','false');}}
 }
