@@ -1,0 +1,13 @@
+.event-panel{height:auto;align-self:start}
+.event-panel .event-scroll{overflow:visible;padding-right:0;scrollbar-gutter:auto}
+.event-panel .live-event:last-child{margin-bottom:0}
+.live-event[data-season="winter"]{--event-accent:#c6eafa;background:radial-gradient(ellipse at 100% 0,#9ecfe833,transparent 65%),linear-gradient(140deg,#263d57,#192538 85%);border-color:#9acbe65c;box-shadow:inset 0 1px 0 #e2f5ff14}
+.live-event[data-season="winter"] .event-phase{color:var(--event-accent)}
+.live-event[data-season="winter"] .event-title{color:#effaff;gap:15px}
+.live-event[data-season="winter"] .event-badge{width:64px;height:64px;filter:drop-shadow(0 3px 10px #acdafa26)}
+.event-badge-fallback{display:grid;place-items:center;width:64px;height:64px;flex-shrink:0;font-size:44px;color:var(--event-accent,#c5a4f4)}
+.event-countdown-label{font-size:12px!important;margin-top:24px!important;color:#c6dfed!important}
+.event-countdown{font-family:'Space Grotesk',sans-serif;font-size:clamp(23px,3vw,34px)!important;letter-spacing:-.5px;line-height:1.4;font-weight:600;color:#f1faff!important;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.event-start-date{color:#dfedf7}
+.event-preview-note{margin-top:22px!important;padding-top:16px;border-top:1px solid #d3edff24;font-size:12px!important;color:#bbd0df!important}
+@media(max-width:640px){.event-panel{height:auto}.event-countdown{font-size:27px!important}}

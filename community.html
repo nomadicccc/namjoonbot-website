@@ -157,7 +157,7 @@ select[hidden]{display:none!important}
 </style>
 <link rel="stylesheet" href="./market.css?v=1">
 <link rel="stylesheet" href="./homepage.css?v=20261105-shop-page">
-<link rel="stylesheet" href="./site-qol.css?v=20261105"><link rel="stylesheet" href="./member-header.css?v=20261106-community"></head>
+<link rel="stylesheet" href="./site-qol.css?v=20261105"><link rel="stylesheet" href="./member-header.css?v=20261106-community"><link rel="stylesheet" href="./community-events.css?v=20261106-winter"></head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="member-header"><nav class="member-inner" aria-label="Main navigation"><a class="member-brand" href="./" aria-label="NamjoonBot home"><span class="member-mark" aria-hidden="true">✳</span>NamjoonBot</a><div class="member-links"><a href="./" data-nav-page="index.html">Home</a><a href="./catalogue.html" data-nav-page="catalogue.html">Catalogue</a><a href="./shop.html" data-nav-page="shop.html">Shop</a><a href="./community.html" data-nav-page="community.html" aria-current="page">Community</a></div><div class="member-actions"><a class="member-add" href="https://discord.com/oauth2/authorize?client_id=1540789930329120908&amp;permissions=274878286848&amp;integration_type=0&amp;scope=bot+applications.commands"><span class="member-desktop-copy">Add to Discord ↗</span><span class="member-mobile-copy">Add bot ↗</span></a><a id="member-signin" class="member-signin" href="./account.html">Sign in</a><details id="member-account" class="member-account" hidden><summary aria-label="Open account navigation"><span id="member-avatar" class="member-avatar" aria-hidden="true">A</span><span class="member-chevron" aria-hidden="true">⌄</span></summary><div class="member-dropdown"><span id="member-name" class="member-name">Discord account</span><a href="./account.html#profile">Profile</a><a href="./account.html#collections">Collection progress</a><a href="./account.html#wishlist">Wishlist</a><a href="./account.html#inventory">Inventory</a><a href="./market.html">Market &amp; offers</a><a href="./account.html#binders">Binders</a><button id="member-signout" type="button">Sign out</button></div></details></div></nav></header>
@@ -178,12 +178,13 @@ select[hidden]{display:none!important}
 </div>
 <div class="live-grid" style="margin-top:22px">
 <article class="panel live-panel rankings-panel"><h3>Leaderboards</h3><label for="board-category" class="small-label">Leaderboard category</label><select id="board-category" disabled><option value="coins">Total coins earned</option><option value="packs">Packs opened</option><option value="unique">Unique cards collected</option><option value="mythicals">Mythicals pulled</option><option value="streak">Longest daily streak</option><option value="gifted">Cards gifted</option><option value="traded">Cards traded</option></select><div id="live-board"><p>Loading rankings…</p></div></article>
-<article class="panel live-panel event-panel"><div class="events-panel-header"><div class="eyebrow">Events &amp; challenges</div><a class="event-archive-link" href="./event-archive.html">Event Archive <span aria-hidden="true">↗</span></a></div><h3>Current Event</h3><div class="event-scroll" tabindex="0" role="region" aria-label="Event progress and Candy leaderboard"><div id="live-events"><p>Loading event details…</p></div><div class="candy-section"><h3>Candy Leaderboard</h3><div id="candy-board"><p>Loading the Candy leaderboard…</p></div></div></div><p class="scroll-note">Scroll for the Candy leaderboard ↓</p></article>
+<article class="panel live-panel event-panel"><div class="events-panel-header"><div class="eyebrow">Events &amp; challenges</div><a class="event-archive-link" href="./event-archive.html">Event Archive <span aria-hidden="true">↗</span></a></div><h3>Current &amp; Upcoming Events</h3><div class="event-scroll" role="region" aria-label="Current and upcoming events"><div id="live-events"><p>Winter Wonderland starts 1 December 2026 at midnight KST.</p></div></div></article>
 </div></section>
 <section id="recent-pulls" class="wrap timeline-section"><div class="section-head"><div><h2>Recent Secret Mythical Pulls</h2><p>The latest 12 pulls across NamjoonBot.</p></div><label class="spoiler-toggle" for="show-pull-spoilers"><input id="show-pull-spoilers" type="checkbox" role="switch" aria-controls="pull-timeline" aria-describedby="pull-spoiler-note"><span class="switch-track" aria-hidden="true"></span><span>Show spoilers</span></label></div><p id="pull-spoiler-note" class="spoiler-note">Card artwork and names stay hidden until you turn spoilers on.</p><div id="pull-timeline" tabindex="0" role="region" aria-label="Recent Secret Mythical pulls. Scroll horizontally to explore."><p class="pull-empty">Loading recent pulls…</p></div><p class="timeline-hint">Swipe or scroll sideways to explore the timeline →</p></section>
 </main>
 <footer><div class="wrap"><div class="footer-row"><span>NamjoonBot · Collect. Trade. Connect.</span><div class="footer-links"><a href="./catalogue.html">Card catalogue</a><a href="./account.html">My Collection</a><a href="./community.html">Community</a><a href="./market.html">Market</a><a href="./shop.html">Shop</a><a href="./privacy.html">Privacy Policy</a><a href="./terms.html">Terms of Service</a><a data-server href="https://discord.gg/Ec2n3S7j8S">Discord ↗</a><a data-server href="https://discord.gg/Ec2n3S7j8S">Updates ↗</a><a href="https://ko-fi.com/namjoonbot" target="_blank" rel="noopener noreferrer">Ko-fi ↗</a><a href="#main">Back to top ↑</a></div></div><p class="footer-note">An independent fan project. Not affiliated with BTS, BIGHIT MUSIC, HYBE, or Discord.</p></div></footer>
 <script src="./site-config.js"></script>
+<script src="./community-events.js?v=20261106-winter"></script>
 <script>
 // SITE SETTINGS: links can be changed here. Add your server ID to enable the
 // official Discord widget after enabling Server Widget in Discord settings.
@@ -209,7 +210,6 @@ if (/^\d{17,20}$/.test(siteSettings.discordServerId)) {
 const statusNode = document.getElementById('live-status');
 const boardNode = document.getElementById('live-board');
 const eventsNode = document.getElementById('live-events');
-const candyNode = document.getElementById('candy-board');
 const categoryNode = document.getElementById('board-category');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 let latestStats = null;
@@ -287,60 +287,7 @@ function renderBoard() {
   table.append(body); boardNode.append(table);
 }
 function renderEvents() {
-  const signature = JSON.stringify(latestStats.events);
-  if(signature === eventSignature) return;
-  eventSignature = signature;
-  eventsNode.replaceChildren();
-  candyNode.replaceChildren();
-  if (!latestStats.events.some(event => event.challenge)) candyNode.append(node('p','The next community Candy race will appear here when available.'));
-  if (!latestStats.events.length) { eventsNode.append(node('p','No events are active or scheduled right now. Check back for the next announcement.')); return; }
-  latestStats.events.forEach(event => {
-    const box = node('div'); box.className = 'live-event';
-    if(/halloween/i.test(event.name || ''))box.dataset.season='halloween';
-    const phase=node('span',event.phase==='upcoming'?'Upcoming':event.phase==='earning'?'Live event':'Event shop');phase.className='event-phase';box.append(phase);
-    const heading = node('div'); heading.className = 'event-title';
-    if(event.badge) {
-      const badge = node('img'); badge.src = event.badge; badge.alt = ''; badge.className = 'event-badge';
-      badge.width = 48; badge.height = 48; badge.onerror = () => badge.remove(); heading.append(badge);
-    }
-    heading.append(node('strong',event.name)); box.append(heading);
-    const date = event.phase === 'upcoming' ? event.starts_at : event.phase === 'earning' ? event.earning_ends_at : event.shop_ends_at;
-    const label = event.phase === 'upcoming' ? 'Starts' : event.phase === 'earning' ? 'Earn rewards until' : 'Shop open until';
-    box.append(node('p',label + ' ' + new Date(date).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'})));
-    if(event.challenge) {
-      const c = event.challenge;
-      box.append(node('p',number(c.total) + ' / ' + number(c.goal) + ' Candy · ' + c.percent + '% complete'));
-      const progress = node('progress'); progress.max = 100; progress.value = c.percent;
-      progress.setAttribute('aria-label',event.name + ' community challenge'); box.append(progress);
-      const milestones = node('ul'); milestones.className = 'live-milestones';
-      c.milestones.forEach(m => milestones.append(node('li',(c.percent >= m.percent ? '✓ ' : '') + m.percent + '% — ' + m.reward)));
-      box.append(milestones);
-      const leaders = node('div'); leaders.className = 'candy-leaders';
-      leaders.append(node('h4','The Candy leaderboard'));
-      leaders.append(node('p','Top 10 contributors · Ranked by Candy earned'));
-      const reward = node('div'); reward.className = 'reward-callout';
-      reward.append(node('strong','✦ Final top 5 → Secret OT7 Halloween card'),
-        node('p','Five exclusive copies. Finish in the top five when Candy earning ends to earn your numbered OT7 card.'),
-        node('p','At least ' + number(c.minimum_earned || 100) + ' Candy earned is required. Current positions can change until the event closes.'));
-      leaders.append(reward);
-      if(!c.leaders.length) leaders.append(node('p','No Candy contributions recorded yet.'));
-      c.leaders.slice(0,10).forEach(player => {
-        if(player.rank === 6) {const divider=node('div','Chasing the top five · Places 6–10'); divider.className='candy-divider'; leaders.append(divider);}
-        const row=node('div'); row.className='candy-row' + (player.rank <= 5 ? ' top-five' : '');
-        const rank=node('span','#' + player.rank); rank.className='candy-rank';
-        const person=node('div'); person.className='candy-person'; person.append(playerCell(player));
-        if(player.rank <= 5) {
-          const eligible=Number(player.score) >= Number(c.minimum_earned || 100);
-          const marker=node('span',eligible ? '✦ OT7 reward position' : '✦ Top-five position · Reach minimum Candy');
-          marker.className='reward-spot'; person.append(marker);
-        }
-        const score=node('span',number(player.score)); score.className='candy-score'; score.append(node('small','Candy'));
-        row.append(rank,person,score); leaders.append(row);
-      });
-      candyNode.append(leaders);
-    }
-    eventsNode.append(box);
-  });
+  window.NamjoonCommunityEvents.render(eventsNode, latestStats?.events || []);
 }
 function updatePullTimes() {
   document.querySelectorAll('.pull-time').forEach(element => {
@@ -629,6 +576,7 @@ function startLive() {
   } else {pollStats(++generation);}
 }
 document.addEventListener('visibilitychange',() => {if(document.hidden) stopLive(); else startLive();});
+renderEvents();
 startLive();
 </script>
 <a class="kofi-float" href="https://ko-fi.com/namjoonbot" target="_blank" rel="noopener noreferrer" aria-label="Support NamjoonBot on Ko-fi (opens in a new tab)" aria-describedby="kofi-tooltip"><span class="kofi-float-icon" aria-hidden="true">♡</span><span>Support on Ko-fi ↗</span><span class="kofi-touch-note">Optional one-off donations</span><span id="kofi-tooltip" class="kofi-tooltip" role="tooltip"><strong>A little love for NamjoonBot ♡</strong>Enjoy the bot? You can send a one-off donation on Ko-fi. Support is completely optional and always appreciated.</span></a>
