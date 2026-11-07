@@ -90,6 +90,7 @@
     rules.append(el('summary', 'Rewards & rules'));
     const body = el('div', undefined, 'cq-rules-body');
     listItem(body, 'Community Boosted Packs', 'Choose a released permanent set. Each pack contains 3 Rare-or-better cards, including at least 1 signed card. Duplicates are possible.');
+    listItem(body, 'Booster bundle', '3 Lucky Petals, 3 Bias Bouquets, 3 Signature Scents and 1 Rare Bloom.');
     listItem(body, 'Rarity odds · each card', 'Rare 70% · Legendary 24% · Standard Mythical 4% · Exclusive Mythical 1.9% · Secret Mythical 0.1%. One randomly selected slot is guaranteed signed; the other two have a 3% signature chance each.');
     listItem(body, 'Frame Choice Voucher', 'Redeem one regular-shop frame, even outside its featured week. Preview before choosing. Event-exclusive and retired frames are excluded.');
     listItem(body, 'Mythical Mystery Reward', 'One permanent-set card: 60% unsigned standard Mythical, 35% signed standard Mythical, 5% Secret Mythical. Duplicates are possible. No extra signature or birthday rolls.');
