@@ -177,7 +177,14 @@ select[hidden]{display:none!important}
   <p class="counter-footnote">Select Cards Pulled to see the rarity breakdown.</p>
 </div>
 <div class="live-grid" style="margin-top:22px">
-<article class="panel live-panel rankings-panel"><h3>Leaderboards</h3><label for="board-category" class="small-label">Leaderboard category</label><select id="board-category" disabled><option value="coins">Total coins earned</option><option value="packs">Packs opened</option><option value="unique">Unique cards collected</option><option value="mythicals">Mythicals pulled</option><option value="streak">Longest daily streak</option><option value="gifted">Cards gifted</option><option value="traded">Cards traded</option></select><div id="live-board"><p>Loading rankings…</p></div></article>
+<article class="panel live-panel rankings-panel">
+  <h3>Leaderboards</h3>
+  <label for="board-category" class="small-label">Leaderboard category</label>
+  <select id="board-category" disabled><option value="coins">Coins earned</option><option value="packs">Packs opened</option><option value="unique">Unique cards collected</option><option value="mythicals">Mythicals pulled</option><option value="streak">Longest daily streak</option><option value="gifted">Cards gifted</option><option value="traded">Cards traded</option></select>
+  <label for="board-period" class="small-label">Time period</label>
+  <select id="board-period" disabled><option value="lifetime">Lifetime</option><option value="7d">Last 7 days</option><option value="30d">Last 30 days</option></select>
+  <div id="live-board"><p>Loading rankings…</p></div>
+</article>
 <article class="panel live-panel event-panel"><div class="events-panel-header"><div class="eyebrow">Events &amp; challenges</div><a id="community-quest-link" class="community-quest-link" href="#community-quest-panel" hidden>Community Quest</a><a class="event-archive-link" href="./event-archive.html">Event Archive <span aria-hidden="true">↗</span></a></div><h3>Current &amp; Upcoming Events</h3><div class="event-scroll" role="region" aria-label="Current and upcoming events"><div id="live-events"><p>Winter Wonderland starts 1 December 2026 at midnight KST.</p></div><section id="community-quest-panel" class="community-quest" aria-label="Active community quest" hidden></section></div></article>
 </div></section>
 <section id="recent-pulls" class="wrap timeline-section"><div class="section-head"><div><h2>Recent Secret Mythical Pulls</h2><p>The latest 12 pulls across NamjoonBot.</p></div><label class="spoiler-toggle" for="show-pull-spoilers"><input id="show-pull-spoilers" type="checkbox" role="switch" aria-controls="pull-timeline" aria-describedby="pull-spoiler-note"><span class="switch-track" aria-hidden="true"></span><span>Show spoilers</span></label></div><p id="pull-spoiler-note" class="spoiler-note">Card artwork and names stay hidden until you turn spoilers on.</p><div id="pull-timeline" tabindex="0" role="region" aria-label="Recent Secret Mythical pulls. Scroll horizontally to explore."><p class="pull-empty">Loading recent pulls…</p></div><p class="timeline-hint">Swipe or scroll sideways to explore the timeline →</p></section>
@@ -212,6 +219,7 @@ const statusNode = document.getElementById('live-status');
 const boardNode = document.getElementById('live-board');
 const eventsNode = document.getElementById('live-events');
 const categoryNode = document.getElementById('board-category');
+const boardPeriod = document.getElementById('board-period');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 let latestStats = null;
 let boardSignature = '';
@@ -267,14 +275,20 @@ function playerCell(player) {
 }
 function renderBoard() {
   if (!latestStats) return;
-  const board = latestStats.leaderboards[categoryNode.value];
-  const signature = JSON.stringify([categoryNode.value,board]);
+  const category = categoryNode.value;
+  const periods = latestStats.leaderboard_periods;
+  boardPeriod.disabled = !periods?.['7d']?.[category] || !periods?.['30d']?.[category];
+  if (boardPeriod.disabled) boardPeriod.value = 'lifetime';
+  const period = boardPeriod.value;
+  const periodLabel = boardPeriod.options[boardPeriod.selectedIndex].textContent;
+  const board = period === 'lifetime' ? latestStats.leaderboards[category] : periods[period][category];
+  const signature = JSON.stringify([category,period,board]);
   if(signature === boardSignature) return;
   boardSignature = signature;
   boardNode.replaceChildren();
-  if (!board || !board.players.length) { boardNode.append(node('p','No ranked activity in this category yet.')); return; }
+  if (!board || !board.players.length) { boardNode.append(node('p','No ranked activity for this period.')); return; }
   const table = node('table'); table.className = 'live-board';
-  table.append(node('caption','Global rankings · Top 10'));
+  table.append(node('caption',`${periodLabel} · Global top 10`));
   const head = node('thead'); const headings = node('tr');
   ['Rank','Collector','Score'].forEach(label => { const th = node('th',label); th.scope = 'col'; headings.append(th); });
   head.append(headings); table.append(head);
@@ -431,6 +445,7 @@ function acceptStats(data) {
   renderBoard(); renderEvents(); renderPulls(); renderCommunityCounts();  freshness();
 }
 categoryNode.addEventListener('change',renderBoard);
+boardPeriod.addEventListener('change',renderBoard);
 
 /* Progressive enhancement: the original selects remain the source of truth. */
 const themedDropdowns = [];
@@ -542,6 +557,7 @@ function enhanceDropdown(select, labelText) {
   themedDropdowns.push({close});
 }
 enhanceDropdown(categoryNode,'Leaderboard Category');
+enhanceDropdown(boardPeriod,'Leaderboard Time Period');
 enhanceDropdown(communityPeriod,'Time Period');
 
 const apiBase = siteSettings.statsApiBase.replace(/\/$/,'');
@@ -586,5 +602,3 @@ startLive();
 
 <script src="./site-qol.js?v=20261105"></script><script src="./member-header.js?v=20261105-nav"></script></body>
 </html>
-
-
