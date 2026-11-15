@@ -25,14 +25,14 @@
   function state(quest, updatedAt, now = Date.now()) {
     if (!quest || quest.id !== 'pack_mentality' || quest.active !== true) return null;
     const starts = Date.parse(quest.starts_at), ends = Date.parse(quest.ends_at);
-    const updated = Date.parse(updatedAt);
+    const updated = Date.parse(updatedAt), claimEnd=Date.parse(quest.claim_ends_at||quest.ends_at);
     if (![starts, ends, updated].every(Number.isFinite) || starts >= ends) return null;
-    if (now < starts || now >= ends || now - updated > MAX_AGE || updated > now + 120000) return null;
+    if (!Number.isFinite(claimEnd)||claimEnd<ends||now < starts || now >= claimEnd || now - updated > MAX_AGE || updated > now + 120000) return null;
     if (!Number.isSafeInteger(quest.total) || quest.total < 0 ||
         !Number.isSafeInteger(quest.goal) || quest.goal <= 0) return null;
     if (!Number.isSafeInteger(quest.minimum_contribution) || quest.minimum_contribution < 1) return null;
     const percent = quest.total * 100 / quest.goal;
-    return {...quest, starts, ends, percent, complete: quest.total >= quest.goal,
+    return {...quest, starts, ends, claimEnd, phase:now>=ends?'claiming':'live', percent, complete: quest.total >= quest.goal,
       next: [...milestones.map(m => [m.percent, m.name]), ...bonus]
         .find(([p]) => quest.total < Math.ceil(quest.goal * p / 100)) || null};
   }
@@ -55,8 +55,8 @@
     const top = el('div', undefined, 'cq-top');
     const title = el('div');
     title.append(el('span', 'Community Quest', 'cq-eyebrow'), el('h2', '📦 Pack Mentality'));
-    top.append(title, el('span', s.complete ? 'Goal complete ✓' : 'Live community quest', 'cq-status'));
-    root.append(top, el('p', 'Open packs together to unlock rewards for everyone.', 'cq-intro'));
+    top.append(title, el('span', s.phase==='claiming'?'Rewards available':s.complete ? 'Goal complete ✓' : 'Live community quest', 'cq-status'));
+    root.append(top, el('p', s.phase==='claiming'?'Contributions have closed. Qualifying players can still claim unlocked rewards.':'Open packs together to unlock rewards for everyone.', 'cq-intro'));
     const total = el('div', undefined, 'cq-total');
     total.append(el('strong', `${number(s.total)} / ${number(s.goal)} packs`),
       el('span', `${number(Math.round(s.percent * 10) / 10)}%`, 'cq-percent'));
@@ -65,9 +65,10 @@
     root.append(total, progress);
     const timerLine = el('p', undefined, 'cq-timer-line');
     const timer = el('span', '', 'cq-time'); timer.setAttribute('role', 'timer');
-    const date = el('time', new Date(s.ends).toLocaleString('en-GB', {dateStyle: 'medium', timeStyle: 'short'}));
-    date.dateTime = s.ends_at;
-    timerLine.append('Ends in ', timer, ' · ', date, ' (your local time)'); root.append(timerLine);
+    const deadline=s.phase==='claiming'?s.claimEnd:s.ends;
+    const date = el('time', new Date(deadline).toLocaleString('en-GB', {timeZone:'Asia/Seoul',dateStyle: 'medium', timeStyle: 'short'}));
+    date.dateTime = new Date(deadline).toISOString();
+    timerLine.append(s.phase==='claiming'?'Claims close in ':'Ends in ', timer, ' · ', date, ' KST'); root.append(timerLine);
     if (s.complete) root.append(el('p', 'You did it! Every main milestone is unlocked. Anything beyond this is a bonus.', 'cq-celebration'));
     if (s.next) {
       const threshold = Math.ceil(s.goal * s.next[0] / 100);
@@ -89,15 +90,15 @@
     const rules = el('details', undefined, 'cq-rules'); rules.open = wasOpen;
     rules.append(el('summary', 'Rewards & rules'));
     const body = el('div', undefined, 'cq-rules-body');
-    listItem(body, 'Community Boosted Packs', 'Choose a released permanent set. Each pack contains 3 Rare-or-better cards, including at least 1 signed card. Duplicates are possible.');
+    listItem(body, 'Community Boosted Packs', 'Choose a shop pack set. Each pack contains 3 Rare-or-better cards, including at least 1 signed card. Duplicates are possible.');
     listItem(body, 'Booster bundle', '3 Lucky Petals, 3 Bias Bouquets, 3 Signature Scents and 1 Rare Bloom.');
     listItem(body, 'Rarity odds · each card', 'Rare 70% · Legendary 24% · Standard Mythical 4% · Exclusive Mythical 1.9% · Secret Mythical 0.1%. One randomly selected slot is guaranteed signed; the other two have a 3% signature chance each.');
     listItem(body, 'Frame Choice Voucher', 'Redeem one regular-shop frame, even outside its featured week. Preview before choosing. Event-exclusive and retired frames are excluded.');
-    listItem(body, 'Mythical Mystery Reward', 'One permanent-set card: 60% unsigned standard Mythical, 35% signed standard Mythical, 5% Secret Mythical. Duplicates are possible. No extra signature or birthday rolls.');
-    listItem(body, 'What counts', 'One purchased permanent-set pack or daily streak pack opened equals one contribution. Pack Mentality reward packs do not contribute. There is no daily contribution cap or individual leaderboard.');
+    listItem(body, 'Mythical Mystery Reward', 'One card from a shop pack set: 60% unsigned standard Mythical, 35% signed standard Mythical, 5% Secret Mythical. Duplicates are possible. No extra signature or birthday rolls.');
+    listItem(body, 'What counts', 'One pack purchased from shops or daily streak pack opened equals one contribution. Pack Mentality reward packs do not contribute. There is no daily contribution cap or individual leaderboard.');
     listItem(body, 'Claiming', 'Qualify before contributions close to claim every unlocked milestone, including earlier milestones. Claim once per milestone in Discord. The website never awards cards, packs, or vouchers.');
     if (s.claim_ends_at && Number.isFinite(Date.parse(s.claim_ends_at)) && Date.parse(s.claim_ends_at) >= s.ends) {
-      listItem(body, 'Reward claim deadline', new Date(s.claim_ends_at).toLocaleString('en-GB', {dateStyle: 'long', timeStyle: 'short'}) + ' · your local time.');
+      listItem(body, 'Reward claim deadline', new Date(s.claim_ends_at).toLocaleString('en-GB', {timeZone:'Asia/Seoul',dateStyle:'long',timeStyle:'short'}) + ' KST.');
     }
     rules.append(body); root.append(rules);
     if (s.complete) {
@@ -114,10 +115,10 @@
     if (!root) return;
     const now = Date.now(), s = state(quest, updated, now);
     if (!s) { hide(); return; }
-    const nextSignature = JSON.stringify(quest);
+    const nextSignature = JSON.stringify([quest,s.phase]);
     if (nextSignature !== signature || root.hidden) { draw(s); signature = nextSignature; }
     const timer = root.querySelector('.cq-time');
-    if (timer) timer.textContent = remaining(s.ends, now);
+    if (timer) timer.textContent = remaining(s.phase==='claiming'?s.claimEnd:s.ends, now);
   }
   function update(data, updatedAt) { quest = data; updated = updatedAt; refresh(); }
   window.NamjoonCommunityQuest = {update, state, remaining};

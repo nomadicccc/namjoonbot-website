@@ -10,3 +10,5 @@
 .cq-eligibility{font-size:12px;color:#b9aec9;margin-top:20px;line-height:1.8}.cq-eligibility strong{color:#e5d6f5}.community-quest .cq-rules{padding:14px 0 0;margin-top:14px;border-bottom:0;border-top:1px solid #ffffff12}.cq-rules summary{font-size:12px;color:#d4b6f8}.cq-rules-body{display:grid;gap:17px;margin-top:18px}.cq-detail h4{margin:0 0 5px;font-size:13px;color:#f4effb}.cq-rules-body p{font-size:12px;color:#b9aec9;line-height:1.8}.community-quest-link{font-size:12px;color:#d4b6f8;padding:7px 10px;border:1px solid #c5a4f43d;border-radius:7px;white-space:nowrap}
 @media(max-width:900px){.cq-milestones{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:480px){.community-quest{padding:20px}.community-quest h2{font-size:24px}.cq-milestones{grid-template-columns:1fr}.cq-status{font-size:10px}.cq-total strong{font-size:22px}.cq-milestone{padding:12px}.cq-milestone h3{margin:4px 0}.cq-timer-line{line-height:1.8}}
+#published-community-quests[hidden],#published-community-quest-link[hidden]{display:none!important}
+#published-community-quests .cq-rules>.cq-milestones{margin-top:14px}
