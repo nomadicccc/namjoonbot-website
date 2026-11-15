@@ -10,4 +10,37 @@
 .event-countdown{font-family:'Space Grotesk',sans-serif;font-size:clamp(23px,3vw,34px)!important;letter-spacing:-.5px;line-height:1.4;font-weight:600;color:#f1faff!important;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .event-start-date{color:#dfedf7}
 .event-preview-note{margin-top:22px!important;padding-top:16px;border-top:1px solid #d3edff24;font-size:12px!important;color:#bbd0df!important}
+
+/* The Halloween panel's seasonal treatment, in ice blue rather than rose. */
+.live-event[data-season="winter"]{--event-accent:#bde7fa;--winter-muted:#aac4d6;background:radial-gradient(ellipse at 100% 0,#77b9da21,transparent 62%),linear-gradient(145deg,#20384c,#152331 90%);border-color:#9acbe63d;box-shadow:inset 0 1px 0 #e9faff0d,0 12px 32px #050c141a}
+.live-event[data-season="winter"][data-state="active"] .event-countdown-label{margin-top:18px!important;margin-bottom:3px!important;font-size:11px!important;color:#9bb9cc!important}
+.live-event[data-season="winter"][data-state="active"] .event-countdown{font-size:20px!important;letter-spacing:.15px;margin-top:0!important}
+.live-event[data-season="winter"] .event-title strong{font-size:22px;letter-spacing:-.6px;font-family:'Space Grotesk',sans-serif}
+.winter-community{margin-top:24px;padding-top:22px;border-top:1px solid #bde7fa20}
+.winter-quest-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.winter-community h4{font-size:14px;font-weight:600;margin:0;letter-spacing:.1px;color:#e8f6fe}
+.winter-percent{border:1px solid #bde7fa33;background:#c9eeff0c;border-radius:7px;padding:5px 9px;color:#d7f2ff;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+.live-event .winter-total{display:flex;align-items:baseline;gap:9px;margin:0 0 13px!important;color:#b5cede!important;font-size:12px!important}
+.winter-total strong{font:600 29px/1.2 'Space Grotesk',sans-serif;letter-spacing:-1px;color:#f1faff}
+.live-event[data-season="winter"] .winter-community progress{appearance:none;-webkit-appearance:none;display:block;width:100%;height:11px;border:1px solid #bde7fa17;border-radius:20px;overflow:hidden;background:#0d1b29;accent-color:#a6ddf5;box-shadow:inset 0 2px 4px #0003;margin:0 0 9px}
+.live-event[data-season="winter"] .winter-community progress::-webkit-progress-bar{background:#0d1b29;border-radius:20px;box-shadow:inset 0 2px 4px #0003}
+.live-event[data-season="winter"] .winter-community progress::-webkit-progress-value{background:linear-gradient(90deg,#4b91b4 0%,#86c9e7 55%,#d0f0ff 100%);border-radius:20px;box-shadow:inset 0 1px 0 #ffffff45}
+.live-event[data-season="winter"] .winter-community progress::-moz-progress-bar{background:linear-gradient(90deg,#4b91b4,#86c9e7 55%,#d0f0ff);border-radius:20px}
+.winter-range{font-size:11px!important;color:#9ebacc!important;line-height:1.7!important}
+.winter-prizes{margin:20px 0 24px;border:1px solid #bde7fa24;border-radius:10px;background:#10233366;overflow:hidden}
+.winter-prizes summary{padding:13px 15px;cursor:pointer;font-size:12px;font-weight:600;color:#d5edfa;transition:background .2s}.winter-prizes summary:hover{background:#bde7fa09}
+.winter-prizes[open] summary{border-bottom:1px solid #bde7fa1c}
+.winter-prize-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:12px}
+.winter-milestone{padding:13px;border:1px solid #bde7fa18;border-radius:8px;background:#bde7fa04;min-width:0}
+.winter-milestone[data-unlocked="true"]{border-color:#a8def542;background:#a8def50a}
+.winter-milestone strong{font-size:11px;font-weight:600;color:#cfeeff}.winter-milestone p{font-size:11px!important;line-height:1.7!important;color:#bdd0dc!important;margin:7px 0!important}.winter-milestone small{font-size:10px;color:#91afc2;line-height:1.6}
+.winter-board{margin-top:23px}.winter-board h4{margin:0 0 11px;font-size:12px;letter-spacing:.4px}
+.winter-player{display:flex;gap:10px;align-items:center;padding:11px 12px;margin:0 0 7px;border:1px solid #bde7fa17;border-radius:9px;background:#10223066;min-width:0}
+.winter-player[data-rank="1"]{border-color:#bce8ff40;background:linear-gradient(100deg,#9ad9fa12,#10223066)}
+.winter-player img{border-radius:50%;object-fit:cover;border:1px solid #c9efff26;flex-shrink:0}
+.winter-player-details{flex:1;min-width:0;overflow-wrap:anywhere}.winter-player-details strong{font-size:12px;font-weight:500;color:#e6f3fb}
+.winter-rank{min-width:22px;font:500 12px 'Space Grotesk',sans-serif;color:#a6ccdf}
+.winter-player .winter-gift-total{max-width:92px;flex-shrink:0;text-align:right;font-size:10px;line-height:1.6;color:#b4d6e8;font-variant-numeric:tabular-nums}
+.winter-player .winter-win-chance{display:block;color:#a1c9df;font-size:10px;margin-top:3px}
+@media(max-width:480px){.winter-prize-grid{grid-template-columns:1fr}.winter-player{padding:10px 9px;gap:8px}.winter-total strong{font-size:26px}.live-event[data-season="winter"] .event-title strong{font-size:19px}.winter-player .winter-gift-total{max-width:75px}.winter-community{padding-top:18px}}
 @media(max-width:640px){.event-panel{height:auto}.event-countdown{font-size:27px!important}}
