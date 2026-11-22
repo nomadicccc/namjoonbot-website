@@ -107,18 +107,7 @@ function renderCommunityQuest(entry){
  const heading=el('div',undefined,'section-title');
  heading.append(el('h3','Milestones'),el('small',number(entry.goal)+'-pack goal'));
  panel.append(heading);
- const milestones=el('ul',undefined,'recap-milestones');
- for(const milestone of entry.milestones){
-  const bonus=milestone.percent>100;
-  const reached=entry.total*100>=entry.goal*milestone.percent;
-  if(bonus&&!reached)continue;
-  const row=el('li',undefined,bonus?'bonus-reached':undefined);
-  const target=el('div');
-  target.append(el('strong',milestone.percent+'%'),el('small',number(entry.goal*milestone.percent/100)+' packs'));
-  row.append(target,el('span',milestone.reward),el('span',bonus?'Bonus reached':reached?'Reached':'Not reached',reached?'milestone-reached':'milestone-status'));
-  milestones.append(row);
- }
- panel.append(milestones);
+ panel.append(window.NamjoonQuestStandings.renderMilestones(entry));
  article.append(panel);
  article.append(window.NamjoonQuestStandings.render(entry.topContributors||[]));
  return article;

@@ -11,3 +11,10 @@
 .quest-standing-name{font:700 12px/1.4 system-ui,sans-serif;overflow-wrap:anywhere;min-width:0}
 .quest-standing .supporter-pill{display:inline-flex;align-items:center;gap:3px;flex-shrink:0;white-space:nowrap;border-radius:999px;padding:2px 8px;background:linear-gradient(115deg,#63418e,#82529c);border:1px solid #d6b1f552;color:#fff0ff;font-size:10px;font-weight:700;line-height:1.6;letter-spacing:.15px}
 .community-quest .quest-standings{margin:14px 0;padding:0}
+.quest-milestone-checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 20px;list-style:none;margin:0;padding:0}
+.quest-milestone-checks li{display:flex;gap:9px;font-size:10px;color:var(--muted,#b9aec9)}
+.quest-milestone-checks strong{min-width:38px;white-space:nowrap;color:var(--accent,#d0b4f5)}
+.quest-milestone-checks .bonus-reached{grid-column:1/-1;color:#f5d698}
+.quest-milestone-checks .bonus-reached strong{color:inherit}
+.community-quest .quest-milestone-checks{margin-top:14px}
+@media(max-width:700px){.quest-milestone-checks{grid-template-columns:1fr}}

@@ -22,13 +22,6 @@ main{padding:36px 40px 90px;min-width:0;outline:none}.event-detail{--accent:#d0b
 .archive-categories a{padding:6px 9px;border:1px solid var(--line);border-radius:8px;color:var(--muted);font-size:12px}
 .archive-categories a[aria-current=true]{background:#39294b;border-color:#c5a4f47a;color:var(--ink)}
 .recap-stats{grid-template-columns:repeat(3,minmax(0,1fr))}
-.recap-milestones{list-style:none;margin:0;padding:0;display:grid;gap:8px}
-.recap-milestones li{display:grid;grid-template-columns:minmax(60px,1fr) minmax(0,3fr) auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:8px}
-.recap-milestones strong,.recap-milestones small{display:block}
-.recap-milestones small,.milestone-status{color:var(--muted);font-size:11px}
-.milestone-reached{color:var(--accent);font-size:11px;font-weight:700}
-.recap-milestones .bonus-reached{border-color:#eac98588;background:#eac98512}
-.bonus-reached strong,.bonus-reached .milestone-reached{color:#f5d698}
 .community-recap .event-hero{padding:18px 20px}
 .community-recap .hero-top{margin-bottom:10px}
 .community-recap .event-dates{margin-top:12px;padding-top:10px}
@@ -37,5 +30,3 @@ main{padding:36px 40px 90px;min-width:0;outline:none}.event-detail{--accent:#d0b
 .community-recap .stat dd{margin-top:2px}
 .community-recap .quest{padding:14px;margin-bottom:16px}
 .community-recap .section-title{margin-bottom:9px}
-.recap-milestones{gap:5px}
-.recap-milestones li{padding:5px 8px}

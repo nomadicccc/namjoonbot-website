@@ -69,6 +69,7 @@
   function drawFinal(entry) {
     root.replaceChildren(questHeader(entry.name, 'Final results'));
     appendProgress(entry);
+    root.append(window.NamjoonQuestStandings.renderMilestones(entry));
     const archive = el('a', 'View the full recap', 'community-quest-link');
     archive.href = './event-archive.html#' + encodeURIComponent(entry.id);
     root.append(window.NamjoonQuestStandings.render(entry.topContributors), archive);

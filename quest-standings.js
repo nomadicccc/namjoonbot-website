@@ -47,5 +47,20 @@
     return section;
   }
 
-  window.NamjoonQuestStandings = {render};
+  function renderMilestones(entry) {
+    const list = element('ul', 'quest-milestone-checks');
+    list.setAttribute('aria-label', 'Community quest milestones');
+    for (const milestone of entry.milestones) {
+      const bonus = milestone.percent > 100;
+      const reached = entry.total * 100 >= entry.goal * milestone.percent;
+      if (bonus && !reached) continue;
+      const row = element('li', bonus ? 'bonus-reached' : '');
+      row.append(element('strong', '', (reached ? '\u2713 ' : '') + milestone.percent + '%'),
+        element('span', '', milestone.reward));
+      list.append(row);
+    }
+    return list;
+  }
+
+  window.NamjoonQuestStandings = {render, renderMilestones};
 })();
