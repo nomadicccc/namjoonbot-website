@@ -21,22 +21,20 @@ function artwork(item,label=item.name){
 }
 function section(title,note){const wrapper=el('section',undefined,'collection-section'),heading=el('div',undefined,'section-title');heading.append(el('h3',title));if(note)heading.append(el('small',note));wrapper.append(heading);return wrapper;}
 
-function contributorSection(event, pending, limit=5, unit=event.quest.unit){
+function contributorSection(event, pending){
  const section=el('section',undefined,'contributors');
  const heading=el('div',undefined,'section-title');
- heading.append(el('h3','Top '+limit+(limit===10?' Competitors':' Contributors')));
- const players=(event.topContributors||[]).filter(player=>player.displayName?.trim()).slice(0,limit);
+ heading.append(el('h3','Top 5 Contributors'));
+ const players=(event.topContributors||[]).filter(player=>player.displayName?.trim()).slice(0,5);
  const ready=!pending&&players.length>0;
  heading.append(el('small',ready?'Final standings':'Final standings pending'));
  section.append(heading);
  if(!ready){section.append(el('p','The top contributors will appear here once earning closes and the results are confirmed.','contributors-pending'));return section;}
  const board=el('ol',undefined,'contributors-board');
- board.setAttribute('aria-label','Final top '+limit+' contributors');
- let rank=0;
+ board.setAttribute('aria-label','Final top five contributors');
  players.forEach((player,index)=>{
   const row=el('li',undefined,'contributor');
-  if(limit===5||index===0||player.contributed!==players[index-1].contributed)rank=index+1;
-  row.append(el('span','#'+rank,'contributor-rank'));
+  row.append(el('span','#'+(index+1),'contributor-rank'));
   const name=player.displayName;
   const portrait=el('span',undefined,'contributor-avatar');
   const initials=el('span',Array.from(name)[0].toLocaleUpperCase(),'contributor-initial');
@@ -45,7 +43,7 @@ function contributorSection(event, pending, limit=5, unit=event.quest.unit){
   if(src){const avatar=el('img');avatar.alt='';avatar.loading='lazy';avatar.decoding='async';avatar.width=28;avatar.height=28;avatar.src=src;avatar.addEventListener('error',()=>avatar.remove(),{once:true});portrait.append(avatar);}
   const info=el('div',undefined,'contributor-info');
   const label=el('bdi',name,'contributor-name');
-  const score=el('span',present(player.contributed)?number(player.contributed)+' '+unit:'Total pending','contributor-score');
+  const score=el('span',present(player.contributed)?number(player.contributed)+' '+event.quest.unit:'Total pending','contributor-score');
   info.append(label,score);row.append(portrait,info);board.append(row);
  });
  section.append(board);return section;
@@ -122,7 +120,7 @@ function renderCommunityQuest(entry){
  }
  panel.append(milestones);
  article.append(panel);
- article.append(contributorSection(entry,false,10,'packs'));
+ article.append(window.NamjoonQuestStandings.render(entry.topContributors||[]));
  return article;
 }
 

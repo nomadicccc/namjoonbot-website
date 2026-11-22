@@ -187,52 +187,62 @@
         {
           "displayName": "sleeplessBTS",
           "avatar": "https://cdn.discordapp.com/avatars/757190645474394152/b9532de72864ee044aade06195c28a9f.png?size=128",
-          "contributed": 867
+          "contributed": 867,
+          "supporter": true
         },
         {
           "displayName": "angie",
           "avatar": "https://cdn.discordapp.com/avatars/1232994498800255067/c1e9057b79d675d37ad73482c93e0e56.png?size=128",
-          "contributed": 854
+          "contributed": 854,
+          "supporter": true
         },
         {
           "displayName": "\u02da\u208a\u2027\ua4b0\u10d0cara\u0ed2\ua4b1 \u2027\u208a\u02da",
           "avatar": "https://cdn.discordapp.com/avatars/524694887174504458/a_2d6d89d3f492716e7a8ce151749bf55b.gif?size=128",
-          "contributed": 842
+          "contributed": 842,
+          "supporter": true
         },
         {
           "displayName": "syd",
           "avatar": "https://cdn.discordapp.com/avatars/559150693051793419/60c692c73f6b36cfd14b96412773ad9f.png?size=128",
-          "contributed": 551
+          "contributed": 551,
+          "supporter": false
         },
         {
           "displayName": "\u20df",
           "avatar": "https://cdn.discordapp.com/avatars/1519963776957288469/237ed1dbc474648f702a9d4f90a7d184.png?size=128",
-          "contributed": 538
+          "contributed": 538,
+          "supporter": false
         },
         {
           "displayName": "sammy_",
           "avatar": "https://cdn.discordapp.com/avatars/699969633280589905/2cbff58f03f8d68e20698af2c0e63da6.png?size=128",
-          "contributed": 518
+          "contributed": 518,
+          "supporter": false
         },
         {
           "displayName": "arem \u27ed\u27ec",
           "avatar": "https://cdn.discordapp.com/avatars/966267573983395860/7639d07a2053658005f7c78f835f9405.png?size=128",
-          "contributed": 483
+          "contributed": 483,
+          "supporter": false
         },
         {
           "displayName": "\ud83e\udebb \u2022 ari\u044f\u00e5ng \u2022 \u2299\u229d\u229c",
           "avatar": "https://cdn.discordapp.com/avatars/1328740976495300628/2439291042ff607edeb90cb6bcabe141.png?size=128",
-          "contributed": 483
+          "contributed": 483,
+          "supporter": false
         },
         {
           "displayName": "\u20df\u20df\u20df\u20df",
           "avatar": "https://cdn.discordapp.com/avatars/1272256813902860288/a_de75e199e1af62198afe46871d939918.gif?size=128",
-          "contributed": 478
+          "contributed": 478,
+          "supporter": false
         },
         {
           "displayName": "holly",
           "avatar": "https://cdn.discordapp.com/avatars/249575728419569665/a_d458706d9381f3cc46418140b06d2917.gif?size=128",
-          "contributed": 450
+          "contributed": 450,
+          "supporter": true
         }
       ]
     }

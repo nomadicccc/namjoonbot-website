@@ -1,0 +1,13 @@
+.quest-standings{container-type:inline-size}
+.quest-standings .quest-standings-title{margin:0 0 9px;font-size:15px}
+.quest-standings-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;list-style:none;padding:0;margin:0}
+@container (max-width:605px){.quest-standings-list{grid-template-columns:1fr}}
+.quest-standing{display:grid;grid-template-columns:22px 25px minmax(0,1fr) auto;gap:7px;align-items:center;padding:5px 8px;border:1px solid #c5a4f433;border-radius:9px;background:#c5a4f408}
+.quest-standing-rank,.quest-standing-score{color:#d0b4f5;font-size:10px;white-space:nowrap}
+.quest-standing-rank{font-weight:700}
+.quest-standing-avatar{position:relative;display:grid;place-items:center;width:25px;height:25px;border-radius:50%;overflow:hidden;background:#39294b;color:#d0b4f5}
+.quest-standing-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.quest-standing-identity{display:flex;align-items:center;gap:3px 6px;flex-wrap:wrap;min-width:0}
+.quest-standing-name{font:700 12px/1.4 system-ui,sans-serif;overflow-wrap:anywhere;min-width:0}
+.quest-standing .supporter-pill{display:inline-flex;align-items:center;gap:3px;flex-shrink:0;white-space:nowrap;border-radius:999px;padding:2px 8px;background:linear-gradient(115deg,#63418e,#82529c);border:1px solid #d6b1f552;color:#fff0ff;font-size:10px;font-weight:700;line-height:1.6;letter-spacing:.15px}
+.community-quest .quest-standings{margin:14px 0}

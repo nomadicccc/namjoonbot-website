@@ -49,6 +49,19 @@
     const item = el('div', undefined, 'cq-detail');
     item.append(el('h4', title), el('p', text)); parent.append(item);
   }
+  function drawFinal(entry) {
+    const top = el('div', undefined, 'cq-top');
+    const title = el('div');
+    title.append(el('span', 'Community Quest', 'cq-eyebrow'), el('h2', entry.name));
+    top.append(title, el('span', 'Final results', 'cq-status'));
+    const percent = number(Math.round(entry.total * 1000 / entry.goal) / 10);
+    const total = el('p', `${number(entry.total)} qualifying packs · ${percent}% of goal`, 'cq-intro');
+    const archive = el('a', 'View the full recap', 'community-quest-link');
+    archive.href = './event-archive.html#' + encodeURIComponent(entry.id);
+    root.replaceChildren(top, total, window.NamjoonQuestStandings.render(entry.topContributors), archive);
+    root.hidden = false;
+    if (link) link.hidden = false;
+  }
   function draw(s) {
     const wasOpen = root.querySelector('.cq-rules')?.open || false;
     root.replaceChildren();
@@ -110,9 +123,13 @@
     root.hidden = false;
     if (link) link.hidden = false;
   }
-  let quest = null, updated = null, signature = '';
+  let quest = null, updated = null, signature = '', finalEntry = null;
   function refresh() {
     if (!root) return;
+    if (finalEntry) {
+      if (signature !== 'final') { drawFinal(finalEntry); signature = 'final'; }
+      return;
+    }
     const now = Date.now(), s = state(quest, updated, now);
     if (!s) { hide(); return; }
     const nextSignature = JSON.stringify([quest,s.phase]);
@@ -123,6 +140,16 @@
   function update(data, updatedAt) { quest = data; updated = updatedAt; refresh(); }
   window.NamjoonCommunityQuest = {update, state, remaining};
   hide();
+  if (root && window.NamjoonQuestStandings) {
+    fetch('./event-archive.json', {cache: 'no-cache'}).then(response => {
+      if (!response.ok) throw new Error('Archive unavailable');
+      return response.json();
+    }).then(data => {
+      finalEntry = data.communityQuests?.find(entry =>
+        entry.id === 'pack_mentality' && entry.topContributors?.length > 0);
+      refresh();
+    }).catch(() => { /* Keep the live-feed fallback if the archive is unavailable. */ });
+  }
   setInterval(refresh, 1000);
   document.addEventListener('visibilitychange', refresh);
 })();
