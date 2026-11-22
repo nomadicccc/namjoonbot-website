@@ -1,7 +1,9 @@
 (() => {
 'use strict';
 const root=document.getElementById('archive'),list=document.getElementById('event-list'),dialog=document.getElementById('art-dialog');
-let events=[];
+let entries=[];
+const categories=document.querySelectorAll('[data-archive-category]');
+const questCategory='community-quests';
 const number=value=>new Intl.NumberFormat('en-GB').format(value);
 const present=value=>typeof value==='number'&&Number.isFinite(value)&&value>=0;
 const date=value=>new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Seoul'}).format(new Date(value));
@@ -19,21 +21,23 @@ function artwork(item,label=item.name){
 }
 function section(title,note){const wrapper=el('section',undefined,'collection-section'),heading=el('div',undefined,'section-title');heading.append(el('h3',title));if(note)heading.append(el('small',note));wrapper.append(heading);return wrapper;}
 
-function contributorSection(event, pending){
+function contributorSection(event, pending, limit=5, unit=event.quest.unit){
  const section=el('section',undefined,'contributors');
  const heading=el('div',undefined,'section-title');
- heading.append(el('h3','Top 5 Contributors'));
- const players=Array.isArray(event.topContributors)?event.topContributors.slice(0,5):[];
+ heading.append(el('h3','Top '+limit+(limit===10?' Competitors':' Contributors')));
+ const players=(event.topContributors||[]).filter(player=>player.displayName?.trim()).slice(0,limit);
  const ready=!pending&&players.length>0;
  heading.append(el('small',ready?'Final standings':'Final standings pending'));
  section.append(heading);
- if(!ready){section.append(el('p','The top five will appear here once earning closes and the results are confirmed.','contributors-pending'));return section;}
+ if(!ready){section.append(el('p','The top contributors will appear here once earning closes and the results are confirmed.','contributors-pending'));return section;}
  const board=el('ol',undefined,'contributors-board');
- board.setAttribute('aria-label','Final top five contributors');
+ board.setAttribute('aria-label','Final top '+limit+' contributors');
+ let rank=0;
  players.forEach((player,index)=>{
   const row=el('li',undefined,'contributor');
-  row.append(el('span','#'+(index+1),'contributor-rank'));
-  const name=typeof player.displayName==='string'&&player.displayName.trim()?player.displayName:'Discord user';
+  if(limit===5||index===0||player.contributed!==players[index-1].contributed)rank=index+1;
+  row.append(el('span','#'+rank,'contributor-rank'));
+  const name=player.displayName;
   const portrait=el('span',undefined,'contributor-avatar');
   const initials=el('span',Array.from(name)[0].toLocaleUpperCase(),'contributor-initial');
   portrait.append(initials);
@@ -41,7 +45,7 @@ function contributorSection(event, pending){
   if(src){const avatar=el('img');avatar.alt='';avatar.loading='lazy';avatar.decoding='async';avatar.width=28;avatar.height=28;avatar.src=src;avatar.addEventListener('error',()=>avatar.remove(),{once:true});portrait.append(avatar);}
   const info=el('div',undefined,'contributor-info');
   const label=el('span',name,'contributor-name');label.title=name;
-  const score=el('span',present(player.contributed)?number(player.contributed)+' '+event.quest.unit:'Total pending','contributor-score');
+  const score=el('span',present(player.contributed)?number(player.contributed)+' '+unit:'Total pending','contributor-score');
   info.append(label,score);row.append(portrait,info);board.append(row);
  });
  section.append(board);return section;
@@ -80,15 +84,95 @@ function render(event){
  const text=el('div');text.append(el('span','\u2726 Limited edition \u00b7 '+card.editionSize+' copies','edition-pill'),el('h4',card.name),el('p',card.revealed?'Exclusive Top 5 reward. Only '+card.editionSize+' copies available.':'A rare keepsake. Artwork will appear here after its official reveal.'));limited.append(text);article.append(limited);}
  article.append(el('p','A look back at what was available this season. Archive previews do not offer purchases or reward claims.','archive-footnote'));return article;
 }
-function selectEvent(id,updateHash=false){const selected=events.find(event=>event.id===id)||events[0];if(!selected)return;root.replaceChildren(render(selected));list.querySelectorAll('button').forEach(button=>button.setAttribute('aria-current',String(button.dataset.event===selected.id)));document.title=selected.name+' \u00b7 Event Archive \u00b7 NamjoonBot';if(updateHash)history.replaceState(null,'','#'+encodeURIComponent(selected.id));}
-function fromHash(){let id='';try{id=decodeURIComponent(location.hash.slice(1));}catch{}selectEvent(id);}
+function renderCommunityQuest(entry){
+ const article=el('article',undefined,'event-detail community-recap');
+ const hero=el('div',undefined,'event-hero');
+ const top=el('div',undefined,'hero-top');
+ top.append(el('span',entry.edition,'season-label'),el('span','Final results','status-pill'));
+ const identity=el('div',undefined,'event-identity');
+ const copy=el('div');
+ copy.append(el('h2',entry.name),el('p',entry.description,'event-description'));
+ identity.append(copy);
+ hero.append(top,identity,el('p',date(entry.startsAt)+' – '+date(entry.endsAt)+' · KST','event-dates'));
+ article.append(hero);
+
+ const percent=entry.total/entry.goal*100;
+ const stats=el('dl',undefined,'stats recap-stats');
+ for(const [label,value] of [['Qualifying packs opened',number(entry.total)],['Contributors',number(entry.contributors)],['Goal reached',percent.toFixed(1)+'%']]){
+  const stat=el('div',undefined,'stat');
+  stat.append(el('dt',label),el('dd',value));
+  stats.append(stat);
+ }
+ article.append(stats);
+
+ for(const [title,bonus] of [['Milestones',false],['Bonus milestones',true]]){
+  const panel=el('section',undefined,'quest');
+  const heading=el('div',undefined,'section-title');
+  heading.append(el('h3',title));
+  if(!bonus)heading.append(el('small',number(entry.goal)+'-pack goal'));
+  panel.append(heading);
+  const milestones=el('ul',undefined,'recap-milestones');
+  for(const milestone of entry.milestones.filter(item=>(item.percent>100)===bonus)){
+   const reached=entry.total*100>=entry.goal*milestone.percent;
+   const row=el('li',undefined,bonus&&reached?'bonus-reached':undefined);
+   const target=el('div');
+   target.append(el('strong',milestone.percent+'%'),el('small',number(entry.goal*milestone.percent/100)+' packs'));
+   row.append(target,el('span',milestone.reward),el('span',reached?'Reached':'Not reached',reached?'milestone-reached':'milestone-status'));
+   milestones.append(row);
+  }
+  panel.append(milestones);
+  article.append(panel);
+ }
+ article.append(contributorSection(entry,false,10,'packs'));
+ return article;
+}
+
+function fromHash(){
+ let id='';
+ try{id=decodeURIComponent(location.hash.slice(1));}catch{}
+ const match=entries.find(entry=>entry.id===id);
+ const isQuest=id===questCategory||match?.category===questCategory;
+ const category=isQuest?questCategory:'events';
+ const visible=entries.filter(entry=>entry.category===category);
+ const selected=match||visible[0];
+ categories.forEach(link=>{
+  if(link.dataset.archiveCategory===category)link.setAttribute('aria-current','true');
+  else link.removeAttribute('aria-current');
+ });
+ document.getElementById('event-count').textContent=visible.length+' '+(isQuest?'quest':'event')+(visible.length===1?'':'s');
+ list.setAttribute('aria-label',isQuest?'Archived community quests':'Previous events');
+ if(list.dataset.category!==category){
+  list.dataset.category=category;
+  list.replaceChildren();
+  visible.forEach(entry=>{
+   const link=el('a',undefined,'event-pill');
+   link.href='#'+encodeURIComponent(entry.id);
+   link.dataset.entry=entry.id;
+   link.dataset.theme=entry.theme||'default';
+   const text=el('span',undefined,'pill-text');
+   text.append(el('strong',entry.name),el('small',entry.edition));
+   if(entry.badge)link.append(image(entry.badge,'','pill-badge'));
+   link.append(text,el('span','\u203a','pill-arrow'));
+   list.append(link);
+  });
+ }
+ list.querySelectorAll('a').forEach(link=>{
+  if(link.dataset.entry===selected?.id)link.setAttribute('aria-current','true');
+  else link.removeAttribute('aria-current');
+ });
+ root.replaceChildren(selected?(isQuest?renderCommunityQuest(selected):render(selected)):el('p',isQuest?'No community quests have been archived yet.':'No events have been archived yet.','notice'));
+ document.title=(selected?selected.name+' \u00b7 ':'')+'Event Archive \u00b7 NamjoonBot';
+}
 document.getElementById('art-close').addEventListener('click',()=>dialog.close());
 dialog.addEventListener('click',event=>{if(event.target===dialog){const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)dialog.close();}});
-window.addEventListener('hashchange',fromHash);
 fetch('./event-archive.json',{cache:'no-cache'}).then(response=>{if(!response.ok)throw new Error('Archive unavailable');return response.json();}).then(data=>{
- events=data.events.slice().sort((a,b)=>Date.parse(b.startsAt)-Date.parse(a.startsAt));list.replaceChildren();document.getElementById('event-count').textContent=events.length+' event'+(events.length===1?'':'s');
- events.forEach(event=>{const button=el('button',undefined,'event-pill');button.type='button';button.dataset.event=event.id;button.dataset.theme=event.theme||'default';button.setAttribute('aria-controls','archive');const text=el('span',undefined,'pill-text');text.append(el('strong',event.name),el('small',event.edition));button.append(image(event.badge,'','pill-badge'),text,el('span','\u203a','pill-arrow'));button.addEventListener('click',()=>selectEvent(event.id,true));list.append(button);});
- if(events.length)fromHash();else root.replaceChildren(el('p','Our first event memories will appear here soon.','notice'));
+ entries=[
+  ...data.events.map(event=>({...event,category:'events'})),
+  ...(data.communityQuests||[]).map(quest=>({...quest,category:questCategory})),
+ ].sort((a,b)=>Date.parse(b.startsAt)-Date.parse(a.startsAt));
+ fromHash();
+ window.addEventListener('hashchange',()=>{
+  if(location.hash!=='#main')fromHash();
+ });
 }).catch(()=>{root.replaceChildren(el('p','Event memories could not be loaded. Please refresh to try again.','notice'));list.replaceChildren(el('p','Events unavailable','muted'));});
 })();
-

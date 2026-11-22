@@ -45,12 +45,13 @@
     prizes.append(prizeGrid);
     quest.append(prizes);
     function board(title,players,raffle=false){
+      players=players.filter(player=>player.name?.trim()&&(player.name!=='Collector'||player.avatar));
       const section=el('section',undefined,'winter-board');section.append(el('h4',title));
       if(!players.length) section.append(el('p',raffle?'Results pending.':'No presents sent yet.'));
-      for(const player of players){
+      for(const [index,player] of players.entries()){
         const row=el('div',undefined,'winter-player');
-        if(!raffle)row.dataset.rank=String(player.rank);
-        if(!raffle) row.append(el('strong',`#${player.rank}`,'winter-rank'));
+        if(!raffle)row.dataset.rank=String(index+1);
+        if(!raffle) row.append(el('strong',`#${index+1}`,'winter-rank'));
         if(/^https:\/\//.test(player.avatar||'')){const img=el('img');img.src=player.avatar;img.alt='';img.width=32;img.height=32;img.loading='lazy';img.referrerPolicy='no-referrer';img.onerror=()=>img.remove();row.append(img);}
         const text=el('div',undefined,'winter-player-details');text.append(el('strong',player.name||'Collector'));
         if(raffle&&Number.isFinite(player.win_chance)){const percent=player.win_chance*100;const label=percent>0&&percent<0.01?'<0.01':percent.toFixed(2);text.append(el('span',`${label}% chance of winning`,'winter-win-chance'));}

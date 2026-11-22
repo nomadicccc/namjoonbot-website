@@ -129,6 +129,112 @@
       ],
       "resultsRecordedAt": "2026-11-01T16:51:26.452473+00:00"
     }
+  ],
+  "communityQuests": [
+    {
+      "id": "pack_mentality",
+      "name": "Pack Mentality",
+      "edition": "Community Quest",
+      "description": "The community opened packs from shops and daily streaks to unlock shared rewards.",
+      "startsAt": "2026-11-09T00:00:00+09:00",
+      "endsAt": "2026-11-23T00:00:00+09:00",
+      "total": 12611,
+      "goal": 10000,
+      "contributors": 85,
+      "milestones": [
+        {
+          "percent": 25,
+          "reward": "2 Community Boosted Packs"
+        },
+        {
+          "percent": 50,
+          "reward": "Booster bundle"
+        },
+        {
+          "percent": 75,
+          "reward": "Frame Choice Voucher"
+        },
+        {
+          "percent": 100,
+          "reward": "Mythical Mystery Reward"
+        },
+        {
+          "percent": 125,
+          "reward": "1 Community Boosted Pack"
+        },
+        {
+          "percent": 150,
+          "reward": "Booster bundle"
+        },
+        {
+          "percent": 175,
+          "reward": "1 Community Boosted Pack"
+        },
+        {
+          "percent": 200,
+          "reward": "Mythical Mystery Reward"
+        },
+        {
+          "percent": 225,
+          "reward": "Booster bundle"
+        },
+        {
+          "percent": 250,
+          "reward": "Frame Choice Voucher"
+        }
+      ],
+      "topContributors": [
+        {
+          "displayName": "sleeplessBTS",
+          "avatar": "https://cdn.discordapp.com/avatars/757190645474394152/b9532de72864ee044aade06195c28a9f.png?size=128",
+          "contributed": 867
+        },
+        {
+          "displayName": "angie",
+          "avatar": "https://cdn.discordapp.com/avatars/1232994498800255067/c1e9057b79d675d37ad73482c93e0e56.png?size=128",
+          "contributed": 854
+        },
+        {
+          "displayName": "\u00cb\u0161\u00e2\u201a\u0160\u00e2\u20ac\u00a7\u00ea\u2019\u00b0\u00e1\u0192\udc90cara\u00e0\u00bb\u2019\u00ea\u2019\u00b1 \u00e2\u20ac\u00a7\u00e2\u201a\u0160\u00cb\u0161",
+          "avatar": "https://cdn.discordapp.com/avatars/524694887174504458/a_2d6d89d3f492716e7a8ce151749bf55b.gif?size=128",
+          "contributed": 842
+        },
+        {
+          "displayName": "syd",
+          "avatar": "https://cdn.discordapp.com/avatars/559150693051793419/60c692c73f6b36cfd14b96412773ad9f.png?size=128",
+          "contributed": 551
+        },
+        {
+          "displayName": "\u00e2\u0192\u0178",
+          "avatar": "https://cdn.discordapp.com/avatars/1519963776957288469/237ed1dbc474648f702a9d4f90a7d184.png?size=128",
+          "contributed": 538
+        },
+        {
+          "displayName": "sammy_",
+          "avatar": "https://cdn.discordapp.com/avatars/699969633280589905/2cbff58f03f8d68e20698af2c0e63da6.png?size=128",
+          "contributed": 518
+        },
+        {
+          "displayName": "arem \u00e2\u0178\u00ad\u00e2\u0178\u00ac",
+          "avatar": "https://cdn.discordapp.com/avatars/966267573983395860/7639d07a2053658005f7c78f835f9405.png?size=128",
+          "contributed": 483
+        },
+        {
+          "displayName": "\u00f0\u0178\u00aa\u00bb \u00e2\u20ac\u00a2 ari\u00d1\udc8f\u00c3\u00a5ng \u00e2\u20ac\u00a2 \u00e2\u0160\u2122\u00e2\u0160\udc9d\u00e2\u0160\u0153",
+          "avatar": "https://cdn.discordapp.com/avatars/1328740976495300628/2439291042ff607edeb90cb6bcabe141.png?size=128",
+          "contributed": 483
+        },
+        {
+          "displayName": "\u00e2\u0192\u0178\u00e2\u0192\u0178\u00e2\u0192\u0178\u00e2\u0192\u0178",
+          "avatar": "https://cdn.discordapp.com/avatars/1272256813902860288/a_de75e199e1af62198afe46871d939918.gif?size=128",
+          "contributed": 478
+        },
+        {
+          "displayName": "holly",
+          "avatar": "https://cdn.discordapp.com/avatars/249575728419569665/a_d458706d9381f3cc46418140b06d2917.gif?size=128",
+          "contributed": 450
+        }
+      ]
+    }
   ]
 }
-
