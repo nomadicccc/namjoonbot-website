@@ -49,33 +49,38 @@
     const item = el('div', undefined, 'cq-detail');
     item.append(el('h4', title), el('p', text)); parent.append(item);
   }
-  function drawFinal(entry) {
+  function questHeader(name, status) {
     const top = el('div', undefined, 'cq-top');
     const title = el('div');
-    title.append(el('span', 'Community Quest', 'cq-eyebrow'), el('h2', entry.name));
-    top.append(title, el('span', 'Final results', 'cq-status'));
-    const percent = number(Math.round(entry.total * 1000 / entry.goal) / 10);
-    const total = el('p', `${number(entry.total)} qualifying packs · ${percent}% of goal`, 'cq-intro');
+    title.append(el('span', 'Community Quest', 'cq-eyebrow'), el('h2', '\u{1F4E6} ' + name));
+    top.append(title, el('span', status, 'cq-status'));
+    return top;
+  }
+  function appendProgress({total, goal}) {
+    const summary = el('div', undefined, 'cq-total');
+    summary.append(el('strong', `${number(total)} / ${number(goal)} packs`),
+      el('span', `${number(Math.round(total / goal * 1000) / 10)}%`, 'cq-percent'));
+    const progress = el('progress');
+    progress.max = goal;
+    progress.value = Math.min(total, goal);
+    progress.setAttribute('aria-label', 'Community progress towards the main goal');
+    root.append(summary, progress);
+  }
+  function drawFinal(entry) {
+    root.replaceChildren(questHeader(entry.name, 'Final results'));
+    appendProgress(entry);
     const archive = el('a', 'View the full recap', 'community-quest-link');
     archive.href = './event-archive.html#' + encodeURIComponent(entry.id);
-    root.replaceChildren(top, total, window.NamjoonQuestStandings.render(entry.topContributors), archive);
+    root.append(window.NamjoonQuestStandings.render(entry.topContributors), archive);
     root.hidden = false;
     if (link) link.hidden = false;
   }
   function draw(s) {
     const wasOpen = root.querySelector('.cq-rules')?.open || false;
-    root.replaceChildren();
-    const top = el('div', undefined, 'cq-top');
-    const title = el('div');
-    title.append(el('span', 'Community Quest', 'cq-eyebrow'), el('h2', '📦 Pack Mentality'));
-    top.append(title, el('span', s.phase==='claiming'?'Rewards available':s.complete ? 'Goal complete ✓' : 'Live community quest', 'cq-status'));
-    root.append(top, el('p', s.phase==='claiming'?'Contributions have closed. Qualifying players can still claim unlocked rewards.':'Open packs together to unlock rewards for everyone.', 'cq-intro'));
-    const total = el('div', undefined, 'cq-total');
-    total.append(el('strong', `${number(s.total)} / ${number(s.goal)} packs`),
-      el('span', `${number(Math.round(s.percent * 10) / 10)}%`, 'cq-percent'));
-    const progress = el('progress'); progress.max = s.goal; progress.value = Math.min(s.total, s.goal);
-    progress.setAttribute('aria-label', 'Community progress towards the main goal');
-    root.append(total, progress);
+    const status = s.phase==='claiming'?'Rewards available':s.complete ? 'Goal complete ✓' : 'Live community quest';
+    root.replaceChildren(questHeader('Pack Mentality', status));
+    root.append(el('p', s.phase==='claiming'?'Contributions have closed. Qualifying players can still claim unlocked rewards.':'Open packs together to unlock rewards for everyone.', 'cq-intro'));
+    appendProgress(s);
     const timerLine = el('p', undefined, 'cq-timer-line');
     const timer = el('span', '', 'cq-time'); timer.setAttribute('role', 'timer');
     const deadline=s.phase==='claiming'?s.claimEnd:s.ends;
