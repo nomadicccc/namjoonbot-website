@@ -44,7 +44,7 @@ function contributorSection(event, pending, limit=5, unit=event.quest.unit){
   const src=safeImage(player.avatar);
   if(src){const avatar=el('img');avatar.alt='';avatar.loading='lazy';avatar.decoding='async';avatar.width=28;avatar.height=28;avatar.src=src;avatar.addEventListener('error',()=>avatar.remove(),{once:true});portrait.append(avatar);}
   const info=el('div',undefined,'contributor-info');
-  const label=el('span',name,'contributor-name');label.title=name;
+  const label=el('bdi',name,'contributor-name');
   const score=el('span',present(player.contributed)?number(player.contributed)+' '+unit:'Total pending','contributor-score');
   info.append(label,score);row.append(portrait,info);board.append(row);
  });
@@ -105,24 +105,23 @@ function renderCommunityQuest(entry){
  }
  article.append(stats);
 
- for(const [title,bonus] of [['Milestones',false],['Bonus milestones',true]]){
-  const panel=el('section',undefined,'quest');
-  const heading=el('div',undefined,'section-title');
-  heading.append(el('h3',title));
-  if(!bonus)heading.append(el('small',number(entry.goal)+'-pack goal'));
-  panel.append(heading);
-  const milestones=el('ul',undefined,'recap-milestones');
-  for(const milestone of entry.milestones.filter(item=>(item.percent>100)===bonus)){
-   const reached=entry.total*100>=entry.goal*milestone.percent;
-   const row=el('li',undefined,bonus&&reached?'bonus-reached':undefined);
-   const target=el('div');
-   target.append(el('strong',milestone.percent+'%'),el('small',number(entry.goal*milestone.percent/100)+' packs'));
-   row.append(target,el('span',milestone.reward),el('span',reached?'Reached':'Not reached',reached?'milestone-reached':'milestone-status'));
-   milestones.append(row);
-  }
-  panel.append(milestones);
-  article.append(panel);
+ const panel=el('section',undefined,'quest');
+ const heading=el('div',undefined,'section-title');
+ heading.append(el('h3','Milestones'),el('small',number(entry.goal)+'-pack goal'));
+ panel.append(heading);
+ const milestones=el('ul',undefined,'recap-milestones');
+ for(const milestone of entry.milestones){
+  const bonus=milestone.percent>100;
+  const reached=entry.total*100>=entry.goal*milestone.percent;
+  if(bonus&&!reached)continue;
+  const row=el('li',undefined,bonus?'bonus-reached':undefined);
+  const target=el('div');
+  target.append(el('strong',milestone.percent+'%'),el('small',number(entry.goal*milestone.percent/100)+' packs'));
+  row.append(target,el('span',milestone.reward),el('span',bonus?'Bonus reached':reached?'Reached':'Not reached',reached?'milestone-reached':'milestone-status'));
+  milestones.append(row);
  }
+ panel.append(milestones);
+ article.append(panel);
  article.append(contributorSection(entry,false,10,'packs'));
  return article;
 }

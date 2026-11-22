@@ -29,3 +29,21 @@ main{padding:36px 40px 90px;min-width:0;outline:none}.event-detail{--accent:#d0b
 .milestone-reached{color:var(--accent);font-size:11px;font-weight:700}
 .recap-milestones .bonus-reached{border-color:#eac98588;background:#eac98512}
 .bonus-reached strong,.bonus-reached .milestone-reached{color:#f5d698}
+.community-recap .event-hero{padding:18px 20px}
+.community-recap .hero-top{margin-bottom:10px}
+.community-recap .event-dates{margin-top:12px;padding-top:10px}
+.community-recap .recap-stats{margin:12px 0 16px}
+.community-recap .stat{padding-bottom:8px}
+.community-recap .stat dd{margin-top:2px}
+.community-recap .quest{padding:14px;margin-bottom:16px}
+.community-recap .section-title{margin-bottom:9px}
+.recap-milestones{gap:5px}
+.recap-milestones li{padding:5px 8px}
+.community-recap .contributors{margin:0}
+.community-recap .contributors-board{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:0;overflow:visible}
+.community-recap .contributor{min-width:0;padding:5px 8px}
+.community-recap .contributor-rank{position:static;flex:0 0 24px}
+.community-recap .contributor-info{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex:1}
+.community-recap .contributor-name{font:700 13px/1.4 system-ui,sans-serif;white-space:normal;overflow:visible;overflow-wrap:anywhere}
+.community-recap .contributor-score{margin:0;white-space:nowrap}
+@media(max-width:800px){.community-recap .contributors-board{grid-template-columns:1fr}}
